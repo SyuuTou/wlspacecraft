@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wl.spacecraft.mapper.UserGameMapper" >
+  <resultMap id="BaseResultMap" type="com.wl.spacecraft.model.UserGame" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="phonenum" property="phonenum" jdbcType="VARCHAR" />
+    <result column="token" property="token" jdbcType="VARCHAR" />
+    <result column="game_id" property="gameId" jdbcType="INTEGER" />
+    <result column="og_consume" property="ogConsume" jdbcType="INTEGER" />
+    <result column="begin_time" property="beginTime" jdbcType="TIMESTAMP" />
+    <result column="og_score" property="ogScore" jdbcType="INTEGER" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <resultMap id="UserInfoOutputDto" type="com.wl.spacecraft.dto.responsedto.UserInfoOutputDto" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="phonenum" property="phone" jdbcType="VARCHAR" />
+    <result column="limite" property="limit" jdbcType="INTEGER" />
+    <result column="amount" property="amount" jdbcType="INTEGER" />
+
+  </resultMap>
+
+  <select id="getUserInfo" resultMap="UserInfoOutputDto">
+    select au.phonenum,au.amount,tmp.limite
+    from app_user au
+    inner join(
+      select phonenum ,sum(og_score) limite from user_game
+      where phonenum = #{phone} and begin_time &gt;= #{beginTime} and end_time &lt;= #{endTime}
+    ) tmp on au.phonenum = tmp.phonenum;
+
+  </select>
+
+</mapper>
