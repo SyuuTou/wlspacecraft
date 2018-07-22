@@ -232,4 +232,20 @@ public class AppUser {
     public void setUpdator(Integer updator) {
         this.updator = updator;
     }
+
+    @Override
+    public String toString() {
+        return "AppUser{" +
+                "userid=" + userid +
+                ", nickName='" + nickName + '\'' +
+                ", phonenum='" + phonenum + '\'' +
+                ", amount=" + amount +
+                ", token='" + token + '\'' +
+                ", lastLoginTime=" + lastLoginTime +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                ", creator=" + creator +
+                ", updator=" + updator +
+                '}';
+    }
 }

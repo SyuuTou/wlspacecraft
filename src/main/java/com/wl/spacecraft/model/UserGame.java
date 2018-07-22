@@ -26,7 +26,7 @@ public class UserGame {
      * 此轮游戏的id
      */
     @Column(name = "game_id")
-    private Integer gameId;
+    private String gameId;
 
     /**
      * 此轮游戏消耗的og币
@@ -111,7 +111,7 @@ public class UserGame {
      *
      * @return game_id - 此轮游戏的id
      */
-    public Integer getGameId() {
+    public String getGameId() {
         return gameId;
     }
 
@@ -120,7 +120,7 @@ public class UserGame {
      *
      * @param gameId 此轮游戏的id
      */
-    public void setGameId(Integer gameId) {
+    public void setGameId(String gameId) {
         this.gameId = gameId;
     }
 

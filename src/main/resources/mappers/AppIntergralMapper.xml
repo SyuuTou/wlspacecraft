@@ -9,12 +9,13 @@
     <result column="userid" jdbcType="INTEGER" property="userid" />
     <result column="wallet" jdbcType="VARCHAR" property="wallet" />
     <result column="type" jdbcType="INTEGER" property="type" />
-    <result column="integral_change" jdbcType="VARCHAR" property="integralChange" />
+    <result column="integral_change" jdbcType="INTEGER" property="integralChange" />
     <result column="note" jdbcType="VARCHAR" property="note" />
     <result column="system" jdbcType="INTEGER" property="system" />
     <result column="audit_status" jdbcType="INTEGER" property="auditStatus" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="audit_time" jdbcType="TIMESTAMP" property="auditTime" />
   </resultMap>
+
 
 </mapper>

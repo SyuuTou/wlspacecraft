@@ -1,38 +1,56 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.wl.spacecraft.mapper.UserGameMapper" >
-  <resultMap id="BaseResultMap" type="com.wl.spacecraft.model.UserGame" >
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wl.spacecraft.mapper.UserGameMapper">
+  <resultMap id="BaseResultMap" type="com.wl.spacecraft.model.UserGame">
     <!--
       WARNING - @mbg.generated
     -->
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="phonenum" property="phonenum" jdbcType="VARCHAR" />
-    <result column="token" property="token" jdbcType="VARCHAR" />
-    <result column="game_id" property="gameId" jdbcType="INTEGER" />
-    <result column="og_consume" property="ogConsume" jdbcType="INTEGER" />
-    <result column="begin_time" property="beginTime" jdbcType="TIMESTAMP" />
-    <result column="og_score" property="ogScore" jdbcType="INTEGER" />
-    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="phonenum" jdbcType="VARCHAR" property="phonenum" />
+    <result column="token" jdbcType="VARCHAR" property="token" />
+    <result column="game_id" jdbcType="VARCHAR" property="gameId" />
+    <result column="og_consume" jdbcType="INTEGER" property="ogConsume" />
+    <result column="begin_time" jdbcType="TIMESTAMP" property="beginTime" />
+    <result column="og_score" jdbcType="INTEGER" property="ogScore" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
   </resultMap>
 
-  <resultMap id="UserInfoOutputDto" type="com.wl.spacecraft.dto.responsedto.UserInfoOutputDto" >
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <result column="phonenum" property="phone" jdbcType="VARCHAR" />
-    <result column="limite" property="limit" jdbcType="INTEGER" />
-    <result column="amount" property="amount" jdbcType="INTEGER" />
-
+  <resultMap id="OgObtainRankOutputDto" type="com.wl.spacecraft.dto.responsedto.OgObtainRankOutputDto">
+    <result column="phonenum" jdbcType="VARCHAR" property="phone" />
+    <result column="ogObtain" jdbcType="INTEGER" property="ogObtain" />
   </resultMap>
 
-  <select id="getUserInfo" resultMap="UserInfoOutputDto">
-    select au.phonenum,au.amount,tmp.limite
+    <!--用户获取金币排行榜-->
+  <select id="ogObtainRank" resultMap="OgObtainRankOutputDto">
+    select phonenum,sum(og_score) ogObtain from user_game
+    group by phonenum
+    order by isnull(phonenum) asc, sum(og_score) desc;
+  </select>
+
+  <!--用户当日获取金币的总额-->
+  <select id="getLimite" resultType="java.lang.Integer">
+    <!-- select au.phonenum,au.amount,tmp.limite
     from app_user au
     inner join(
       select phonenum ,sum(og_score) limite from user_game
       where phonenum = #{phone} and begin_time &gt;= #{beginTime} and end_time &lt;= #{endTime}
-    ) tmp on au.phonenum = tmp.phonenum;
+    ) tmp on au.phonenum = tmp.phonenum -->
 
+    select case when ISNULL(sum(og_score)) then 0 else sum(og_score) end limite from user_game
+    where phonenum = #{phone}
+    and begin_time &gt;= #{beginTime}
+    and end_time &lt;= #{endTime}
+
+
+    <!-- select au.phonenum,au.amount,tmp.limite
+    from app_user au
+    inner join(
+      select ${phone} phonenum , case when ISNULL(sum(og_score)) then 0 else sum(og_score) end limite
+      from user_game
+      where phonenum = #{phone}
+      and begin_time &gt;= #{beginTime}
+      and end_time &lt;= #{endTime}
+    ) tmp on au.phonenum = tmp.phonenum -->
   </select>
 
 </mapper>

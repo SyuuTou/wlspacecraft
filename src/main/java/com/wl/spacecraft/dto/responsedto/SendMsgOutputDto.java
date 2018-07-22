@@ -1,50 +1,68 @@
 package com.wl.spacecraft.dto.responsedto;
 
+import java.util.Date;
+
 public class SendMsgOutputDto {
     /**
-     * 验证码是否失效标识
+     * 短信正确性校验码
      */
-    private String verification;
+    private String msgValidateStr;
     /**
      * 失效时间
      */
-    private String deadTime;
+    private Date expire;
 
     /**
-     * 成功或失败标识
+     * 发送成功与否标志位
+     * true 发送成功
+     * false 发送不成功
      */
-    private String state;//1：失败  0：成功
+    private boolean state;
 
-    public String getVerification() {
-        return verification;
+    /**
+     * 发送说明
+     */
+    private String note;
+
+    public String getMsgValidateStr() {
+        return msgValidateStr;
     }
 
-    public void setVerification(String verification) {
-        this.verification = verification;
+    public Date getExpire() {
+        return expire;
     }
 
-    public String getDeadTime() {
-        return deadTime;
-    }
-
-    public void setDeadTime(String deadTime) {
-        this.deadTime = deadTime;
-    }
-
-    public String getState() {
+    public boolean isState() {
         return state;
     }
 
-    public void setState(String state) {
+    public void setMsgValidateStr(String msgValidateStr) {
+        this.msgValidateStr = msgValidateStr;
+    }
+
+    public void setExpire(Date expire) {
+        this.expire = expire;
+    }
+
+    public void setState(boolean state) {
         this.state = state;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     @Override
     public String toString() {
         return "SendMsgOutputDto{" +
-                "verification='" + verification + '\'' +
-                ", deadTime='" + deadTime + '\'' +
-                ", state='" + state + '\'' +
+                "msgValidateStr='" + msgValidateStr + '\'' +
+                ", expire=" + expire +
+                ", state=" + state +
+                ", note='" + note + '\'' +
                 '}';
     }
 }

@@ -1,6 +1,8 @@
 package com.wl.spacecraft.utils;
 
 import java.security.MessageDigest;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -48,6 +50,10 @@ public class MD5Util {
         System.out.println(MD5Util.md5Encode("asldflkaslkdfjlsdjlfkajlskdjlkfasldflkaslkdfjlsdjlfkajlskdjlkfasldflkaslk2",""));
         System.out.println(MD5Util.md5Encode("asldflkaslkdfjlsdjlfkajlskdjlkfasldflkaslkdfjlsdjlfkajlskdjlkfasldflkaslk1","").length());
         System.out.println(MD5Util.md5Encode("asldflkaslkdfjlsdjlfkajlskdjlkfasldflkaslkdfjlsdjlfkajlskdjlkfasldflkaslk2","").length());
+        Date date = new Date();
+        System.err.println(MD5Util.md5Encode("qwe" + TimeUnit.values().toString(),null));
+        System.err.println(MD5Util.md5Encode("qwe" + new Date().toString(),null));
+
     }
 
 }

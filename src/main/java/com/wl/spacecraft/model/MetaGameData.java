@@ -48,6 +48,12 @@ public class MetaGameData {
     private Integer creator;
 
     /**
+     * 1eth等于多少og 
+     */
+    @Column(name = "eth_value")
+    private Integer ethValue;
+
+    /**
      * 获取记录id
      *
      * @return id - 记录id
@@ -171,5 +177,23 @@ public class MetaGameData {
      */
     public void setCreator(Integer creator) {
         this.creator = creator;
+    }
+
+    /**
+     * 获取1eth等于多少og 
+     *
+     * @return eth_value - 1eth等于多少og 
+     */
+    public Integer getEthValue() {
+        return ethValue;
+    }
+
+    /**
+     * 设置1eth等于多少og 
+     *
+     * @param ethValue 1eth等于多少og 
+     */
+    public void setEthValue(Integer ethValue) {
+        this.ethValue = ethValue;
     }
 }

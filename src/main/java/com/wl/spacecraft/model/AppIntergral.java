@@ -32,7 +32,7 @@ public class AppIntergral {
      * og币更改数量
      */
     @Column(name = "integral_change")
-    private String integralChange;
+    private Integer integralChange;
 
     /**
      * 备注
@@ -144,7 +144,7 @@ public class AppIntergral {
      *
      * @return integral_change - og币更改数量
      */
-    public String getIntegralChange() {
+    public Integer getIntegralChange() {
         return integralChange;
     }
 
@@ -153,7 +153,7 @@ public class AppIntergral {
      *
      * @param integralChange og币更改数量
      */
-    public void setIntegralChange(String integralChange) {
+    public void setIntegralChange(Integer integralChange) {
         this.integralChange = integralChange;
     }
 
