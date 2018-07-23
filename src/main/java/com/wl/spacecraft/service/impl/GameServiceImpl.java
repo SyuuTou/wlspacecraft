@@ -2,7 +2,6 @@ package com.wl.spacecraft.service.impl;
 
 import com.wl.spacecraft.dto.commondto.CommonDto;
 import com.wl.spacecraft.dto.commondto.GameConfigCommonOutputDto;
-import com.wl.spacecraft.dto.responsedto.OgObtainRankOutputDto;
 import com.wl.spacecraft.mapper.MetaGameDataMapper;
 import com.wl.spacecraft.model.MetaGameData;
 import com.wl.spacecraft.service.common.GenericService;
