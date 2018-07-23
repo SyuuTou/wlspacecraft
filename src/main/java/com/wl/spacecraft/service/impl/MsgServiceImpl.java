@@ -16,8 +16,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -52,7 +50,7 @@ public class MsgServiceImpl extends GenericService implements MsgService {
         String verifyCode = String.valueOf(new Random().nextInt(899999)+10000);//随机六位数字验证码
         Map<String, String> map = new HashMap<>();
         map.put("sign","号外号外");//签名
-        map.put("msg","亲爱的、您好，您的验证码是："+verifyCode+","+msgCodeExpireTime+" 分钟内有效，请妥善保管，丢失那天就是分手之时！");//验证码
+        map.put("msg","亲爱的、您好，您的验证码是："+verifyCode+", "+msgCodeExpireTime+"分钟内有效，请妥善保管，丢失那天就是分手之时！");//验证码
         map.put("mobile",phone);//手机号码
 
         System.err.println("短信验证码--˘>>>>"+verifyCode);
