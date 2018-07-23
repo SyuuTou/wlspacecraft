@@ -1,6 +1,5 @@
 package com.wl.spacecraft.service.impl;
 
-import com.lhjl.tzzs.proxy.dto.ProjectsListOutputDto;
 import com.wl.spacecraft.dto.commondto.*;
 import com.wl.spacecraft.dto.requestdto.*;
 import com.wl.spacecraft.dto.responsedto.*;
@@ -29,7 +28,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
 import java.util.Calendar;
@@ -311,10 +309,10 @@ public class UserServiceImpl extends GenericService implements UserService {
 
         //积分的扣除
         AppUser au = this.getUserByPhone(body.getPhone());
-        if(au.getAmount() < Integer.valueOf("coinSubtract") ){
+        if(au.getAmount() < Integer.valueOf(env.getProperty("coinSubtract")) ){
             throw new OgLackException("用户金币不足");
         }
-        au.setAmount(au.getAmount()- Integer.valueOf("coinSubtract") );
+        au.setAmount(au.getAmount()- Integer.valueOf(env.getProperty("coinSubtract")));
         appUserMapper.updateByPrimaryKeySelective(au);
         
         CommonDto<GameStartOutputDto> result=new CommonDto<>();
@@ -331,7 +329,7 @@ public class UserServiceImpl extends GenericService implements UserService {
         userGame.setToken(body.getToken());
         userGame.setGameId(random);
         userGame.setBeginTime(new Date());
-        userGame.setOgConsume( Integer.valueOf("coinSubtract") );
+        userGame.setOgConsume( Integer.valueOf(env.getProperty("coinSubtract")) );
         userGameMapper.insertSelective(userGame);
 
         output.setResult(true);
