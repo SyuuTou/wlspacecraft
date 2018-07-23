@@ -15,17 +15,34 @@
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
   </resultMap>
 
-  <resultMap id="OgObtainRankOutputDto" type="com.wl.spacecraft.dto.responsedto.OgObtainRankOutputDto">
+  <resultMap id="GameRankEntity" type="com.wl.spacecraft.dto.commondto.GameRankEntity">
     <result column="phonenum" jdbcType="VARCHAR" property="phone" />
     <result column="ogObtain" jdbcType="INTEGER" property="ogObtain" />
   </resultMap>
 
     <!--用户获取金币排行榜-->
-  <select id="ogObtainRank" resultMap="OgObtainRankOutputDto">
+  <select id="gameRankList" resultMap="GameRankEntity">
     select phonenum,sum(og_score) ogObtain from user_game
     group by phonenum
-    order by isnull(phonenum) asc, sum(og_score) desc;
+    order by isnull(phonenum) asc, sum(og_score) desc
+    limit #{start},#{pageSize}
   </select>
+
+  <!--获取金币排行榜的总数-->
+  <select id="getRankTotal" resultType="java.lang.Integer">
+    select count(*) from(
+      select 1 from user_game
+      group by phonenum
+    ) tmp
+  </select>
+
+
+  <!--获取游戏金币总共赠送总量-->
+  <select id="getOgRewardAmount" resultType="java.lang.Integer">
+    select case when isnull(sum(og_score)) then 0 else sum(og_score) end amount from user_game
+  </select>
+
+
 
   <!--用户当日获取金币的总额-->
   <select id="getLimite" resultType="java.lang.Integer">

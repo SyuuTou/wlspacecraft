@@ -33,7 +33,6 @@ public class MsgServiceImpl extends GenericService implements MsgService {
     @Autowired
     private Environment env;
 
-
     @Override
     @Transactional
     public CommonDto<SendMsgOutputDto> senMsg(String phone) throws Exception {
@@ -41,8 +40,8 @@ public class MsgServiceImpl extends GenericService implements MsgService {
         String host = env.getProperty("host");
         String path = env.getProperty("path");
         String method = env.getProperty("method");
-        String appcode = env.getProperty("appcode");;
-        String verifyCode = String.valueOf(new Random().nextInt(899999)+10000);//随机六位数字验证码
+        String appcode = env.getProperty("appcode");
+
 
         CommonDto<SendMsgOutputDto> result = new CommonDto<>();
         SendMsgOutputDto sendMsgOutputDto = new SendMsgOutputDto();
@@ -50,17 +49,20 @@ public class MsgServiceImpl extends GenericService implements MsgService {
         Map<String, String> headers = new HashMap<>();
         headers.put("Authorization", "APPCODE " + appcode);
 
+        String verifyCode = String.valueOf(new Random().nextInt(899999)+10000);//随机六位数字验证码
         Map<String, String> map = new HashMap<>();
         map.put("sign","号外号外");//签名
-        map.put("msg","亲爱的、您好，您的验证码是："+verifyCode+","+msgCodeExpireTime+"分钟内有效，请妥善保管，丢失那天就是分手之时！");//验证码
+        map.put("msg","亲爱的、您好，您的验证码是："+verifyCode+","+msgCodeExpireTime+" 分钟内有效，请妥善保管，丢失那天就是分手之时！");//验证码
         map.put("mobile",phone);//手机号码
+
+        System.err.println("短信验证码--˘>>>>"+verifyCode);
 
         Calendar calendar = Calendar.getInstance();
         //设置短信有效时间为5分钟
         calendar.add(Calendar.MINUTE,msgCodeExpireTime);
         Date expire = calendar.getTime();
 
-        System.err.println("过期时间的转换为long-->>>>>  "+expire.getTime());
+        System.err.println("过期时间-->>>>>  "+expire.getTime());
 
         //生成MD5值认证标识
         String verification = MD5Util.md5Encode(KEY + "@" + verifyCode + "@" + expire.toString(),null);
@@ -68,6 +70,9 @@ public class MsgServiceImpl extends GenericService implements MsgService {
         //短信发送
         HttpResponse response = HttpUtils.doGet(host, path, method, headers, map);
         String jsonString = EntityUtils.toString(response.getEntity());
+
+        System.err.println("jsonString是否为空字符串--{"+jsonString.equals("")+"}");
+        System.err.println("jsonString是否等于null--{"+jsonString == null +"}");
 
         if ( StringUtils.isNotBlank(jsonString) ){
             JSONObject jsonObject = JSONObject.parseObject(jsonString);

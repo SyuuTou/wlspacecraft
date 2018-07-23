@@ -1,6 +1,6 @@
-package com.wl.spacecraft.dto.responsedto;
+package com.wl.spacecraft.dto.commondto;
 
-public class OgObtainRankOutputDto {
+public class GameRankEntity {
     /**
      * 手机号
      */
@@ -14,12 +14,12 @@ public class OgObtainRankOutputDto {
         return phone;
     }
 
-    public Integer getOgObtain() {
-        return ogObtain;
-    }
-
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public Integer getOgObtain() {
+        return ogObtain;
     }
 
     public void setOgObtain(Integer ogObtain) {
@@ -28,7 +28,7 @@ public class OgObtainRankOutputDto {
 
     @Override
     public String toString() {
-        return "OgObtainRankOutputDto{" +
+        return "GameRankEntity{" +
                 "phone='" + phone + '\'' +
                 ", ogObtain=" + ogObtain +
                 '}';

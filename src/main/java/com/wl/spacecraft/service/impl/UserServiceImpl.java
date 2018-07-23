@@ -1,8 +1,7 @@
 package com.wl.spacecraft.service.impl;
 
-import com.wl.spacecraft.dto.commondto.CommonDto;
-import com.wl.spacecraft.dto.commondto.GameConfigCommonOutputDto;
-import com.wl.spacecraft.dto.commondto.UserInfoCommonOutputDto;
+import com.lhjl.tzzs.proxy.dto.ProjectsListOutputDto;
+import com.wl.spacecraft.dto.commondto.*;
 import com.wl.spacecraft.dto.requestdto.*;
 import com.wl.spacecraft.dto.responsedto.*;
 import com.wl.spacecraft.exception.account.AccountException;
@@ -30,6 +29,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
 import java.util.Calendar;
@@ -43,23 +43,28 @@ public class UserServiceImpl extends GenericService implements UserService {
     // 自定义秘钥
     private static final String KEY = "SPACECRAFT";
 
-    @Resource
-    GameService gameService;
-
-    @Autowired
-    private Environment env;
-
-    /**
-     * 开始一局游戏的积分扣除个数
-     */
-    @Value("${coinSubtract}")
-    private Integer coinSubtract;
     /**
      * 每日积分上限
      */
     @Value("${topLimit}")
     private Integer topLimit;
+    /**
+     * 当前页
+     */
+    @Value("${currentPageDefault}")
+    private Integer currentPageDefault;
 
+    /**
+     * 每页显示的条数
+     */
+    @Value("${pageSizeDefault}")
+    private Integer pageSizeDefault;
+
+    @Resource
+    GameService gameService;
+
+    @Autowired
+    private Environment env;
     @Autowired
     AppUserMapper appUserMapper;
     @Autowired
@@ -108,8 +113,8 @@ public class UserServiceImpl extends GenericService implements UserService {
      * @return
      */
     private boolean valivdateToken(String token,Date expire,String tokenValidateStr){
-
-        System.err.println("token校验串---》》》"+ MD5Util.md5Encode(KEY + "@" + token + "@" + expire.toString(),null ) );
+        System.err.println("原token校验串---》》"+tokenValidateStr);
+        System.err.println("server端生成的token校验串---》》》"+ MD5Util.md5Encode(KEY + "@" + token + "@" + expire.toString(),null ) );
 
         //数据格式校验
         if(StringUtils.isAnyBlank(token,tokenValidateStr)){
@@ -123,7 +128,7 @@ public class UserServiceImpl extends GenericService implements UserService {
         if(! MD5Util.md5Encode(KEY + "@" + token + "@" + expire.toString(),null ).equals(tokenValidateStr) ){
             throw new TokenIlleaglException("token非法");
         }
-  
+
         return true;
     }
 
@@ -131,12 +136,15 @@ public class UserServiceImpl extends GenericService implements UserService {
      * 短信验证码的校验
      * @param msgCode 短信验证码
      * @param expire 该验证码的过期时间
-     * @param msgValidateStr Md5校验串
+     * @param msgValidateStr 短信Md5校验串
      * @return
      */
     private boolean validateMsg(String msgCode,Date expire,String msgValidateStr){
 
-        System.err.println("短信校验串---》》》"+ MD5Util.md5Encode(KEY + "@" + msgCode + "@" + expire.toString(),null ) );
+        System.err.println("原短信校验串---》》"+msgValidateStr+"》》》》》》");
+        System.err.println("server生成的短信校验串---》》》"+ MD5Util.md5Encode(KEY + "@" + msgCode + "@" + expire.toString(),null )+"》》》》》》" );
+
+
         //数据格式校验
         if(StringUtils.isAnyBlank(msgCode,msgValidateStr)){
             throw new DataFormatException("短信验证码或者检验串的格式不正确");
@@ -170,6 +178,23 @@ public class UserServiceImpl extends GenericService implements UserService {
         return user.getAmount() ==null ? 0 : user.getAmount();
     }
 
+    /**
+     * 获取金币总共赠送总量
+     * @return
+     */
+    private Integer getOgRewardAmount(){
+        return userGameMapper.getOgRewardAmount();
+    }
+    //供测试使用
+    @Override
+    public Object test() {
+        Integer amount = this.getTodayLimite("4");
+        //测试数据是否为null
+        System.out.println( amount );
+
+        return null;
+    }
+
     @Override
     @Transactional
     public CommonDto<LoginOutputDto> login(LoginInputDto body) {
@@ -185,7 +210,6 @@ public class UserServiceImpl extends GenericService implements UserService {
         String token = UUID.randomUUID().toString().replace("-", "");
 
         Calendar calendar = Calendar.getInstance();
-//        Date time = calendar.getTime();
         //设置token失效时间
         calendar.add(Calendar.DATE , Integer.valueOf(env.getProperty("tokenExpireTime")) );
         Date expire = calendar.getTime();
@@ -226,12 +250,12 @@ public class UserServiceImpl extends GenericService implements UserService {
         user.setExpire(expire);
         user.setLimit(this.getTodayLimite(body.getPhone()));
         user.setTokenValidateStr(tokenValidateStr);
+        user.setTopLimit( Integer.valueOf(env.getProperty("topLimit")) );
         output.setUserData(user);
 
         //设置游戏元数据
         GameConfigCommonOutputDto gameData = gameService.getGameConfig().getData();
         output.setGameData(gameData);
-
 
         result.setData(output);
         result.setMessage("success");
@@ -241,16 +265,8 @@ public class UserServiceImpl extends GenericService implements UserService {
     }
 
     @Override
-    public Object test() {
-        Integer amount = this.getTodayLimite("4");
-        System.out.println(amount);
-
-        return null;
-    }
-
-    @Override
     @Transactional(readOnly = true)
-    public CommonDto<UserInfoOutputDto> getUserInfo(UserInfoInputDto body) {
+    public CommonDto<UserInfoCommonOutputDto> getUserInfo(UserInfoInputDto body) {
         //进行用户有效性判断
         try{
             validateUser(body.getPhone(), body.getToken(),body.getExpire(),body.getTokenValidateStr());
@@ -258,15 +274,19 @@ public class UserServiceImpl extends GenericService implements UserService {
             throw e;
         }
 
-        CommonDto<UserInfoOutputDto> result=new CommonDto<>();
+        CommonDto<UserInfoCommonOutputDto> result=new CommonDto<>();
 
-        UserInfoOutputDto userInfo =new UserInfoOutputDto();
+        //设置用户的基本信息数据
+        UserInfoCommonOutputDto user =new UserInfoCommonOutputDto();
+        user.setPhone(body.getPhone());
+        user.setToken(body.getToken());
+        user.setAmount( this.getAmountByUser(body.getPhone()) );
+        user.setExpire( body.getExpire() );
+        user.setLimit(this.getTodayLimite(body.getPhone()));
+        user.setTokenValidateStr(body.getTokenValidateStr());
+        user.setTopLimit( Integer.valueOf(env.getProperty("topLimit")) );
 
-        userInfo.setLimit(this.getTodayLimite(body.getPhone()));
-        userInfo.setAmount( this.getAmountByUser(body.getPhone()) );
-        userInfo.setPhone(body.getPhone());
-
-        result.setData(userInfo);
+        result.setData(user);
         result.setMessage("success");
         result.setStatus(200);
 
@@ -284,17 +304,17 @@ public class UserServiceImpl extends GenericService implements UserService {
             throw e;
         }
 
-        //用户本日游戏积分已经达到上限，游戏玩就扣积分，所以下面的代码暂时注释
+        //本日游戏积分已经达到上限，停止游戏
 //        if(this.getTodayLimite(phone) >= topLimit ){
 //            throw new ProjectException("本日赠送积分已达上限");
 //        }
 
-        //用户积分的扣除
+        //积分的扣除
         AppUser au = this.getUserByPhone(body.getPhone());
-        if(au.getAmount() < coinSubtract ){
+        if(au.getAmount() < Integer.valueOf("coinSubtract") ){
             throw new OgLackException("用户金币不足");
         }
-        au.setAmount(au.getAmount()- coinSubtract );
+        au.setAmount(au.getAmount()- Integer.valueOf("coinSubtract") );
         appUserMapper.updateByPrimaryKeySelective(au);
         
         CommonDto<GameStartOutputDto> result=new CommonDto<>();
@@ -303,12 +323,15 @@ public class UserServiceImpl extends GenericService implements UserService {
         //插入用户的游戏记录
         //生成随机16位数字字母的随机游戏ID
         String random = RandomStr.randomStr( Integer.valueOf(env.getProperty("hexRandom")) );
+
+        System.err.println("游戏的唯一16位识别码"+random);
+
         UserGame userGame =new UserGame();
         userGame.setPhonenum(body.getPhone());
         userGame.setToken(body.getToken());
         userGame.setGameId(random);
         userGame.setBeginTime(new Date());
-        userGame.setOgConsume(coinSubtract);
+        userGame.setOgConsume( Integer.valueOf("coinSubtract") );
         userGameMapper.insertSelective(userGame);
 
         output.setResult(true);
@@ -431,20 +454,41 @@ public class UserServiceImpl extends GenericService implements UserService {
         return result;
     }
 
-
-
     @Override
     @Transactional(readOnly = true)
-    public CommonDto<List<OgObtainRankOutputDto>> ogObtainRank() {
+    public CommonDto<GameRankOutputDto> gameRank(PagingInputDto body) {
 
-        CommonDto<List<OgObtainRankOutputDto>> result=new CommonDto<>();
+        CommonDto<GameRankOutputDto> result=new CommonDto<>();
+        //分页输出数据
+        PagingOutputDto<GameRankEntity> pod=new PagingOutputDto<>();
 
-        List<OgObtainRankOutputDto> listRank = userGameMapper.ogObtainRank();
+        GameRankOutputDto rankOutputDto=new GameRankOutputDto();
 
-        System.err.println(listRank);
+        //输入参数格式化
+        if( body.getCurrentPage()== null ) {
+            body.setCurrentPage(currentPageDefault);
+        }
+        if(body.getPageSize() == null) {
+            body.setPageSize(pageSizeDefault);
+        }
+        //设置起始索引
+        body.setStart( (long)(body.getCurrentPage()-1) * body.getPageSize());
 
-        result.setData(listRank);
-        result.setMessage("用户获取金币排行榜");
+
+        //获取游戏排行榜的list
+        List<GameRankEntity> gameRankEntities = userGameMapper.gameRankList(body);
+        Integer total = userGameMapper.getRankTotal();
+
+        pod.setList(gameRankEntities);
+        pod.setTotal( (long)total );
+        pod.setCurrentPage(body.getCurrentPage());
+        pod.setPageSize(body.getPageSize());
+
+        rankOutputDto.setRankList(pod);
+        rankOutputDto.setOgRewardAmount( this.getOgRewardAmount() );
+
+        result.setData(rankOutputDto);
+        result.setMessage("success");
         result.setStatus(200);
 
         return result;

@@ -2,6 +2,9 @@ package com.wl.spacecraft.dto.commondto;
 
 import java.util.Date;
 
+/**
+ * 用户数据输出实体
+ */
 public class UserInfoCommonOutputDto {
     /**
      * 用户手机号
@@ -29,6 +32,20 @@ public class UserInfoCommonOutputDto {
      * 今日已获取og数量
      */
     private Integer limit;
+
+    /**
+     * og币每日获取上限
+     */
+    private Integer topLimit;
+
+
+    public Integer getTopLimit() {
+        return topLimit;
+    }
+
+    public void setTopLimit(Integer topLimit) {
+        this.topLimit = topLimit;
+    }
 
     public String getPhone() {
         return phone;
@@ -87,6 +104,7 @@ public class UserInfoCommonOutputDto {
                 ", tokenValidateStr='" + tokenValidateStr + '\'' +
                 ", amount=" + amount +
                 ", limit=" + limit +
+                ", topLimit=" + topLimit +
                 '}';
     }
 }

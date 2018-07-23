@@ -22,7 +22,6 @@ public class LoginInputDto {
      */
     private Date expire;
 
-
     public String getMsgValidateStr() {
         return msgValidateStr;
     }
@@ -55,13 +54,5 @@ public class LoginInputDto {
         this.msgCode = msgCode;
     }
 
-    @Override
-    public String toString() {
-        return "LoginInputInfoDto{" +
-                "msgValidateStr='" + msgValidateStr + '\'' +
-                ", expire=" + expire +
-                ", phone='" + phone + '\'' +
-                ", msgCode='" + msgCode + '\'' +
-                '}';
-    }
+
 }

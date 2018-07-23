@@ -1,6 +1,9 @@
 package com.wl.spacecraft.controller;
 
 import com.wl.spacecraft.dto.commondto.CommonDto;
+import com.wl.spacecraft.dto.commondto.PagingInputDto;
+import com.wl.spacecraft.dto.commondto.PagingOutputDto;
+import com.wl.spacecraft.dto.commondto.UserInfoCommonOutputDto;
 import com.wl.spacecraft.dto.requestdto.*;
 import com.wl.spacecraft.dto.responsedto.*;
 import com.wl.spacecraft.exception.project.ProjectException;
@@ -72,10 +75,10 @@ public class UserController extends GenericService {
      * @return
      */
     @PostMapping("user/info")
-    public CommonDto<UserInfoOutputDto> getUserInfo(@RequestBody UserInfoInputDto body ){
+    public CommonDto<UserInfoCommonOutputDto> getUserInfo(@RequestBody UserInfoInputDto body ){
         System.err.println(body);
 
-        CommonDto<UserInfoOutputDto> result=new CommonDto<>();
+        CommonDto<UserInfoCommonOutputDto> result=new CommonDto<>();
         try{
             result=userService.getUserInfo(body);
         }catch(Exception e){
@@ -158,12 +161,14 @@ public class UserController extends GenericService {
      * 用户获取金币排行榜
      * @return
      */
-    @GetMapping("og/rank")
-    public CommonDto<List<OgObtainRankOutputDto>> ogObtainRank(){
+    @PostMapping("og/rank")
+    public CommonDto<GameRankOutputDto> ogObtainRank(@RequestBody PagingInputDto body){
 
-        CommonDto<List<OgObtainRankOutputDto>> result=new CommonDto<>();
+        System.err.println("分页参数--》》 "+body);
+
+        CommonDto<GameRankOutputDto> result=new CommonDto<>();
         try{
-            result=userService.ogObtainRank();
+            result=userService.gameRank(body);
         }catch(Exception e){
             this.LOGGER.info(e.getMessage(),e.fillInStackTrace());
 

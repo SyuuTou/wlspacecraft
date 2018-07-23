@@ -25,6 +25,7 @@ public class PagingOutputDto<T> {
      */
     private List<T> list;
 
+
     public Integer getCurrentPage() {
         return currentPage;
     }
@@ -50,5 +51,14 @@ public class PagingOutputDto<T> {
         this.list = list;
     }
 
+    @Override
+    public String toString() {
+        return "PagingOutputDto{" +
+                "currentPage=" + currentPage +
+                ", pageSize=" + pageSize +
+                ", total=" + total +
+                ", list=" + list +
+                '}';
+    }
 }
 

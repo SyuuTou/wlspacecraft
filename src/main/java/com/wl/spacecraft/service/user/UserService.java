@@ -1,6 +1,9 @@
 package com.wl.spacecraft.service.user;
 
 import com.wl.spacecraft.dto.commondto.CommonDto;
+import com.wl.spacecraft.dto.commondto.PagingInputDto;
+import com.wl.spacecraft.dto.commondto.PagingOutputDto;
+import com.wl.spacecraft.dto.commondto.UserInfoCommonOutputDto;
 import com.wl.spacecraft.dto.requestdto.*;
 import com.wl.spacecraft.dto.responsedto.*;
 
@@ -12,7 +15,7 @@ public interface UserService {
      * @param body
      * @return
      */
-    CommonDto<UserInfoOutputDto> getUserInfo(UserInfoInputDto body);
+    CommonDto<UserInfoCommonOutputDto> getUserInfo(UserInfoInputDto body);
 
     /**
      * 用户开始游戏
@@ -24,7 +27,7 @@ public interface UserService {
      * 用户金币获取排行榜
      * @return
      */
-    CommonDto<List<OgObtainRankOutputDto>> ogObtainRank();
+    CommonDto<GameRankOutputDto> gameRank(PagingInputDto body);
 
     /**
      * 游戏结束
