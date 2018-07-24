@@ -17,7 +17,7 @@ public class GameOverOutputDto {
     /**
      * 今日已获取og数量
      */
-    private Integer limite;
+    private Integer limit;
 
     public boolean isResult() {
         return result;
@@ -31,9 +31,6 @@ public class GameOverOutputDto {
         return amount;
     }
 
-    public Integer getLimite() {
-        return limite;
-    }
 
     public void setResult(boolean result) {
         this.result = result;
@@ -47,8 +44,12 @@ public class GameOverOutputDto {
         this.amount = amount;
     }
 
-    public void setLimite(Integer limite) {
-        this.limite = limite;
+    public Integer getLimit() {
+        return limit;
+    }
+
+    public void setLimit(Integer limit) {
+        this.limit = limit;
     }
 
     @Override
@@ -57,7 +58,7 @@ public class GameOverOutputDto {
                 "result=" + result +
                 ", phone='" + phone + '\'' +
                 ", amount=" + amount +
-                ", limite=" + limite +
+                ", limit=" + limit +
                 '}';
     }
 }

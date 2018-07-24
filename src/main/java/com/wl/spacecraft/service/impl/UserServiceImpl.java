@@ -315,19 +315,19 @@ public class UserServiceImpl extends GenericService implements UserService {
             throw e;
         }
 
-        //本日游戏积分已经达到上限，停止游戏
-//        if(this.getTodayLimite(phone) >= topLimit ){
-//            throw new ProjectException("本日赠送积分已达上限");
-//        }
-
         //积分的扣除
         AppUser au = this.getUserByPhone(body.getPhone());
         if(au.getAmount() < Integer.valueOf(env.getProperty("coinSubtract")) ){
             throw new OgLackException("用户金币不足");
         }
-        au.setAmount(au.getAmount()- Integer.valueOf(env.getProperty("coinSubtract")));
-        appUserMapper.updateByPrimaryKeySelective(au);
-        
+
+        //本日游戏积分没有到达上限
+        if(this.getTodayLimite(body.getPhone()) < topLimit ){
+            au.setAmount(au.getAmount()- Integer.valueOf(env.getProperty("coinSubtract")));
+            appUserMapper.updateByPrimaryKeySelective(au);
+        }
+
+
         CommonDto<GameStartOutputDto> result=new CommonDto<>();
         GameStartOutputDto output =new GameStartOutputDto();
 
@@ -342,7 +342,12 @@ public class UserServiceImpl extends GenericService implements UserService {
         userGame.setToken(body.getToken());
         userGame.setGameId(random);
         userGame.setBeginTime(new Date());
-        userGame.setOgConsume( Integer.valueOf(env.getProperty("coinSubtract")) );
+        if(this.getTodayLimite(body.getPhone()) < topLimit){
+            userGame.setOgConsume( Integer.valueOf(env.getProperty("coinSubtract")) );
+        }else{
+            userGame.setOgConsume( 0 );
+
+        }
         userGameMapper.insertSelective(userGame);
 
         output.setResult(true);
@@ -403,7 +408,7 @@ public class UserServiceImpl extends GenericService implements UserService {
 
         output.setResult(true);
         output.setPhone(body.getPhone());
-        output.setLimite( this.getTodayLimite(body.getPhone())>topLimit ? topLimit: this.getTodayLimite(body.getPhone()) );
+        output.setLimit( this.getTodayLimite(body.getPhone())>topLimit ? topLimit: this.getTodayLimite(body.getPhone()) );
         output.setAmount(appuser.getAmount());
 
         result.setData(output);
