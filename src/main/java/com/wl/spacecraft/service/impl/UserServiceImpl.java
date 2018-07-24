@@ -347,6 +347,7 @@ public class UserServiceImpl extends GenericService implements UserService {
         }else{
             userGame.setOgConsume( 0 );
 
+
         }
         userGameMapper.insertSelective(userGame);
 
