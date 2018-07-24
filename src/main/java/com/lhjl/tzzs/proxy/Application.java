@@ -46,9 +46,9 @@ import static springfox.documentation.schema.AlternateTypeRules.*;
  * @since 2015-12-12 18:22
  */
 //@EnableSwagger2
-@SpringBootApplication
+//@SpringBootApplication
 
-@MapperScan(basePackages = "com.lhjl.tzzs.proxy.mapper")
+//@MapperScan(basePackages = "com.lhjl.tzzs.proxy.mapper")
 public class Application  {
   
     // 启动的时候要注意，由于我们在controller中注入了RestTemplate，所以启动的时候需要实例化该类的一个实例
