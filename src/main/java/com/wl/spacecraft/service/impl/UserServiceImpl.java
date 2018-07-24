@@ -351,6 +351,7 @@ public class UserServiceImpl extends GenericService implements UserService {
         }
         userGameMapper.insertSelective(userGame);
 
+
         output.setResult(true);
         output.setGameId(random);
         output.setPhone(body.getPhone());
