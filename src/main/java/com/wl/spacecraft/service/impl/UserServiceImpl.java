@@ -70,6 +70,7 @@ public class UserServiceImpl extends GenericService implements UserService {
     @Autowired
     AppIntergralMapper appIntergralMapper;
 
+
     /**
      * 用户信息的校验
      * @param token
@@ -258,6 +259,7 @@ public class UserServiceImpl extends GenericService implements UserService {
         result.setData(output);
         result.setMessage("success");
         result.setStatus(200);
+        result.setType("login");
 
         return result;
     }
@@ -287,6 +289,7 @@ public class UserServiceImpl extends GenericService implements UserService {
         result.setData(user);
         result.setMessage("success");
         result.setStatus(200);
+        result.setType("query");
 
         return result;
     }

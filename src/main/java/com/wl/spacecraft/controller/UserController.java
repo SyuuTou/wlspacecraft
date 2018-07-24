@@ -2,7 +2,6 @@ package com.wl.spacecraft.controller;
 
 import com.wl.spacecraft.dto.commondto.CommonDto;
 import com.wl.spacecraft.dto.commondto.PagingInputDto;
-import com.wl.spacecraft.dto.commondto.PagingOutputDto;
 import com.wl.spacecraft.dto.commondto.UserInfoCommonOutputDto;
 import com.wl.spacecraft.dto.requestdto.*;
 import com.wl.spacecraft.dto.responsedto.*;
@@ -65,6 +64,7 @@ public class UserController extends GenericService {
             result.setData(null);
             result.setMessage(e instanceof ProjectException ? e.getMessage() : "failed");
             result.setStatus(500);
+            result.setType("login");
         }
         return result;
     }
@@ -87,6 +87,7 @@ public class UserController extends GenericService {
             result.setData(null);
             result.setMessage(e instanceof ProjectException ? e.getMessage() : "failed");
             result.setStatus(500);
+            result.setType("query");
         }
         return result;
     }

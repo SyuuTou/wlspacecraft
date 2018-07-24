@@ -4,16 +4,26 @@ public class CommonDto<T> {
 
     private String message;
     private Integer status ;
+    private String type;
     private T data;
 
     public CommonDto(){
 
     }
 
-    public CommonDto(T data, String message, Integer status){
-        this.data = data;
+    public CommonDto(String message, Integer status, String type, T data) {
         this.message = message;
         this.status = status;
+        this.type = type;
+        this.data = data;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getMessage() {
@@ -42,8 +52,12 @@ public class CommonDto<T> {
 
     @Override
     public String toString() {
-        return "CommonDto [message=" + message + ", status=" + status + ", data=" + data + "]";
+        return "CommonDto{" +
+                "message='" + message + '\'' +
+                ", status=" + status +
+                ", type='" + type + '\'' +
+                ", data=" + data +
+                '}';
     }
-
 }
 
