@@ -107,6 +107,10 @@ public class UserServiceImpl extends GenericService implements UserService {
         return list.get(0);
     }
 
+//    public static boolean checkCellphone(String cellphone) {
+//        String regex = "^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\\d{8}$";
+//        return check(cellphone, regex);
+//    }
     /**
      * 校验token的合法性
      * @param token
@@ -176,6 +180,15 @@ public class UserServiceImpl extends GenericService implements UserService {
     private Integer getAmountByUser(String phone){
         AppUser user = this.getUserByPhone(phone);
         return user.getAmount() ==null ? 0 : user.getAmount();
+    }
+
+    /**
+     * 获取用户游戏中获取的金币总量
+     * @param phone
+     * @return
+     */
+    private Integer getOgRewardViaGame(String phone ){
+        return userGameMapper.getOgRewardViaGame(phone);
     }
 
     /**
@@ -351,7 +364,6 @@ public class UserServiceImpl extends GenericService implements UserService {
         }
         userGameMapper.insertSelective(userGame);
 
-
         output.setResult(true);
         output.setGameId(random);
         output.setPhone(body.getPhone());
@@ -462,6 +474,7 @@ public class UserServiceImpl extends GenericService implements UserService {
         output.setPhone(body.getPhone());
         output.setResult(true);
         output.setAmount( this.getAmountByUser(body.getPhone()) );
+
 //        output.setLimit( this.getTodayLimite(body.getPhone()) );
 
         result.setData(output);
@@ -474,7 +487,7 @@ public class UserServiceImpl extends GenericService implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public CommonDto<GameRankOutputDto> gameRank(PagingInputDto body) {
+    public CommonDto<GameRankOutputDto> gameRank(String phone,PagingInputDto body) {
 
         CommonDto<GameRankOutputDto> result=new CommonDto<>();
         //分页输出数据
@@ -504,6 +517,8 @@ public class UserServiceImpl extends GenericService implements UserService {
 
         rankOutputDto.setRankList(pod);
         rankOutputDto.setOgRewardAmount( this.getOgRewardAmount() );
+        rankOutputDto.setPhone(phone.replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2"));
+        rankOutputDto.setMyOgAmount(this.getOgRewardViaGame(phone) );
 
         result.setData(rankOutputDto);
         result.setMessage("success");

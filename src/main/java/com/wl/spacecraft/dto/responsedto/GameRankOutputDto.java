@@ -9,9 +9,34 @@ public class GameRankOutputDto {
     PagingOutputDto<GameRankEntity> rankList;
 
     /**
-     * OG游戏赠送赠送总数
+     * OG赠送总数
      */
     private Integer ogRewardAmount;
+
+    /**
+     * 用户手机号
+     */
+    private String phone;
+    /**
+     * 我的og总量
+     */
+    private Integer myOgAmount;
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public Integer getMyOgAmount() {
+        return myOgAmount;
+    }
+
+    public void setMyOgAmount(Integer myOgAmount) {
+        this.myOgAmount = myOgAmount;
+    }
 
     public PagingOutputDto<GameRankEntity> getRankList() {
         return rankList;
@@ -34,6 +59,8 @@ public class GameRankOutputDto {
         return "GameRankOutputDto{" +
                 "rankList=" + rankList +
                 ", ogRewardAmount=" + ogRewardAmount +
+                ", phone='" + phone + '\'' +
+                ", myOgAmount=" + myOgAmount +
                 '}';
     }
 }

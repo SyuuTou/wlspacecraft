@@ -25,7 +25,7 @@ public interface UserService {
      * 用户金币获取排行榜
      * @return
      */
-    CommonDto<GameRankOutputDto> gameRank(PagingInputDto body);
+    CommonDto<GameRankOutputDto> gameRank(String phone,PagingInputDto body);
 
     /**
      * 游戏结束

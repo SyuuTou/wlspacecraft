@@ -42,5 +42,10 @@ public interface UserGameMapper extends OwnerMapper<UserGame> {
      */
     Integer getOgRewardAmount();
 
-
+    /**
+     * 获取用户的游戏金币获取总量
+     * @param phone
+     * @return
+     */
+    Integer getOgRewardViaGame(@Param("phone") String phone);
 }

@@ -28,6 +28,7 @@
     limit #{start},#{pageSize}
   </select>
 
+
   <!--获取金币排行榜的总数-->
   <select id="getRankTotal" resultType="java.lang.Integer">
     select count(*) from(
@@ -43,15 +44,14 @@
   </select>
 
 
+  <select id="getOgRewardViaGame" resultType="java.lang.Integer">
+    select case when isnull(sum(og_score)) then 0 else sum(og_score) end  amount from user_game
+    where phonenum = #{phone}
+  </select>
+
 
   <!--用户当日获取金币的总额-->
   <select id="getLimite" resultType="java.lang.Integer">
-    <!-- select au.phonenum,au.amount,tmp.limite
-    from app_user au
-    inner join(
-      select phonenum ,sum(og_score) limite from user_game
-      where phonenum = #{phone} and begin_time &gt;= #{beginTime} and end_time &lt;= #{endTime}
-    ) tmp on au.phonenum = tmp.phonenum -->
 
     select case when ISNULL(sum(og_score)) then 0 else sum(og_score) end limite from user_game
     where phonenum = #{phone}

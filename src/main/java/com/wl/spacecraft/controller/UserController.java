@@ -9,10 +9,7 @@ import com.wl.spacecraft.exception.project.ProjectException;
 import com.wl.spacecraft.service.common.GenericService;
 import com.wl.spacecraft.service.user.MsgService;
 import com.wl.spacecraft.service.user.UserService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -162,14 +159,15 @@ public class UserController extends GenericService {
      * 用户获取金币排行榜
      * @return
      */
-    @PostMapping("og/rank")
-    public CommonDto<GameRankOutputDto> ogObtainRank(@RequestBody PagingInputDto body){
+    @PostMapping("og/rank{phone}")
+    public CommonDto<GameRankOutputDto> ogObtainRank(@PathVariable String phone, @RequestBody PagingInputDto body){
 
         System.err.println("分页参数--》》 "+body);
+        System.err.println(phone);
 
         CommonDto<GameRankOutputDto> result=new CommonDto<>();
         try{
-            result=userService.gameRank(body);
+            result=userService.gameRank(phone,body);
         }catch(Exception e){
             this.LOGGER.info(e.getMessage(),e.fillInStackTrace());
 
