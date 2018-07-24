@@ -4,11 +4,15 @@ import com.wl.spacecraft.dto.commondto.GameRankEntity;
 import com.wl.spacecraft.dto.commondto.PagingInputDto;
 import com.wl.spacecraft.model.UserGame;
 import com.wl.spacecraft.utils.OwnerMapper;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
 
+@Mapper
+@Repository
 public interface UserGameMapper extends OwnerMapper<UserGame> {
     /**
      * 获取今日已经获取的og总数，不需要传递token，因为一天内token可能改变

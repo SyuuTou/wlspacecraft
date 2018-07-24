@@ -13,10 +13,15 @@ public class CoinToAccountOutputDto {
      * og总数
      */
     private Integer  amount;
-    /**
-     * 今日已获取og数量
-     */
-    private Integer limite;
+//    /**
+//     * 今日已获取og数量
+//     */
+//    private Integer limit;
+//
+//    /**
+//     * 每日获取游戏积分上限
+//     */
+//    private Integer topLimit;
 
     public boolean isResult() {
         return result;
@@ -30,9 +35,6 @@ public class CoinToAccountOutputDto {
         return amount;
     }
 
-    public Integer getLimite() {
-        return limite;
-    }
 
     public void setResult(boolean result) {
         this.result = result;
@@ -46,17 +48,12 @@ public class CoinToAccountOutputDto {
         this.amount = amount;
     }
 
-    public void setLimite(Integer limite) {
-        this.limite = limite;
-    }
-
     @Override
     public String toString() {
         return "CoinToAccountOutputDto{" +
                 "result=" + result +
                 ", phone='" + phone + '\'' +
                 ", amount=" + amount +
-                ", limite=" + limite +
                 '}';
     }
 }

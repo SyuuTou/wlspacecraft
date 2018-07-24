@@ -75,10 +75,10 @@ public class UserController extends GenericService {
      * @return
      */
     @PostMapping("user/info")
-    public CommonDto<UserInfoCommonOutputDto> getUserInfo(@RequestBody UserInfoInputDto body ){
+    public CommonDto<UserInfoOutputDto> getUserInfo(@RequestBody UserInfoInputDto body ){
         System.err.println(body);
 
-        CommonDto<UserInfoCommonOutputDto> result=new CommonDto<>();
+        CommonDto<UserInfoOutputDto> result=new CommonDto<>();
         try{
             result=userService.getUserInfo(body);
         }catch(Exception e){

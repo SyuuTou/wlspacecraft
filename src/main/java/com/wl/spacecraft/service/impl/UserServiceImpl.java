@@ -59,16 +59,17 @@ public class UserServiceImpl extends GenericService implements UserService {
     private Integer pageSizeDefault;
 
     @Resource
-    GameService gameService;
+    private GameService gameService;
 
     @Autowired
     private Environment env;
+
     @Autowired
-    AppUserMapper appUserMapper;
+    private AppUserMapper appUserMapper;
     @Autowired
-    UserGameMapper userGameMapper;
+    private UserGameMapper userGameMapper;
     @Autowired
-    AppIntergralMapper appIntergralMapper;
+    private AppIntergralMapper appIntergralMapper;
 
 
     /**
@@ -216,12 +217,15 @@ public class UserServiceImpl extends GenericService implements UserService {
         //生成token的校验串
         String tokenValidateStr = MD5Util.md5Encode(KEY + "@" + token + "@" + expire.toString(),"");
 
+        LoginOutputDto output=new LoginOutputDto();
+
         try{//存在该用户，更新用户的token以及登录时间
             AppUser user = this.getUserByPhone(body.getPhone());
             user.setToken(token);
             user.setLastLoginTime(new Date());
             appUserMapper.updateByPrimaryKeySelective(user);
 
+            output.setNote("登录成功");
         }catch (Exception e){ //捕获到异常说明用户不存在，执行新用户的注册
 
             AppUser user=new AppUser();
@@ -232,14 +236,13 @@ public class UserServiceImpl extends GenericService implements UserService {
             user.setLastLoginTime(new Date());
             user.setCreateTime(new Date());
             appUserMapper.insertSelective(user);
+
+            output.setNote("注册成功");
         }
 
-        CommonDto<LoginOutputDto> result =new CommonDto<>();
-
-        LoginOutputDto output=new LoginOutputDto();
-
         output.setResult(true);
-        output.setNote("登录成功");
+
+        CommonDto<LoginOutputDto> result =new CommonDto<>();
 
         //设置用户的信息
         UserInfoCommonOutputDto user =new UserInfoCommonOutputDto();
@@ -266,7 +269,7 @@ public class UserServiceImpl extends GenericService implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public CommonDto<UserInfoCommonOutputDto> getUserInfo(UserInfoInputDto body) {
+    public CommonDto<UserInfoOutputDto> getUserInfo(UserInfoInputDto body) {
         //进行用户有效性判断
         try{
             validateUser(body.getPhone(), body.getToken(),body.getExpire(),body.getTokenValidateStr());
@@ -274,8 +277,9 @@ public class UserServiceImpl extends GenericService implements UserService {
             throw e;
         }
 
-        CommonDto<UserInfoCommonOutputDto> result=new CommonDto<>();
+        CommonDto<UserInfoOutputDto> result=new CommonDto<>();
 
+        UserInfoOutputDto outputDto=new UserInfoOutputDto();
         //设置用户的基本信息数据
         UserInfoCommonOutputDto user =new UserInfoCommonOutputDto();
         user.setPhone(body.getPhone());
@@ -286,7 +290,13 @@ public class UserServiceImpl extends GenericService implements UserService {
         user.setTokenValidateStr(body.getTokenValidateStr());
         user.setTopLimit( Integer.valueOf(env.getProperty("topLimit")) );
 
-        result.setData(user);
+
+        GameConfigCommonOutputDto gameData = gameService.getGameConfig().getData();
+
+        outputDto.setGameData(gameData);
+        outputDto.setUserData(user);
+
+        result.setData(outputDto);
         result.setMessage("success");
         result.setStatus(200);
         result.setType("query");
@@ -445,7 +455,7 @@ public class UserServiceImpl extends GenericService implements UserService {
         output.setPhone(body.getPhone());
         output.setResult(true);
         output.setAmount( this.getAmountByUser(body.getPhone()) );
-        output.setLimite( this.getTodayLimite(body.getPhone()) );
+//        output.setLimit( this.getTodayLimite(body.getPhone()) );
 
         result.setData(output);
         result.setMessage("success");
