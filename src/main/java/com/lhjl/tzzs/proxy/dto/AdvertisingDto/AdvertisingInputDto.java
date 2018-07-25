@@ -1,6 +1,7 @@
 package com.lhjl.tzzs.proxy.dto.AdvertisingDto;
 
 public class AdvertisingInputDto {
+    
     /**
      * 位置id
      */

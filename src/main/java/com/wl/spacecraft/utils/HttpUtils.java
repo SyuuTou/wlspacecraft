@@ -48,9 +48,7 @@ public class HttpUtils {
                                      Map<String, String> headers,
                                      Map<String, String> querys)
             throws Exception {
-        System.err.println("wrap--start");
         HttpClient httpClient = wrapClient(host);
-        System.err.println("--end");
         HttpGet request = new HttpGet(buildUrl(host, path, querys));
         for (Map.Entry<String, String> e : headers.entrySet()) {
 
