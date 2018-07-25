@@ -50,7 +50,7 @@ public class MsgServiceImpl extends GenericService implements MsgService {
         String verifyCode = String.valueOf(new Random().nextInt(899999)+10000);//随机六位数字验证码
         Map<String, String> map = new HashMap<>();
         map.put("sign","Only Game");//签名
-        map.put("msg","亲爱的、您好，您的验证码是："+verifyCode+",请妥善保管，丢失那天就是分手之时！"+msgCodeExpireTime+"分钟内有效");//验证码
+        map.put("msg","验证码为："+verifyCode+",请妥善保管，丢失那天就是分手之时！"+msgCodeExpireTime+"分钟内有效");//验证码
         map.put("mobile",phone);//手机号码
 
         System.err.println("短信验证码--˘>>>>"+verifyCode);
