@@ -53,6 +53,7 @@ public class MsgServiceImpl extends GenericService implements MsgService {
         map.put("msg","验证码："+verifyCode+",您正在登录，若非本人操作，请勿泄露。");//验证码
         map.put("mobile",phone);//手机号码
 
+        System.err.println(map);
         System.err.println("短信验证码--˘>>>>"+verifyCode);
 
         Calendar calendar = Calendar.getInstance();

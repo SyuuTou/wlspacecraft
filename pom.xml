@@ -259,7 +259,30 @@
       <version>2.6</version>
     </dependency>
 
+
+
+
   </dependencies>
+  <!--<repositories>
+    <repository>
+      <id>repo</id>
+      <url>http://101.200.44.58:8081/repository/maven-public/</url>
+    </repository>
+
+
+  </repositories>
+  <distributionManagement>
+    <repository>
+      <id>nexus</id>
+      <name>Releases</name>
+      <url>http://101.200.44.58:8081/repository/maven-releases</url>
+    </repository>
+    <snapshotRepository>
+      <id>nexus</id>
+      <name>Snapshot</name>
+      <url>http://101.200.44.58:8081/repository/maven-snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>-->
   <build>
     <plugins>
 
