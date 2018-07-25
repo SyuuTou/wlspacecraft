@@ -49,8 +49,8 @@ public class MsgServiceImpl extends GenericService implements MsgService {
 
         String verifyCode = String.valueOf(new Random().nextInt(899999)+10000);//随机六位数字验证码
         Map<String, String> map = new HashMap<>();
-        map.put("sign","Only Game");//签名
-        map.put("msg","验证码："+verifyCode+",您正在登录，若非本人操作，请勿泄露。");//验证码
+        map.put("sign","OnlyGame");//签名
+        map.put("msg","验证码："+verifyCode+" ,您正在登录，若非本人操作，请勿泄露。");//验证码
         map.put("mobile",phone);//手机号码
 
         System.err.println(map);
