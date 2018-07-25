@@ -450,6 +450,9 @@ public class UserServiceImpl extends GenericService implements UserService {
         if(body.getIntegralChange() < Integer.valueOf(env.getProperty("moneyDrawBaseLine")) ){
             throw new AccountException("最小提币数量500 OG");
         }
+
+        System.err.println("目前用户拥有的og总量"+this.getUserByPhone(body.getPhone()).getAmount() );
+
         if(body.getIntegralChange() > this.getUserByPhone(body.getPhone()).getAmount()){
             throw new AccountException("余额不足");
         }
@@ -457,6 +460,12 @@ public class UserServiceImpl extends GenericService implements UserService {
         CommonDto<CoinToAccountOutputDto> result=new CommonDto<>();
         CoinToAccountOutputDto output=new CoinToAccountOutputDto();
 
+        //执行用户的金币总量扣除
+        AppUser au = this.getUserByPhone(body.getPhone());
+        au.setAmount( au.getAmount() - body.getIntegralChange() );
+        appUserMapper.updateByPrimaryKeySelective(au);
+
+        //用户充币提币记录的新增
         AppIntergral appIntergral =new AppIntergral();
         appIntergral.setWallet(body.getAddress());
         appIntergral.setUserid( this.getUserByPhone(body.getPhone()).getUserid() );
@@ -471,6 +480,8 @@ public class UserServiceImpl extends GenericService implements UserService {
         //插入用户的提币记录
         appIntergralMapper.insertSelective(appIntergral);
 
+
+        System.err.println("用户提币后金币总量"+this.getAmountByUser(body.getPhone()));
         output.setPhone(body.getPhone());
         output.setResult(true);
         output.setAmount( this.getAmountByUser(body.getPhone()) );
@@ -517,6 +528,12 @@ public class UserServiceImpl extends GenericService implements UserService {
 
         rankOutputDto.setRankList(pod);
         rankOutputDto.setOgRewardAmount( this.getOgRewardAmount() );
+
+        try{
+            this.getUserByPhone(phone);
+        }catch(Exception e){
+            throw e;
+        }
         rankOutputDto.setPhone(phone.replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2"));
         rankOutputDto.setMyOgAmount(this.getOgRewardViaGame(phone) );
 
