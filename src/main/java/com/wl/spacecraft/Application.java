@@ -25,15 +25,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 public class Application extends WebMvcConfigurerAdapter {
   
     // 启动的时候要注意，由于我们在controller中注入了RestTemplate，所以启动的时候需要实例化该类的一个实例
-    @Autowired
-    private RestTemplateBuilder builder;
-
-    // 使用RestTemplateBuilder来实例化RstTemplate对象，spring默认已经注入了RestTemplateBuilder实例
-    @Bean
-    public RestTemplate restTemplate() {
-
-        return builder.build();
-    }
+//    @Autowired
+//    private RestTemplateBuilder builder;
+//
+//    // 使用RestTemplateBuilder来实例化RstTemplate对象，spring默认已经注入了RestTemplateBuilder实例
+//    @Bean
+//    public RestTemplate restTemplate() {
+//
+//        return builder.build();
+//    }
 
     private CorsConfiguration buildConfig() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();

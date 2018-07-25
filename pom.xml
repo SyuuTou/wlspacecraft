@@ -24,6 +24,10 @@
   </properties>
 
   <dependencies>
+
+
+
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
@@ -137,8 +141,8 @@
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
-      <version>4.5.3</version>
-      <!--<version>4.2.1</version>-->
+      <!--<version>4.5.3</version>-->
+      <version>4.2.1</version>
     </dependency>
 
     <dependency>
@@ -246,6 +250,7 @@
     </dependency>
 
     <!--飞船第三方短信-->
+
     <dependency>
       <groupId>com.alibaba</groupId>
       <artifactId>fastjson</artifactId>
