@@ -124,6 +124,9 @@ public class UserServiceImpl extends GenericService implements UserService {
         if(StringUtils.isAnyBlank(token,tokenValidateStr)){
             throw new DataFormatException("token数据格式不正确");
         }
+        if(expire == null){
+            throw new DataFormatException("时间校验串不能为null");
+        }
 
         if( expire.compareTo(new Date()) <0 ){
             throw new TokenIlleaglException("token过期");
@@ -151,7 +154,11 @@ public class UserServiceImpl extends GenericService implements UserService {
 
         //数据格式校验
         if(StringUtils.isAnyBlank(msgCode,msgValidateStr)){
-            throw new DataFormatException("短信验证码或者检验串的格式不正确");
+            throw new DataFormatException("短信验证码、或者失效时间的格式不正确");
+        }
+
+        if(expire == null){
+            throw new DataFormatException("时间校验串不能为null");
         }
 
         if( expire.compareTo(new Date()) <0 ){
