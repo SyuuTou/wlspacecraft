@@ -48,18 +48,19 @@ public class MsgServiceImpl extends GenericService implements MsgService {
         Map<String, String> headers = new HashMap<>();
         headers.put("Authorization", "APPCODE " + appcode);
 
-//        String verifyCode = String.valueOf(new Random().nextInt(899999)+10000);//随机六位数字验证码
         String verifyCode = RandomStringUtils.random(4,"0123456789");//四位随机数
         Map<String, String> map = new HashMap<>();
-        map.put("sign","OnlyGame");//签名
-        map.put("msg","验证码："+verifyCode+" ,您正在登录，若非本人操作，请勿泄露。");//验证码
-        map.put("mobile",phone);//手机号码
+
+        map.put("param", verifyCode);
+        map.put("phone", phone);
+        map.put("sign", "45862");
+        map.put("skin", "34724");
 
         System.err.println(map);
         System.err.println("短信验证码--˘>>>>"+verifyCode);
 
         Calendar calendar = Calendar.getInstance();
-        //设置短信有效时间为5分钟
+        //设置短信有效时间为20分钟
         calendar.add(Calendar.MINUTE,msgCodeExpireTime);
         Date expire = calendar.getTime();
 
@@ -80,10 +81,10 @@ public class MsgServiceImpl extends GenericService implements MsgService {
 
             System.err.println("**jsonObject**"+jsonObject);
 
-            String str = String.valueOf(jsonObject.get("result"));
+            String str = String.valueOf(jsonObject.get("Code"));
 
             switch(str){
-                case ("0"):{
+                case ("OK"):{
                     result.setMessage("success");//发送成功
                     result.setStatus(200);
 
@@ -92,13 +93,6 @@ public class MsgServiceImpl extends GenericService implements MsgService {
                     //设置过期时间已经MD5校验码
                     sendMsgOutputDto.setExpire(expire);
                     sendMsgOutputDto.setMsgValidateStr(verification);
-                } break;
-                case ("1024"):{
-                    result.setMessage("failed");//限制发送
-                    result.setStatus(500);
-
-                    sendMsgOutputDto.setState(false);
-                    sendMsgOutputDto.setNote("手机号1小时频率限制");
                 } break;
                 default : { //发送失败
                     result.setMessage("failed");
