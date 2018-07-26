@@ -22,12 +22,21 @@ public class GameConfigCommonOutputDto {
     /**
      * 游戏难度
      */
-    private BigDecimal difficulty;
+    private Integer difficulty;
 
     /**
      * 1eth等于多少og
      */
     private Integer ethValue;
+    /**
+     * 基础价格
+     */
+    private BigDecimal currentBasePrice;
+    /**
+     * 当前奖金
+     */
+    private BigDecimal currentBonus;
+
 
     public BigDecimal getStoneCreateSpeed() {
         return stoneCreateSpeed;
@@ -41,8 +50,28 @@ public class GameConfigCommonOutputDto {
         return ogCreateSpeed;
     }
 
-    public BigDecimal getDifficulty() {
+    public Integer getDifficulty() {
         return difficulty;
+    }
+
+    public void setDifficulty(Integer difficulty) {
+        this.difficulty = difficulty;
+    }
+
+    public BigDecimal getCurrentBasePrice() {
+        return currentBasePrice;
+    }
+
+    public void setCurrentBasePrice(BigDecimal currentBasePrice) {
+        this.currentBasePrice = currentBasePrice;
+    }
+
+    public BigDecimal getCurrentBonus() {
+        return currentBonus;
+    }
+
+    public void setCurrentBonus(BigDecimal currentBonus) {
+        this.currentBonus = currentBonus;
     }
 
     public Integer getEthValue() {
@@ -61,9 +90,6 @@ public class GameConfigCommonOutputDto {
         this.ogCreateSpeed = ogCreateSpeed;
     }
 
-    public void setDifficulty(BigDecimal difficulty) {
-        this.difficulty = difficulty;
-    }
 
     public void setEthValue(Integer ethValue) {
         this.ethValue = ethValue;
@@ -71,12 +97,14 @@ public class GameConfigCommonOutputDto {
 
     @Override
     public String toString() {
-        return "GameConfigOutputDto{" +
+        return "GameConfigCommonOutputDto{" +
                 "stoneCreateSpeed=" + stoneCreateSpeed +
                 ", stoneMoveSpeed=" + stoneMoveSpeed +
                 ", ogCreateSpeed=" + ogCreateSpeed +
                 ", difficulty=" + difficulty +
                 ", ethValue=" + ethValue +
+                ", currentBasePrice=" + currentBasePrice +
+                ", currentBonus=" + currentBonus +
                 '}';
     }
 }

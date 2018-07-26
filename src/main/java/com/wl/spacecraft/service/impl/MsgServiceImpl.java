@@ -69,6 +69,7 @@ public class MsgServiceImpl extends GenericService implements MsgService {
         //生成MD5值认证标识
         String verification = MD5Util.md5Encode(KEY + "@" + verifyCode + "@" + expire.toString(),null);
 
+        System.err.println("生成的短信校验码："+verification);
         //短信发送
         HttpResponse response = HttpUtils.doGet(host, path, method, headers, map);
         String jsonString = EntityUtils.toString(response.getEntity());

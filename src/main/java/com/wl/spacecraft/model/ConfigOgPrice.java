@@ -148,4 +148,17 @@ public class ConfigOgPrice {
     public void setType(Integer type) {
         this.type = type;
     }
+
+
+    @Override
+    public String toString() {
+        return "ConfigOgPrice{" +
+                "id=" + id +
+                ", currentBasePrice=" + currentBasePrice +
+                ", currentBonus=" + currentBonus +
+                ", createTime=" + createTime +
+                ", creator=" + creator +
+                ", type=" + type +
+                '}';
+    }
 }

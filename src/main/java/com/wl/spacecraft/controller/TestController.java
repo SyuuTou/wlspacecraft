@@ -26,8 +26,7 @@ public class TestController extends GenericController {
     @GetMapping("test")
     public Object test( ){
 
-//        return userService.test();
-        return "qwe";
+        return userService.test();
     }
 
 

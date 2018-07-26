@@ -30,10 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class UserServiceImpl extends GenericService implements UserService {
@@ -41,11 +38,12 @@ public class UserServiceImpl extends GenericService implements UserService {
     // 自定义秘钥
     private static final String KEY = "SPACECRAFT";
 
+    @Resource
+    private GameService gameService;
     /**
      * 每日积分上限
      */
-    @Value("${topLimit}")
-    private Integer topLimit;
+//    private Integer topLimit;
     /**
      * 当前页
      */
@@ -58,8 +56,7 @@ public class UserServiceImpl extends GenericService implements UserService {
     @Value("${pageSizeDefault}")
     private Integer pageSizeDefault;
 
-    @Resource
-    private GameService gameService;
+
 
     @Autowired
     private Environment env;
@@ -148,8 +145,8 @@ public class UserServiceImpl extends GenericService implements UserService {
      */
     private boolean validateMsg(String msgCode,Date expire,String msgValidateStr){
 
-        System.err.println("原短信校验串---》》"+msgValidateStr+"》》》》》》");
-        System.err.println("server生成的短信校验串---》》》"+ MD5Util.md5Encode(KEY + "@" + msgCode + "@" + expire.toString(),null )+"》》》》》》" );
+        System.err.println("原短信校验串---》》"+msgValidateStr);
+        System.err.println("server生成的短信校验串---》》》"+ MD5Util.md5Encode(KEY + "@" + msgCode + "@" + expire.toString(),null ) );
 
 
         //数据格式校验
@@ -209,11 +206,15 @@ public class UserServiceImpl extends GenericService implements UserService {
     //供测试使用
     @Override
     public Object test() {
-        Integer amount = this.getTodayLimite("4");
-        //测试数据是否为null
-        System.out.println( amount );
 
-        return null;
+        Map<String,Object> map=new HashMap<>();
+        map.put("ogtoday",gameService.getConfigOgToday());
+        map.put("ogPrice",gameService.getConfigOgPrice());
+        map.put("diff",gameService.getConfigGameDifficulty());
+        map.put("drop",gameService.getConfigDropogAmount());
+//        map.put("topLimit",topLimit);
+
+        return map;
     }
 
     @Override
@@ -273,7 +274,7 @@ public class UserServiceImpl extends GenericService implements UserService {
         user.setExpire(expire);
         user.setLimit(this.getTodayLimite(body.getPhone()));
         user.setTokenValidateStr(tokenValidateStr);
-        user.setTopLimit( Integer.valueOf(env.getProperty("topLimit")) );
+        user.setTopLimit( gameService.getConfigOgToday() );
         output.setUserData(user);
 
         //设置游戏元数据
@@ -309,7 +310,7 @@ public class UserServiceImpl extends GenericService implements UserService {
         user.setExpire( body.getExpire() );
         user.setLimit(this.getTodayLimite(body.getPhone()));
         user.setTokenValidateStr(body.getTokenValidateStr());
-        user.setTopLimit( Integer.valueOf(env.getProperty("topLimit")) );
+        user.setTopLimit( gameService.getConfigOgToday() );
 
 
         GameConfigCommonOutputDto gameData = gameService.getGameConfig().getData();
@@ -343,7 +344,7 @@ public class UserServiceImpl extends GenericService implements UserService {
         }
 
         //本日游戏积分没有到达上限
-        if(this.getTodayLimite(body.getPhone()) < topLimit ){
+        if(this.getTodayLimite(body.getPhone()) < gameService.getConfigOgToday() ){
             au.setAmount(au.getAmount()- Integer.valueOf(env.getProperty("coinSubtract")));
             appUserMapper.updateByPrimaryKeySelective(au);
         }
@@ -363,7 +364,7 @@ public class UserServiceImpl extends GenericService implements UserService {
         userGame.setToken(body.getToken());
         userGame.setGameId(random);
         userGame.setBeginTime(new Date());
-        if(this.getTodayLimite(body.getPhone()) < topLimit){
+        if(this.getTodayLimite(body.getPhone()) < gameService.getConfigOgToday()){
             userGame.setOgConsume( Integer.valueOf(env.getProperty("coinSubtract")) );
         }else{
             userGame.setOgConsume( 0 );
@@ -400,8 +401,8 @@ public class UserServiceImpl extends GenericService implements UserService {
         System.err.println("***todaySum=="+todaySum+"*******");
 
         //超出了每日获取og的最大限制,则只能增加到最大限额
-        if( todaySum+body.getScore() > topLimit){
-            body.setScore( topLimit-todaySum);
+        if( todaySum+body.getScore() > gameService.getConfigOgToday()){
+            body.setScore( gameService.getConfigOgToday()-todaySum);
         }
 
         CommonDto<GameOverOutputDto> result=new CommonDto<>();
@@ -430,7 +431,7 @@ public class UserServiceImpl extends GenericService implements UserService {
 
         output.setResult(true);
         output.setPhone(body.getPhone());
-        output.setLimit( this.getTodayLimite(body.getPhone())>topLimit ? topLimit: this.getTodayLimite(body.getPhone()) );
+        output.setLimit( this.getTodayLimite(body.getPhone())>gameService.getConfigOgToday() ? gameService.getConfigOgToday(): this.getTodayLimite(body.getPhone()) );
         output.setAmount(appuser.getAmount());
 
         result.setData(output);
