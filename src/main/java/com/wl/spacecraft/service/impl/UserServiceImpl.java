@@ -520,6 +520,9 @@ public class UserServiceImpl extends GenericService implements UserService {
 
         //获取游戏排行榜的list
         List<GameRankEntity> gameRankEntities = userGameMapper.gameRankList(body);
+        gameRankEntities.forEach((e)->{
+            e.setPhone(e.getPhone().replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2"));
+        });
         Integer total = userGameMapper.getRankTotal();
 
         pod.setList(gameRankEntities);
