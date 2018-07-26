@@ -7,6 +7,7 @@ import com.wl.spacecraft.dto.responsedto.SendMsgOutputDto;
 import com.wl.spacecraft.service.user.MsgService;
 import com.wl.spacecraft.utils.HttpUtils;
 import com.wl.spacecraft.utils.MD5Util;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
@@ -47,7 +48,8 @@ public class MsgServiceImpl extends GenericService implements MsgService {
         Map<String, String> headers = new HashMap<>();
         headers.put("Authorization", "APPCODE " + appcode);
 
-        String verifyCode = String.valueOf(new Random().nextInt(899999)+10000);//随机六位数字验证码
+//        String verifyCode = String.valueOf(new Random().nextInt(899999)+10000);//随机六位数字验证码
+        String verifyCode = RandomStringUtils.random(4,"0123456789");//四位随机数
         Map<String, String> map = new HashMap<>();
         map.put("sign","OnlyGame");//签名
         map.put("msg","验证码："+verifyCode+" ,您正在登录，若非本人操作，请勿泄露。");//验证码
@@ -75,9 +77,10 @@ public class MsgServiceImpl extends GenericService implements MsgService {
 
         if ( StringUtils.isNotBlank(jsonString) ){
             JSONObject jsonObject = JSONObject.parseObject(jsonString);
-            String str = String.valueOf(jsonObject.get("result"));
 
             System.err.println("**jsonObject**"+jsonObject);
+
+            String str = String.valueOf(jsonObject.get("result"));
 
             switch(str){
                 case ("0"):{

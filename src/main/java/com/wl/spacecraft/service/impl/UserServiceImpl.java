@@ -188,7 +188,8 @@ public class UserServiceImpl extends GenericService implements UserService {
      * @return
      */
     private Integer getOgRewardViaGame(String phone ){
-        return userGameMapper.getOgRewardViaGame(phone);
+        Integer myOgAmount = userGameMapper.getOgRewardViaGame(phone);
+        return  myOgAmount== null ? 0: myOgAmount ;
     }
 
     /**

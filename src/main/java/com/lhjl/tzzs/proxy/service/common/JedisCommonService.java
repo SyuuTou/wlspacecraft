@@ -41,10 +41,10 @@ public class JedisCommonService {
         config.setTestOnBorrow(false);
         config.setTestOnReturn(false);
 
-        JedisPool pool = new JedisPool(config,"101.200.44.58",6379,3000,"wixbal292dj");
-//        JedisPool pool = new JedisPool(config,"127.0.0.1",6379,3000,null);
-        pool.getResource().set("ccc","future");
-        System.out.println(pool.getResource().get("ccc"));
+//        JedisPool pool = new JedisPool(config,"101.200.44.58",6379,3000,"wixbal292dj");
+        JedisPool pool = new JedisPool(config,"localhost",6379,3000,null);
+        pool.getResource().set("hello","qwer");
+        System.out.println(pool.getResource().get("hello"));
 
 //        Jedis jedis = new Jedis("172.18.154.98");
 //        // 查看服务是否运行
