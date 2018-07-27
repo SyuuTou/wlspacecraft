@@ -118,11 +118,8 @@ public class UserServiceImpl extends GenericService implements UserService {
         System.err.println("server端生成的token校验串---》》》"+ MD5Util.md5Encode(KEY + "@" + token + "@" + expire.toString(),null ) );
 
         //数据格式校验
-        if(StringUtils.isAnyBlank(token,tokenValidateStr)){
-            throw new DataFormatException("token数据格式不正确");
-        }
-        if(expire == null){
-            throw new DataFormatException("时间校验串不能为null");
+        if(StringUtils.isAnyBlank(token,tokenValidateStr) || expire == null){
+            throw new DataFormatException("数据格式有误");
         }
 
         if( expire.compareTo(new Date()) <0 ){
@@ -150,12 +147,8 @@ public class UserServiceImpl extends GenericService implements UserService {
 
 
         //数据格式校验
-        if(StringUtils.isAnyBlank(msgCode,msgValidateStr)){
-            throw new DataFormatException("短信验证码、或者失效时间的格式不正确");
-        }
-
-        if(expire == null){
-            throw new DataFormatException("时间校验串不能为null");
+        if(StringUtils.isAnyBlank(msgCode,msgValidateStr) || expire == null){
+            throw new DataFormatException("数据格式有误");
         }
 
         if( expire.compareTo(new Date()) <0 ){
@@ -165,7 +158,7 @@ public class UserServiceImpl extends GenericService implements UserService {
         //检验验证码输入的有效性
         if(! MD5Util.md5Encode(KEY + "@" + msgCode + "@" + expire.toString(),null ).equals(msgValidateStr) ){
 
-            throw new MsgCodeException("短信验证码输入错误");
+            throw new MsgCodeException("短信验证码有误");
         }
         return true;
     }
