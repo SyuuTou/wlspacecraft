@@ -55,4 +55,13 @@ public class LoginInputDto {
     }
 
 
+    @Override
+    public String toString() {
+        return "LoginInputDto{" +
+                "phone='" + phone + '\'' +
+                ", msgCode='" + msgCode + '\'' +
+                ", msgValidateStr='" + msgValidateStr + '\'' +
+                ", expire=" + expire +
+                '}';
+    }
 }
