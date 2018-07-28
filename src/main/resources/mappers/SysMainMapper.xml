@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wl.spacecraft.mapper.SysMainMapper" >
+  <resultMap id="BaseResultMap" type="com.wl.spacecraft.model.SysMain" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="main100" property="main100" jdbcType="VARCHAR" />
+    <id column="main102" property="main102" jdbcType="VARCHAR" />
+    <result column="main101" property="main101" jdbcType="VARCHAR" />
+    <result column="main103" property="main103" jdbcType="VARCHAR" />
+  </resultMap>
+</mapper>

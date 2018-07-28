@@ -32,11 +32,6 @@ public class MetaGameData {
     private BigDecimal ogCreateSpeed;
 
     /**
-     * 游戏难度
-     */
-    private BigDecimal difficulty;
-
-    /**
      * 创建时间
      */
     @Column(name = "create_time")
@@ -46,12 +41,6 @@ public class MetaGameData {
      * 创建人
      */
     private Integer creator;
-
-    /**
-     * 1eth等于多少og 
-     */
-    @Column(name = "eth_value")
-    private Integer ethValue;
 
     /**
      * 获取记录id
@@ -126,24 +115,6 @@ public class MetaGameData {
     }
 
     /**
-     * 获取游戏难度
-     *
-     * @return difficulty - 游戏难度
-     */
-    public BigDecimal getDifficulty() {
-        return difficulty;
-    }
-
-    /**
-     * 设置游戏难度
-     *
-     * @param difficulty 游戏难度
-     */
-    public void setDifficulty(BigDecimal difficulty) {
-        this.difficulty = difficulty;
-    }
-
-    /**
      * 获取创建时间
      *
      * @return create_time - 创建时间
@@ -177,23 +148,5 @@ public class MetaGameData {
      */
     public void setCreator(Integer creator) {
         this.creator = creator;
-    }
-
-    /**
-     * 获取1eth等于多少og 
-     *
-     * @return eth_value - 1eth等于多少og 
-     */
-    public Integer getEthValue() {
-        return ethValue;
-    }
-
-    /**
-     * 设置1eth等于多少og 
-     *
-     * @param ethValue 1eth等于多少og 
-     */
-    public void setEthValue(Integer ethValue) {
-        this.ethValue = ethValue;
     }
 }
