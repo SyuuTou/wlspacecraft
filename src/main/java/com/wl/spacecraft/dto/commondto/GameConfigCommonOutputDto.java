@@ -27,7 +27,7 @@ public class GameConfigCommonOutputDto {
     /**
      * 1eth等于多少og
      */
-    private Integer ethValue;
+//    private Integer ethValue;
     /**
      * 基础价格
      */
@@ -74,9 +74,7 @@ public class GameConfigCommonOutputDto {
         this.currentBonus = currentBonus;
     }
 
-    public Integer getEthValue() {
-        return ethValue;
-    }
+
 
     public void setStoneCreateSpeed(BigDecimal stoneCreateSpeed) {
         this.stoneCreateSpeed = stoneCreateSpeed;
@@ -90,11 +88,6 @@ public class GameConfigCommonOutputDto {
         this.ogCreateSpeed = ogCreateSpeed;
     }
 
-
-    public void setEthValue(Integer ethValue) {
-        this.ethValue = ethValue;
-    }
-
     @Override
     public String toString() {
         return "GameConfigCommonOutputDto{" +
@@ -102,7 +95,6 @@ public class GameConfigCommonOutputDto {
                 ", stoneMoveSpeed=" + stoneMoveSpeed +
                 ", ogCreateSpeed=" + ogCreateSpeed +
                 ", difficulty=" + difficulty +
-                ", ethValue=" + ethValue +
                 ", currentBasePrice=" + currentBasePrice +
                 ", currentBonus=" + currentBonus +
                 '}';

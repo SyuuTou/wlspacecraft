@@ -120,6 +120,7 @@ public class GameServiceImpl extends GenericService implements GameService {
         MetaGameData config = metaGameDataMapper.getGameConfig();
 
         GameConfigCommonOutputDto outputData=new GameConfigCommonOutputDto();
+
         //设置难度
         outputData.setDifficulty( this.getConfigGameDifficulty() );
         //设置OG币同其他的兑换比率
@@ -130,11 +131,9 @@ public class GameServiceImpl extends GenericService implements GameService {
             outputData.setStoneCreateSpeed(config.getStoneCreateSpeed());
             outputData.setStoneMoveSpeed(config.getStoneMoveSpeed());
             outputData.setOgCreateSpeed(config.getOgCreateSpeed());
-            //config中难度暂时废弃
-            //config中OG币价值暂时废弃
         }
-        result.setData(outputData);
 
+        result.setData(outputData);
         result.setMessage("游戏配置元数据");
         result.setStatus(200);
 
