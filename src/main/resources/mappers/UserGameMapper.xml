@@ -20,12 +20,20 @@
     <result column="ogObtain" jdbcType="INTEGER" property="ogObtain" />
   </resultMap>
 
-    <!--用户获取金币排行榜-->
+    <!--用户获取金币排行榜，分页-->
   <select id="gameRankList" resultMap="GameRankEntity">
     select phonenum,sum(og_score) ogObtain from user_game
     group by phonenum
     order by isnull(phonenum) asc, sum(og_score) desc
     limit #{start},#{pageSize}
+  </select>
+
+
+  <!--用户获取金币排行榜，不分页-->
+  <select id="getRankList" resultMap="GameRankEntity">
+    select * from user_game
+    group by phonenum
+    order by isnull(phonenum) asc, sum(og_score) desc
   </select>
 
 

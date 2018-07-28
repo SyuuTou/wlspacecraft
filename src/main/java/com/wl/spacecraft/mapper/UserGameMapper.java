@@ -24,7 +24,7 @@ public interface UserGameMapper extends OwnerMapper<UserGame> {
     Integer getLimite(@Param("phone")String phone, @Param("beginTime")Date beginTime, @Param("endTime") Date endTime);
 
     /**
-     * 用户金币获得排行榜
+     * 用户金币获得排行榜,带分页
      * @param body 请求参数
      * @return
      */
@@ -48,4 +48,10 @@ public interface UserGameMapper extends OwnerMapper<UserGame> {
      * @return
      */
     Integer getOgRewardViaGame(@Param("phone") String phone);
+
+    /**
+     * 获取用户获取金币排行榜
+     * @return
+     */
+    List<GameRankEntity> getRankList();
 }

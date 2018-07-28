@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -195,6 +196,27 @@ public class UserServiceImpl extends GenericService implements UserService {
      */
     private Integer getOgRewardAmount(){
         return userGameMapper.getOgRewardAmount();
+    }
+
+    /**
+     * 获取我的排名
+     * @return
+     */
+    private Long getMyRank(String phone){
+
+        List<GameRankEntity> rankList = userGameMapper.getRankList();
+        Long index =1L;
+
+        if( rankList != null && rankList.size()>0){
+            for (GameRankEntity e:rankList) {
+                if(phone.equals(e.getPhone())){
+                    return index;
+                }
+                index++;
+            }
+        }
+        //无rank记录
+        return 0L;
     }
     //供测试使用
     @Override
@@ -440,7 +462,7 @@ public class UserServiceImpl extends GenericService implements UserService {
     public CommonDto<CoinToAccountOutputDto> coinToAccount(CoinToAccountInputDto body) {
         //输入数据格式有效性验证
         if(StringUtils.isBlank(body.getAddress())){
-            throw new DataFormatException("提币地址输入不正确");
+            throw new DataFormatException("提币地址输入有误");
         }
             //进行用户身份信息校验
         try{
@@ -512,18 +534,22 @@ public class UserServiceImpl extends GenericService implements UserService {
         if( body.getCurrentPage()== null ) {
             body.setCurrentPage(currentPageDefault);
         }
+
         if(body.getPageSize() == null) {
             body.setPageSize(pageSizeDefault);
         }
         //设置起始索引
         body.setStart( (long)(body.getCurrentPage()-1) * body.getPageSize());
 
-
         //获取游戏排行榜的list
         List<GameRankEntity> gameRankEntities = userGameMapper.gameRankList(body);
-        gameRankEntities.forEach((e)->{
+
+        Long index =body.getStart()+1;
+        for(GameRankEntity e:gameRankEntities){
+            e.setRank(index++);
             e.setPhone(e.getPhone().replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2"));
-        });
+        }
+
         Integer total = userGameMapper.getRankTotal();
 
         pod.setList(gameRankEntities);
@@ -532,6 +558,7 @@ public class UserServiceImpl extends GenericService implements UserService {
         pod.setPageSize(body.getPageSize());
 
         rankOutputDto.setRankList(pod);
+        rankOutputDto.setMyRank(this.getMyRank(phone));
         rankOutputDto.setOgRewardAmount( this.getOgRewardAmount() );
 
         try{

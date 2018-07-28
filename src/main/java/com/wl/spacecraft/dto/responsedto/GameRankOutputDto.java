@@ -18,9 +18,21 @@ public class GameRankOutputDto {
      */
     private String phone;
     /**
+     * 用户的当前排名
+     */
+    private Long myRank;
+    /**
      * 我的og总量
      */
     private Integer myOgAmount;
+
+    public Long getMyRank() {
+        return myRank;
+    }
+
+    public void setMyRank(Long myRank) {
+        this.myRank = myRank;
+    }
 
     public String getPhone() {
         return phone;
@@ -60,6 +72,7 @@ public class GameRankOutputDto {
                 "rankList=" + rankList +
                 ", ogRewardAmount=" + ogRewardAmount +
                 ", phone='" + phone + '\'' +
+                ", myRank=" + myRank +
                 ", myOgAmount=" + myOgAmount +
                 '}';
     }
