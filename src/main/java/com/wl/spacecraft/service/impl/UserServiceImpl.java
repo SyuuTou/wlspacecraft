@@ -204,19 +204,32 @@ public class UserServiceImpl extends GenericService implements UserService {
      */
     private Long getMyRank(String phone){
 
+        UserGame userGame=new UserGame();
+        userGame.setPhonenum(phone);
+        List<UserGame> userGames = userGameMapper.select(userGame);
+        //无rank记录，返回-1表示未参与
+        Long rankFlag =-1L;
+        if(userGames == null || userGames.size()==0){
+            System.err.println("没有本人的rank记录");
+            return rankFlag;
+        }
+
+        //存在的话那么肯定是存在排名的
         List<GameRankEntity> rankList = userGameMapper.getRankList();
         Long index =1L;
 
         if( rankList != null && rankList.size()>0){
             for (GameRankEntity e:rankList) {
                 if(phone.equals(e.getPhone())){
+                    System.err.println("我的rank排名"+index);
                     return index;
                 }
                 index++;
             }
         }
+
         //无rank记录
-        return 0L;
+        return rankFlag;
     }
     //供测试使用
     @Override
@@ -383,8 +396,6 @@ public class UserServiceImpl extends GenericService implements UserService {
             userGame.setOgConsume( Integer.valueOf(env.getProperty("coinSubtract")) );
         }else{
             userGame.setOgConsume( 0 );
-
-
         }
         userGameMapper.insertSelective(userGame);
 
@@ -524,6 +535,12 @@ public class UserServiceImpl extends GenericService implements UserService {
     @Transactional(readOnly = true)
     public CommonDto<GameRankOutputDto> gameRank(String phone,PagingInputDto body) {
 
+        try{
+            this.getUserByPhone(phone);
+        }catch(Exception e){
+            throw e;
+        }
+
         CommonDto<GameRankOutputDto> result=new CommonDto<>();
         //分页输出数据
         PagingOutputDto<GameRankEntity> pod=new PagingOutputDto<>();
@@ -561,11 +578,6 @@ public class UserServiceImpl extends GenericService implements UserService {
         rankOutputDto.setMyRank(this.getMyRank(phone));
         rankOutputDto.setOgRewardAmount( this.getOgRewardAmount() );
 
-        try{
-            this.getUserByPhone(phone);
-        }catch(Exception e){
-            throw e;
-        }
         rankOutputDto.setPhone(phone.replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2"));
         rankOutputDto.setMyOgAmount(this.getOgRewardViaGame(phone) );
 

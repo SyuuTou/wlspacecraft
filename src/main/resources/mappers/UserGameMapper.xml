@@ -31,7 +31,7 @@
 
   <!--用户获取金币排行榜，不分页-->
   <select id="getRankList" resultMap="GameRankEntity">
-    select * from user_game
+    select phonenum,sum(og_score) from user_game
     group by phonenum
     order by isnull(phonenum) asc, sum(og_score) desc
   </select>
