@@ -9,12 +9,9 @@
     <result column="stone_create_speed" jdbcType="DECIMAL" property="stoneCreateSpeed" />
     <result column="stone_move_speed" jdbcType="DECIMAL" property="stoneMoveSpeed" />
     <result column="og_create_speed" jdbcType="DECIMAL" property="ogCreateSpeed" />
-    <result column="difficulty" jdbcType="DECIMAL" property="difficulty" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="creator" jdbcType="INTEGER" property="creator" />
-    <result column="eth_value" jdbcType="INTEGER" property="ethValue" />
   </resultMap>
-
 
 
   <select id="getGameConfig" resultMap="BaseResultMap">
