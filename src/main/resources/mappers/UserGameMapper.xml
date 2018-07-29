@@ -22,7 +22,7 @@
 
     <!--用户获取金币排行榜，分页-->
   <select id="gameRankList" resultMap="GameRankEntity">
-    select phonenum,sum(og_score) ogObtain from user_game
+    select phonenum,case when isnull(sum(og_score)) then 0 else sum(og_score) end ogObtain from user_game
     group by phonenum
     order by isnull(phonenum) asc, sum(og_score) desc
     limit #{start},#{pageSize}

@@ -33,7 +33,7 @@ public class GameServiceImpl extends GenericService implements GameService {
 
     @Override
     @Transactional
-    public Integer getConfigOgToday(){
+    public Integer getConfigOgToday() {
 
         Example example = new Example(ConfigOgToday.class);
 //        example.and().andEqualTo("type",1);
@@ -41,10 +41,10 @@ public class GameServiceImpl extends GenericService implements GameService {
 
         List<ConfigOgToday> list = configOgTodayMapper.selectByExample(example);
         //TODO 是否增加默认值
-        Integer ogToday= 0;
-        if(list!=null && list.size()>0 ){
+        Integer ogToday = 0;
+        if (list != null && list.size() > 0) {
             ogToday = list.get(0).getOgToday();
-            if(ogToday == null){
+            if (ogToday == null) {
                 throw new ProjectException("DB数据存在异常,最新 OG当日领取上限 记录为null");
             }
         }
@@ -56,15 +56,15 @@ public class GameServiceImpl extends GenericService implements GameService {
     @Override
     @Transactional
     public ConfigOgPrice getConfigOgPrice() {
-        Example example=new Example(ConfigOgPrice.class);
+        Example example = new Example(ConfigOgPrice.class);
 //        example.and().andEqualTo("type",1);
         example.setOrderByClause("create_time desc");
 
         List<ConfigOgPrice> list = configOgPriceMapper.selectByExample(example);
 
-        ConfigOgPrice configOgPrice=null;
-        if(list!=null && list.size()>0 ){
-             configOgPrice = list.get(0);
+        ConfigOgPrice configOgPrice = null;
+        if (list != null && list.size() > 0) {
+            configOgPrice = list.get(0);
         }
 
         return configOgPrice;
@@ -78,10 +78,10 @@ public class GameServiceImpl extends GenericService implements GameService {
         example.setOrderByClause("create_time desc");
 
         List<ConfigGameDifficulty> list = configGameDifficultyMapper.selectByExample(example);
-        Integer difficulty =null;
-        if(list!=null && list.size()>0 ){
+        Integer difficulty = null;
+        if (list != null && list.size() > 0) {
             difficulty = list.get(0).getDifficulty();
-            if(difficulty == null){
+            if (difficulty == null) {
                 throw new ProjectException("DB数据存在异常,最新 难度 记录为null");
             }
 
@@ -100,10 +100,10 @@ public class GameServiceImpl extends GenericService implements GameService {
         List<ConfigDropogAmount> list = configDropogAmountMapper.selectByExample(example);
         ConfigDropogAmount configDropogAmount = list.get(0);
 
-        Integer currentDropOg =null;
-        if(list!=null && list.size()>0 ){
+        Integer currentDropOg = null;
+        if (list != null && list.size() > 0) {
             currentDropOg = list.get(0).getCurrentDropOg();
-            if(currentDropOg == null){
+            if (currentDropOg == null) {
                 throw new ProjectException("DB数据存在异常,最新 空投OG 记录为null");
             }
         }
@@ -115,19 +115,25 @@ public class GameServiceImpl extends GenericService implements GameService {
     @Override
     @Transactional(readOnly = true)
     public CommonDto<GameConfigCommonOutputDto> getGameConfig() {
-        CommonDto<GameConfigCommonOutputDto> result =new CommonDto<>();
+        CommonDto<GameConfigCommonOutputDto> result = new CommonDto<>();
 
         MetaGameData config = metaGameDataMapper.getGameConfig();
 
-        GameConfigCommonOutputDto outputData=new GameConfigCommonOutputDto();
+        GameConfigCommonOutputDto outputData = new GameConfigCommonOutputDto();
 
         //设置难度
-        outputData.setDifficulty( this.getConfigGameDifficulty() );
-        //设置OG币同其他的兑换比率
-        outputData.setCurrentBasePrice(this.getConfigOgPrice().getCurrentBasePrice());
-        outputData.setCurrentBonus( this.getConfigOgPrice().getCurrentBonus() );
+        outputData.setDifficulty(this.getConfigGameDifficulty());
 
-        if(config !=null){
+        //设置OG币同其他的兑换比率
+        //配置表可能存在没有数据的情况，引发空指针异常
+        try {
+            outputData.setCurrentBasePrice(this.getConfigOgPrice().getCurrentBasePrice());
+            outputData.setCurrentBonus(this.getConfigOgPrice().getCurrentBonus());
+        } catch (Exception e) {
+
+        }
+
+        if (config != null) {
             outputData.setStoneCreateSpeed(config.getStoneCreateSpeed());
             outputData.setStoneMoveSpeed(config.getStoneMoveSpeed());
             outputData.setOgCreateSpeed(config.getOgCreateSpeed());
@@ -139,7 +145,6 @@ public class GameServiceImpl extends GenericService implements GameService {
 
         return result;
     }
-
 
 
 }

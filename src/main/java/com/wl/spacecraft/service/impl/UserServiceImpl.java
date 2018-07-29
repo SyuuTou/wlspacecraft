@@ -28,7 +28,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -58,7 +57,6 @@ public class UserServiceImpl extends GenericService implements UserService {
     private Integer pageSizeDefault;
 
 
-
     @Autowired
     private Environment env;
 
@@ -72,12 +70,13 @@ public class UserServiceImpl extends GenericService implements UserService {
 
     /**
      * 用户信息的校验
-     * @param token
+     *
+     * @param token String
      * @return
      */
-    private boolean validateUser(String phone ,String token,Date expire,String validateStr){
-        if( getUserByPhone(phone) != null
-                && valivdateToken(token,expire,validateStr) ){
+    private boolean validateUser(String phone, String token, Date expire, String validateStr) {
+        if (getUserByPhone(phone) != null
+                && valivdateToken(token, expire, validateStr)) {
             return true;
         }
         return false;
@@ -85,21 +84,22 @@ public class UserServiceImpl extends GenericService implements UserService {
 
     /**
      * 用户存在性检查
+     *
      * @param phone 用户的手机号
      * @return 用户信息
      */
-    private AppUser getUserByPhone(String phone){
+    private AppUser getUserByPhone(String phone) {
         //数据格式校验
-        if(StringUtils.isBlank(phone)){
+        if (StringUtils.isBlank(phone)) {
             throw new DataFormatException("手机号数据格式不正确");
         }
 
-        AppUser au =new AppUser();
+        AppUser au = new AppUser();
         au.setPhonenum(phone);
         List<AppUser> list = appUserMapper.select(au);
 
         //用户不存在
-        if(null == list || list.size() == 0 ){
+        if (null == list || list.size() == 0) {
             throw new UserNotExistException("该用户不存在");
         }
         return list.get(0);
@@ -109,25 +109,27 @@ public class UserServiceImpl extends GenericService implements UserService {
 //        String regex = "^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\\d{8}$";
 //        return check(cellphone, regex);
 //    }
+
     /**
      * 校验token的合法性
+     *
      * @param token
      * @return
      */
-    private boolean valivdateToken(String token,Date expire,String tokenValidateStr){
-        System.err.println("原token校验串---》》"+tokenValidateStr);
-        System.err.println("server端生成的token校验串---》》》"+ MD5Util.md5Encode(KEY + "@" + token + "@" + expire.toString(),null ) );
+    private boolean valivdateToken(String token, Date expire, String tokenValidateStr) {
+        System.err.println("原token校验串---》》" + tokenValidateStr);
+        System.err.println("server端生成的token校验串---》》》" + MD5Util.md5Encode(KEY + "@" + token + "@" + expire.toString(), null));
 
         //数据格式校验
-        if(StringUtils.isAnyBlank(token,tokenValidateStr) || expire == null){
+        if (StringUtils.isAnyBlank(token, tokenValidateStr) || expire == null) {
             throw new DataFormatException("数据格式有误");
         }
 
-        if( expire.compareTo(new Date()) <0 ){
+        if (expire.compareTo(new Date()) < 0) {
             throw new TokenIlleaglException("token过期");
         }
         //检验token的有效性
-        if(! MD5Util.md5Encode(KEY + "@" + token + "@" + expire.toString(),null ).equals(tokenValidateStr) ){
+        if (!MD5Util.md5Encode(KEY + "@" + token + "@" + expire.toString(), null).equals(tokenValidateStr)) {
             throw new TokenIlleaglException("token非法");
         }
 
@@ -136,28 +138,29 @@ public class UserServiceImpl extends GenericService implements UserService {
 
     /**
      * 短信验证码的校验
-     * @param msgCode 短信验证码
-     * @param expire 该验证码的过期时间
+     *
+     * @param msgCode        短信验证码
+     * @param expire         该验证码的过期时间
      * @param msgValidateStr 短信Md5校验串
-     * @return
+     * @return bool
      */
-    private boolean validateMsg(String msgCode,Date expire,String msgValidateStr){
+    private boolean validateMsg(String msgCode, Date expire, String msgValidateStr) {
 
-        System.err.println("原短信校验串---》》"+msgValidateStr);
-        System.err.println("server生成的短信校验串---》》》"+ MD5Util.md5Encode(KEY + "@" + msgCode + "@" + expire.toString(),null ) );
+        System.err.println("原短信校验串---》》" + msgValidateStr);
+        System.err.println("server生成的短信校验串---》》》" + MD5Util.md5Encode(KEY + "@" + msgCode + "@" + expire.toString(), null));
 
 
         //数据格式校验
-        if(StringUtils.isAnyBlank(msgCode,msgValidateStr) || expire == null){
+        if (StringUtils.isAnyBlank(msgCode, msgValidateStr) || expire == null) {
             throw new DataFormatException("数据格式有误");
         }
 
-        if( expire.compareTo(new Date()) <0 ){
+        if (expire.compareTo(new Date()) < 0) {
             throw new MsgCodeException("短信验证码过期");
         }
 
         //检验验证码输入的有效性
-        if(! MD5Util.md5Encode(KEY + "@" + msgCode + "@" + expire.toString(),null ).equals(msgValidateStr) ){
+        if (!MD5Util.md5Encode(KEY + "@" + msgCode + "@" + expire.toString(), null).equals(msgValidateStr)) {
 
             throw new MsgCodeException("短信验证码有误");
         }
@@ -166,62 +169,67 @@ public class UserServiceImpl extends GenericService implements UserService {
 
     /**
      * 返回用户今日获取的金币上限
+     *
      * @param phone 用户手机号
      * @return
      */
-    private Integer getTodayLimite(String phone){
-        return userGameMapper.getLimite( phone, DateUtils.getStartTime(), DateUtils.getEndTime() );
+    private Integer getTodayLimite(String phone) {
+        return userGameMapper.getLimite(phone, DateUtils.getStartTime(), DateUtils.getEndTime());
     }
+
     /**
      * 获取用户的持有的金币总额
      */
-    private Integer getAmountByUser(String phone){
+    private Integer getAmountByUser(String phone) {
         AppUser user = this.getUserByPhone(phone);
-        return user.getAmount() ==null ? 0 : user.getAmount();
+        return user.getAmount() == null ? 0 : user.getAmount();
     }
 
     /**
      * 获取用户游戏中获取的金币总量
+     *
      * @param phone
      * @return
      */
-    private Integer getOgRewardViaGame(String phone ){
+    private Integer getOgRewardViaGame(String phone) {
         Integer myOgAmount = userGameMapper.getOgRewardViaGame(phone);
-        return  myOgAmount== null ? 0: myOgAmount ;
+        return myOgAmount == null ? 0 : myOgAmount;
     }
 
     /**
      * 获取金币总共赠送总量
+     *
      * @return
      */
-    private Integer getOgRewardAmount(){
+    private Integer getOgRewardAmount() {
         return userGameMapper.getOgRewardAmount();
     }
 
     /**
      * 获取我的排名
+     *
      * @return
      */
-    private Long getMyRank(String phone){
+    private Long getMyRank(String phone) {
 
-        UserGame userGame=new UserGame();
+        UserGame userGame = new UserGame();
         userGame.setPhonenum(phone);
         List<UserGame> userGames = userGameMapper.select(userGame);
         //无rank记录，返回-1表示未参与
-        Long rankFlag =-1L;
-        if(userGames == null || userGames.size()==0){
+        Long rankFlag = -1L;
+        if (userGames == null || userGames.size() == 0) {
             System.err.println("没有本人的rank记录");
             return rankFlag;
         }
 
-        //存在的话那么肯定是存在排名的
+        //存在rank记录,那么肯定是存在排名的
         List<GameRankEntity> rankList = userGameMapper.getRankList();
-        Long index =1L;
+        Long index = 1L;
 
-        if( rankList != null && rankList.size()>0){
-            for (GameRankEntity e:rankList) {
-                if(phone.equals(e.getPhone())){
-                    System.err.println("我的rank排名"+index);
+        if (rankList != null && rankList.size() > 0) {
+            for (GameRankEntity e : rankList) {
+                if (phone.equals(e.getPhone())) {
+                    System.err.println("我的rank排名" + index);
                     return index;
                 }
                 index++;
@@ -231,15 +239,16 @@ public class UserServiceImpl extends GenericService implements UserService {
         //无rank记录
         return rankFlag;
     }
+
     //供测试使用
     @Override
     public Object test() {
 
-        Map<String,Object> map=new HashMap<>();
-        map.put("ogtoday",gameService.getConfigOgToday());
-        map.put("ogPrice",gameService.getConfigOgPrice());
-        map.put("diff",gameService.getConfigGameDifficulty());
-        map.put("drop",gameService.getConfigDropogAmount());
+        Map<String, Object> map = new HashMap<>();
+        map.put("ogtoday", gameService.getConfigOgToday());
+        map.put("ogPrice", gameService.getConfigOgPrice());
+        map.put("diff", gameService.getConfigGameDifficulty());
+        map.put("drop", gameService.getConfigDropogAmount());
 //        map.put("topLimit",topLimit);
 
         return map;
@@ -250,9 +259,9 @@ public class UserServiceImpl extends GenericService implements UserService {
     public CommonDto<LoginOutputDto> login(LoginInputDto body) {
 
         //首先进行验证码的有效性判断
-        try{
-            validateMsg(body.getMsgCode(),body.getExpire(),body.getMsgValidateStr());
-        }catch(Exception e){
+        try {
+            validateMsg(body.getMsgCode(), body.getExpire(), body.getMsgValidateStr());
+        } catch (Exception e) {
             throw e;
         }
 
@@ -261,28 +270,28 @@ public class UserServiceImpl extends GenericService implements UserService {
 
         Calendar calendar = Calendar.getInstance();
         //设置token失效时间
-        calendar.add(Calendar.DATE , Integer.valueOf(env.getProperty("tokenExpireTime")) );
+        calendar.add(Calendar.DATE, Integer.valueOf(env.getProperty("tokenExpireTime")));
         Date expire = calendar.getTime();
 
         //生成token的校验串
-        String tokenValidateStr = MD5Util.md5Encode(KEY + "@" + token + "@" + expire.toString(),"");
+        String tokenValidateStr = MD5Util.md5Encode(KEY + "@" + token + "@" + expire.toString(), "");
 
-        LoginOutputDto output=new LoginOutputDto();
+        LoginOutputDto output = new LoginOutputDto();
 
-        try{//存在该用户，更新用户的token以及登录时间
+        try {//存在该用户，更新用户的token以及登录时间
             AppUser user = this.getUserByPhone(body.getPhone());
             user.setToken(token);
             user.setLastLoginTime(new Date());
             appUserMapper.updateByPrimaryKeySelective(user);
 
             output.setNote("登录成功");
-        }catch (Exception e){ //捕获到异常说明用户不存在，执行新用户的注册
+        } catch (Exception e) { //捕获到异常说明用户不存在，执行新用户的注册
 
-            AppUser user=new AppUser();
+            AppUser user = new AppUser();
             user.setPhonenum(body.getPhone());
             user.setToken(token);
             //新用户注册赠送金币
-            user.setAmount( Integer.valueOf(env.getProperty("OgReward")) );
+            user.setAmount(Integer.valueOf(env.getProperty("OgReward")));
             user.setLastLoginTime(new Date());
             user.setCreateTime(new Date());
             appUserMapper.insertSelective(user);
@@ -292,17 +301,17 @@ public class UserServiceImpl extends GenericService implements UserService {
 
         output.setResult(true);
 
-        CommonDto<LoginOutputDto> result =new CommonDto<>();
+        CommonDto<LoginOutputDto> result = new CommonDto<>();
 
         //设置用户的信息
-        UserInfoCommonOutputDto user =new UserInfoCommonOutputDto();
+        UserInfoCommonOutputDto user = new UserInfoCommonOutputDto();
         user.setPhone(body.getPhone());
         user.setToken(token);
-        user.setAmount( this.getAmountByUser(body.getPhone()) );
+        user.setAmount(this.getAmountByUser(body.getPhone()));
         user.setExpire(expire);
         user.setLimit(this.getTodayLimite(body.getPhone()));
         user.setTokenValidateStr(tokenValidateStr);
-        user.setTopLimit( gameService.getConfigOgToday() );
+        user.setTopLimit(gameService.getConfigOgToday());
         output.setUserData(user);
 
         //设置游戏元数据
@@ -321,24 +330,24 @@ public class UserServiceImpl extends GenericService implements UserService {
     @Transactional(readOnly = true)
     public CommonDto<UserInfoOutputDto> getUserInfo(UserInfoInputDto body) {
         //进行用户有效性判断
-        try{
-            validateUser(body.getPhone(), body.getToken(),body.getExpire(),body.getTokenValidateStr());
-        }catch(Exception e){
+        try {
+            validateUser(body.getPhone(), body.getToken(), body.getExpire(), body.getTokenValidateStr());
+        } catch (Exception e) {
             throw e;
         }
 
-        CommonDto<UserInfoOutputDto> result=new CommonDto<>();
+        CommonDto<UserInfoOutputDto> result = new CommonDto<>();
 
-        UserInfoOutputDto outputDto=new UserInfoOutputDto();
+        UserInfoOutputDto outputDto = new UserInfoOutputDto();
         //设置用户的基本信息数据
-        UserInfoCommonOutputDto user =new UserInfoCommonOutputDto();
+        UserInfoCommonOutputDto user = new UserInfoCommonOutputDto();
         user.setPhone(body.getPhone());
         user.setToken(body.getToken());
-        user.setAmount( this.getAmountByUser(body.getPhone()) );
-        user.setExpire( body.getExpire() );
+        user.setAmount(this.getAmountByUser(body.getPhone()));
+        user.setExpire(body.getExpire());
         user.setLimit(this.getTodayLimite(body.getPhone()));
         user.setTokenValidateStr(body.getTokenValidateStr());
-        user.setTopLimit( gameService.getConfigOgToday() );
+        user.setTopLimit(gameService.getConfigOgToday());
 
 
         GameConfigCommonOutputDto gameData = gameService.getGameConfig().getData();
@@ -359,43 +368,43 @@ public class UserServiceImpl extends GenericService implements UserService {
     public CommonDto<GameStartOutputDto> startGame(GameStartInputDto body) {
 
         //进行用户有效性判断
-        try{
-            validateUser(body.getPhone(), body.getToken(),body.getExpire(),body.getTokenValidateStr());
-        }catch(Exception e){
+        try {
+            validateUser(body.getPhone(), body.getToken(), body.getExpire(), body.getTokenValidateStr());
+        } catch (Exception e) {
             throw e;
         }
 
         //积分的扣除
         AppUser au = this.getUserByPhone(body.getPhone());
-        if(au.getAmount() < Integer.valueOf(env.getProperty("coinSubtract")) ){
+        if (au.getAmount() < Integer.valueOf(env.getProperty("coinSubtract"))) {
             throw new OgLackException("用户金币不足");
         }
 
         //本日游戏积分没有到达上限
-        if(this.getTodayLimite(body.getPhone()) < gameService.getConfigOgToday() ){
-            au.setAmount(au.getAmount()- Integer.valueOf(env.getProperty("coinSubtract")));
+        if (this.getTodayLimite(body.getPhone()) < gameService.getConfigOgToday()) {
+            au.setAmount(au.getAmount() - Integer.valueOf(env.getProperty("coinSubtract")));
             appUserMapper.updateByPrimaryKeySelective(au);
         }
 
 
-        CommonDto<GameStartOutputDto> result=new CommonDto<>();
-        GameStartOutputDto output =new GameStartOutputDto();
+        CommonDto<GameStartOutputDto> result = new CommonDto<>();
+        GameStartOutputDto output = new GameStartOutputDto();
 
         //插入用户的游戏记录
         //生成随机16位数字字母的随机游戏ID
-        String random = RandomStr.randomStr( Integer.valueOf(env.getProperty("hexRandom")) );
+        String random = RandomStr.randomStr(Integer.valueOf(env.getProperty("hexRandom")));
 
-        System.err.println("游戏的唯一16位识别码"+random);
+        System.err.println("游戏的唯一16位识别码" + random);
 
-        UserGame userGame =new UserGame();
+        UserGame userGame = new UserGame();
         userGame.setPhonenum(body.getPhone());
         userGame.setToken(body.getToken());
         userGame.setGameId(random);
         userGame.setBeginTime(new Date());
-        if(this.getTodayLimite(body.getPhone()) < gameService.getConfigOgToday()){
-            userGame.setOgConsume( Integer.valueOf(env.getProperty("coinSubtract")) );
-        }else{
-            userGame.setOgConsume( 0 );
+        if (this.getTodayLimite(body.getPhone()) < gameService.getConfigOgToday()) {
+            userGame.setOgConsume(Integer.valueOf(env.getProperty("coinSubtract")));
+        } else {
+            userGame.setOgConsume(0);
         }
         userGameMapper.insertSelective(userGame);
 
@@ -415,33 +424,33 @@ public class UserServiceImpl extends GenericService implements UserService {
     @Transactional
     public CommonDto<GameOverOutputDto> overGame(GameOverInputDto body) {
         //进行用户身份信息校验
-        try{
-            validateUser(body.getPhone(), body.getToken(),body.getExpire(),body.getTokenValidateStr());
-        }catch(Exception e){
+        try {
+            validateUser(body.getPhone(), body.getToken(), body.getExpire(), body.getTokenValidateStr());
+        } catch (Exception e) {
             throw e;
         }
 
         //获取用户今天已经获得的积分总数
         Integer todaySum = this.getTodayLimite(body.getPhone());
 
-        System.err.println("***todaySum=="+todaySum+"*******");
+        System.err.println("***todaySum==" + todaySum + "*******");
 
         //超出了每日获取og的最大限制,则只能增加到最大限额
-        if( todaySum+body.getScore() > gameService.getConfigOgToday()){
-            body.setScore( gameService.getConfigOgToday()-todaySum);
+        if (todaySum + body.getScore() > gameService.getConfigOgToday()) {
+            body.setScore(gameService.getConfigOgToday() - todaySum);
         }
 
-        CommonDto<GameOverOutputDto> result=new CommonDto<>();
+        CommonDto<GameOverOutputDto> result = new CommonDto<>();
 
-        GameOverOutputDto output=new GameOverOutputDto();
+        GameOverOutputDto output = new GameOverOutputDto();
 
         //首先进行用户游戏记录插入
-        UserGame ug=new UserGame();
+        UserGame ug = new UserGame();
         ug.setGameId(body.getGameId());
         //获取该条游戏记录
-        try{
+        try {
             ug = userGameMapper.selectOne(ug);
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new ProjectException("gameId存在重复，数据异常");
         }
         ug.setEndTime(new Date());
@@ -449,15 +458,14 @@ public class UserServiceImpl extends GenericService implements UserService {
         userGameMapper.updateByPrimaryKeySelective(ug);
 
 
-
         //用户积分变更
         AppUser appuser = this.getUserByPhone(body.getPhone());
-        appuser.setAmount(appuser.getAmount()+body.getScore());
+        appuser.setAmount(appuser.getAmount() + body.getScore());
         appUserMapper.updateByPrimaryKeySelective(appuser);
 
         output.setResult(true);
         output.setPhone(body.getPhone());
-        output.setLimit( this.getTodayLimite(body.getPhone())>gameService.getConfigOgToday() ? gameService.getConfigOgToday(): this.getTodayLimite(body.getPhone()) );
+        output.setLimit(this.getTodayLimite(body.getPhone()) > gameService.getConfigOgToday() ? gameService.getConfigOgToday() : this.getTodayLimite(body.getPhone()));
         output.setAmount(appuser.getAmount());
 
         result.setData(output);
@@ -472,38 +480,38 @@ public class UserServiceImpl extends GenericService implements UserService {
     @Transactional
     public CommonDto<CoinToAccountOutputDto> coinToAccount(CoinToAccountInputDto body) {
         //输入数据格式有效性验证
-        if(StringUtils.isBlank(body.getAddress())){
+        if (StringUtils.isBlank(body.getAddress())) {
             throw new DataFormatException("提币地址输入有误");
         }
-            //进行用户身份信息校验
-        try{
-            validateUser(body.getPhone(), body.getToken(),body.getExpire(),body.getTokenValidateStr());
-        }catch(Exception e){
+        //进行用户身份信息校验
+        try {
+            validateUser(body.getPhone(), body.getToken(), body.getExpire(), body.getTokenValidateStr());
+        } catch (Exception e) {
             throw e;
         }
 
-        if(body.getIntegralChange() < Integer.valueOf(env.getProperty("moneyDrawBaseLine")) ){
+        if (body.getIntegralChange() < Integer.valueOf(env.getProperty("moneyDrawBaseLine"))) {
             throw new AccountException("最小提币数量500 OG");
         }
 
-        System.err.println("目前用户拥有的og总量"+this.getUserByPhone(body.getPhone()).getAmount() );
+        System.err.println("目前用户拥有的og总量" + this.getUserByPhone(body.getPhone()).getAmount());
 
-        if(body.getIntegralChange() > this.getUserByPhone(body.getPhone()).getAmount()){
+        if (body.getIntegralChange() > this.getUserByPhone(body.getPhone()).getAmount()) {
             throw new AccountException("余额不足");
         }
 
-        CommonDto<CoinToAccountOutputDto> result=new CommonDto<>();
-        CoinToAccountOutputDto output=new CoinToAccountOutputDto();
+        CommonDto<CoinToAccountOutputDto> result = new CommonDto<>();
+        CoinToAccountOutputDto output = new CoinToAccountOutputDto();
 
         //执行用户的金币总量扣除
         AppUser au = this.getUserByPhone(body.getPhone());
-        au.setAmount( au.getAmount() - body.getIntegralChange() );
+        au.setAmount(au.getAmount() - body.getIntegralChange());
         appUserMapper.updateByPrimaryKeySelective(au);
 
         //用户充币提币记录的新增
-        AppIntergral appIntergral =new AppIntergral();
+        AppIntergral appIntergral = new AppIntergral();
         appIntergral.setWallet(body.getAddress());
-        appIntergral.setUserid( this.getUserByPhone(body.getPhone()).getUserid() );
+        appIntergral.setUserid(this.getUserByPhone(body.getPhone()).getUserid());
         //1充币 2提币
         appIntergral.setType(2);
         //1表示飞船游戏
@@ -516,10 +524,10 @@ public class UserServiceImpl extends GenericService implements UserService {
         appIntergralMapper.insertSelective(appIntergral);
 
 
-        System.err.println("用户提币后金币总量"+this.getAmountByUser(body.getPhone()));
+        System.err.println("用户提币后金币总量" + this.getAmountByUser(body.getPhone()));
         output.setPhone(body.getPhone());
         output.setResult(true);
-        output.setAmount( this.getAmountByUser(body.getPhone()) );
+        output.setAmount(this.getAmountByUser(body.getPhone()));
 
 //        output.setLimit( this.getTodayLimite(body.getPhone()) );
 
@@ -533,53 +541,53 @@ public class UserServiceImpl extends GenericService implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public CommonDto<GameRankOutputDto> gameRank(String phone,PagingInputDto body) {
+    public CommonDto<GameRankOutputDto> gameRank(String phone, PagingInputDto body) {
 
-        try{
+        try {
             this.getUserByPhone(phone);
-        }catch(Exception e){
+        } catch (Exception e) {
             throw e;
         }
 
-        CommonDto<GameRankOutputDto> result=new CommonDto<>();
+        CommonDto<GameRankOutputDto> result = new CommonDto<>();
         //分页输出数据
-        PagingOutputDto<GameRankEntity> pod=new PagingOutputDto<>();
+        PagingOutputDto<GameRankEntity> pod = new PagingOutputDto<>();
 
-        GameRankOutputDto rankOutputDto=new GameRankOutputDto();
+        GameRankOutputDto rankOutputDto = new GameRankOutputDto();
 
         //输入参数格式化
-        if( body.getCurrentPage()== null ) {
+        if (body.getCurrentPage() == null) {
             body.setCurrentPage(currentPageDefault);
         }
 
-        if(body.getPageSize() == null) {
+        if (body.getPageSize() == null) {
             body.setPageSize(pageSizeDefault);
         }
         //设置起始索引
-        body.setStart( (long)(body.getCurrentPage()-1) * body.getPageSize());
+        body.setStart((long) (body.getCurrentPage() - 1) * body.getPageSize());
 
         //获取游戏排行榜的list
         List<GameRankEntity> gameRankEntities = userGameMapper.gameRankList(body);
 
-        Long index =body.getStart()+1;
-        for(GameRankEntity e:gameRankEntities){
+        Long index = body.getStart() + 1;
+        for (GameRankEntity e : gameRankEntities) {
             e.setRank(index++);
-            e.setPhone(e.getPhone().replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2"));
+            e.setPhone(e.getPhone().replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2"));
         }
 
         Integer total = userGameMapper.getRankTotal();
 
         pod.setList(gameRankEntities);
-        pod.setTotal( (long)total );
+        pod.setTotal((long) total);
         pod.setCurrentPage(body.getCurrentPage());
         pod.setPageSize(body.getPageSize());
 
         rankOutputDto.setRankList(pod);
         rankOutputDto.setMyRank(this.getMyRank(phone));
-        rankOutputDto.setOgRewardAmount( this.getOgRewardAmount() );
+        rankOutputDto.setOgRewardAmount(this.getOgRewardAmount());
 
-        rankOutputDto.setPhone(phone.replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2"));
-        rankOutputDto.setMyOgAmount(this.getOgRewardViaGame(phone) );
+        rankOutputDto.setPhone(phone.replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2"));
+        rankOutputDto.setMyOgAmount(this.getOgRewardViaGame(phone));
 
         result.setData(rankOutputDto);
         result.setMessage("success");
