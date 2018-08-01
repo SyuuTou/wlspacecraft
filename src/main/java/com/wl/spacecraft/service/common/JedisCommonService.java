@@ -1,5 +1,4 @@
-package com.lhjl.tzzs.proxy.service.common;
-
+package com.wl.spacecraft.service.common;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -14,21 +13,21 @@ public class JedisCommonService {
     @Autowired
     private Environment env;
 
-    private JedisPool pool =  null;
+    private JedisPool pool = null;
 
-    private void initJedisPool(){
+    private void initJedisPool() {
         JedisPoolConfig config = new JedisPoolConfig();
         config.setMaxIdle(Integer.valueOf(env.getProperty("jedis.maxIdle")));
         config.setMaxTotal(Integer.valueOf(env.getProperty("jedis.maxTotal")));
         config.setTestOnBorrow(false);
         config.setTestOnReturn(false);
 
-        pool = new JedisPool(config,env.getProperty("jedis.host"),Integer.valueOf(env.getProperty("jedis.port")),Integer.valueOf(env.getProperty("jedis.timeout")),env.getProperty("jedis.password"));
+        pool = new JedisPool(config, env.getProperty("jedis.host"), Integer.valueOf(env.getProperty("jedis.port")), Integer.valueOf(env.getProperty("jedis.timeout")), env.getProperty("jedis.password"));
     }
 
 
-    public Jedis getJedis(){
-        if (null == pool){
+    public Jedis getJedis() {
+        if (null == pool) {
             this.initJedisPool();
         }
         return pool.getResource();
@@ -44,13 +43,13 @@ public class JedisCommonService {
         //蓝海测试库
 //        JedisPool pool = new JedisPool(config,"101.200.44.58",6379,3000,"wixbal292dj");
         //HK-prod
-//        JedisPool pool = new JedisPool(config,"45.75.202.72",6379,5000,"redis");
+        JedisPool pool = new JedisPool(config, "45.75.202.72", 6379, 5000, "redis");
         //HuaNan-prodan
-        JedisPool pool = new JedisPool(config,"120.79.143.55",6379,3000,"redis");
+//        JedisPool pool = new JedisPool(config,"120.79.143.55",6379,3000,"redis");
 //        JedisPool pool = new JedisPool(config,"120.79.25.205",6379,3000,"redis");
         //Localhost
 //        JedisPool pool = new JedisPool(config,"localhost",6379,3000,"syuutou");
-        pool.getResource().set("jiao","asdf");
+        pool.getResource().set("jiao", "asdf");
         System.out.println(pool.getResource().get("jiao"));
 
 //        Jedis jedis = new Jedis("172.18.154.98");
@@ -59,3 +58,4 @@ public class JedisCommonService {
 
     }
 }
+

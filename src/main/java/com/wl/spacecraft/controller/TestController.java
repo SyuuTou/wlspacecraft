@@ -3,10 +3,7 @@ package com.wl.spacecraft.controller;
 import javax.annotation.Resource;
 
 import com.wl.spacecraft.controller.common.GenericController;
-import com.wl.spacecraft.dto.commondto.CommonDto;
-import com.wl.spacecraft.dto.requestdto.CoinToAccountInputDto;
-import com.wl.spacecraft.dto.responsedto.CoinToAccountOutputDto;
-import com.wl.spacecraft.exception.project.ProjectException;
+import com.wl.spacecraft.service.common.JedisCommonService;
 import com.wl.spacecraft.service.user.UserService;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,11 +19,25 @@ import org.springframework.web.bind.annotation.*;
 public class TestController extends GenericController {
     @Resource
     private UserService userService;
+    @Resource
+    private JedisCommonService jedisCommonService;
 
     @GetMapping("test")
     public Object test( ){
 
         return userService.test();
+    }
+
+    @GetMapping("set/redis")
+    public Object setRedis( ){
+        jedisCommonService.getJedis().setex("zhou",10,"dong");
+        return null;
+    }
+    @GetMapping("get/redis")
+    public Object getRedis( ){
+        System.err.println(jedisCommonService.getJedis().get("zhou")==null);
+        return jedisCommonService.getJedis().get("zhou");
+
     }
 
 
