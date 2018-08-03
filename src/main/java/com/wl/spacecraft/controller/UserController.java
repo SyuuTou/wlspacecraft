@@ -66,8 +66,8 @@ public class UserController extends GenericService {
     }
 
     /**
-     * 查询用户数据
-     * @param body
+     * 查询用户数据，
+     * @param body  缓存数据
      * @return
      */
     @PostMapping("user/info")
