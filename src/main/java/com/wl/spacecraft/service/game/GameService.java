@@ -3,8 +3,16 @@ package com.wl.spacecraft.service.game;
 import com.wl.spacecraft.dto.commondto.CommonDto;
 import com.wl.spacecraft.dto.commondto.GameConfigCommonOutputDto;
 import com.wl.spacecraft.model.ConfigOgPrice;
+import com.wl.spacecraft.model.MetaApp;
+
+import java.util.List;
 
 public interface GameService {
+
+    /**
+     * 获取app类型元数据
+     */
+    List<MetaApp> selectAllApps();
 
     /**
      * 获取游戏的配置数据

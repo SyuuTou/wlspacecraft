@@ -30,8 +30,8 @@ import tk.mybatis.mapper.common.MySqlMapper;
 /**
  * 继承自己的MyMapper
  *
- * @author liuzh
- * @since 2015-09-06 21:53
+ * @author syuutou
+ * @since 2018-08-02 21:53
  */
 public interface OwnerMapper<T> extends Mapper<T>, MySqlMapper<T> {
     //TODO

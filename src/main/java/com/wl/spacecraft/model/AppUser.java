@@ -12,6 +12,12 @@ public class AppUser {
     private Integer userid;
 
     /**
+     * 社区id
+     */
+    @Column(name = "community_id")
+    private Integer communityId;
+
+    /**
      * 昵称
      */
     @Column(name = "nick_name")
@@ -233,10 +239,19 @@ public class AppUser {
         this.updator = updator;
     }
 
+    public Integer getCommunityId() {
+        return communityId;
+    }
+
+    public void setCommunityId(Integer communityId) {
+        this.communityId = communityId;
+    }
+
     @Override
     public String toString() {
         return "AppUser{" +
                 "userid=" + userid +
+                ", communityId='" + communityId + '\'' +
                 ", nickName='" + nickName + '\'' +
                 ", phonenum='" + phonenum + '\'' +
                 ", amount=" + amount +

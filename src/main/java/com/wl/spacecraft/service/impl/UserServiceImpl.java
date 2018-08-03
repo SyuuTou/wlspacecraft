@@ -15,6 +15,7 @@ import com.wl.spacecraft.mapper.AppUserMapper;
 import com.wl.spacecraft.mapper.UserGameMapper;
 import com.wl.spacecraft.model.AppIntergral;
 import com.wl.spacecraft.model.AppUser;
+import com.wl.spacecraft.model.MetaApp;
 import com.wl.spacecraft.model.UserGame;
 import com.wl.spacecraft.service.common.GenericService;
 import com.wl.spacecraft.service.game.GameService;
@@ -80,6 +81,31 @@ public class UserServiceImpl extends GenericService implements UserService {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 验证前端传递的appKey是否有效
+     *
+     * @param appKey
+     * @return
+     */
+    private boolean validateAppKey(String appKey) {
+        List<MetaApp> metaApps = gameService.selectAllApps();
+
+        boolean flag = false;
+        for (MetaApp e : metaApps) {
+            if (e.getAppKey().equals(appKey)) {
+                flag = true;
+            }
+        }
+
+        System.err.println("flag"+flag);
+        if (!flag) {
+            throw new ProjectException("appKey有误");
+        }
+
+        return flag;
+
     }
 
     /**
@@ -373,6 +399,12 @@ public class UserServiceImpl extends GenericService implements UserService {
         } catch (Exception e) {
             throw e;
         }
+        //验证appKey的正确性
+        try {
+            validateAppKey(body.getAppKey());
+        } catch (Exception e) {
+            throw e;
+        }
 
         //积分的扣除
         AppUser au = this.getUserByPhone(body.getPhone());
@@ -386,7 +418,6 @@ public class UserServiceImpl extends GenericService implements UserService {
             appUserMapper.updateByPrimaryKeySelective(au);
         }
 
-
         CommonDto<GameStartOutputDto> result = new CommonDto<>();
         GameStartOutputDto output = new GameStartOutputDto();
 
@@ -397,6 +428,7 @@ public class UserServiceImpl extends GenericService implements UserService {
         System.err.println("游戏的唯一16位识别码" + random);
 
         UserGame userGame = new UserGame();
+        userGame.setAppKey(body.getAppKey().toUpperCase());
         userGame.setPhonenum(body.getPhone());
         userGame.setToken(body.getToken());
         userGame.setGameId(random);
@@ -419,6 +451,7 @@ public class UserServiceImpl extends GenericService implements UserService {
 
         return result;
     }
+
 
     @Override
     @Transactional
@@ -541,7 +574,7 @@ public class UserServiceImpl extends GenericService implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public CommonDto<GameRankOutputDto> gameRank(String phone, PagingInputDto body) {
+    public CommonDto<GameRankOutputDto> gameRank(String phone, RankPagingInputDto body) {
 
         try {
             this.getUserByPhone(phone);

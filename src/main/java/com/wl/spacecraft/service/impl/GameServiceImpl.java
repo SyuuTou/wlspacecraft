@@ -19,20 +19,24 @@ import java.util.List;
 public class GameServiceImpl extends GenericService implements GameService {
 
     @Autowired
-    MetaGameDataMapper metaGameDataMapper;
+    private MetaGameDataMapper metaGameDataMapper;
 
     @Autowired
-    ConfigOgTodayMapper configOgTodayMapper;
+    private ConfigOgTodayMapper configOgTodayMapper;
     @Autowired
-    ConfigOgPriceMapper configOgPriceMapper;
+    private ConfigOgPriceMapper configOgPriceMapper;
     @Autowired
-    ConfigGameDifficultyMapper configGameDifficultyMapper;
+    private ConfigGameDifficultyMapper configGameDifficultyMapper;
     @Autowired
-    ConfigDropogAmountMapper configDropogAmountMapper;
+    private ConfigDropogAmountMapper configDropogAmountMapper;
+
+    @Autowired
+    private MetaAppMapper metaAppMapper;
 
 
     @Override
     @Transactional
+
     public Integer getConfigOgToday() {
 
         Example example = new Example(ConfigOgToday.class);
@@ -111,6 +115,11 @@ public class GameServiceImpl extends GenericService implements GameService {
         return currentDropOg;
     }
 
+
+    @Override
+    public List<MetaApp> selectAllApps() {
+        return metaAppMapper.selectAll();
+    }
 
     @Override
     @Transactional(readOnly = true)

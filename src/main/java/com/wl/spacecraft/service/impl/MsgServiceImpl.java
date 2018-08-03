@@ -7,6 +7,7 @@ import com.wl.spacecraft.dto.responsedto.SendMsgOutputDto;
 import com.wl.spacecraft.service.user.MsgService;
 import com.wl.spacecraft.utils.HttpUtils;
 import com.wl.spacecraft.utils.MD5Util;
+import com.wl.spacecraft.utils.MsgSendUtil;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
@@ -36,43 +37,25 @@ public class MsgServiceImpl extends GenericService implements MsgService {
     @Transactional
     public CommonDto<SendMsgOutputDto> senMsg(String phone) throws Exception {
 
-        String host = env.getProperty("msghost");
-        String path = env.getProperty("msgpath");
-        String method = env.getProperty("method");
-        String appcode = env.getProperty("appcode");
-
-
         CommonDto<SendMsgOutputDto> result = new CommonDto<>();
         SendMsgOutputDto sendMsgOutputDto = new SendMsgOutputDto();
 
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Authorization", "APPCODE " + appcode);
-
         String verifyCode = RandomStringUtils.random(4,"0123456789");//四位随机数
-        Map<String, String> map = new HashMap<>();
-
-        map.put("param", verifyCode);
-        map.put("phone", phone);
-        map.put("sign", "45862");
-        map.put("skin", "34724");
-
-        System.err.println(map);
         System.err.println("短信验证码--˘>>>>"+verifyCode);
 
         Calendar calendar = Calendar.getInstance();
         //设置短信有效时间为20分钟
         calendar.add(Calendar.MINUTE,msgCodeExpireTime);
         Date expire = calendar.getTime();
-
         System.err.println("过期时间-->>>>>  "+expire.getTime());
 
         //生成MD5值认证标识
         String verification = MD5Util.md5Encode(KEY + "@" + verifyCode + "@" + expire.toString(),null);
-
         System.err.println("生成的短信校验码："+verification);
+
         //短信发送
-        HttpResponse response = HttpUtils.doGet(host, path, method, headers, map);
-        String jsonString = EntityUtils.toString(response.getEntity());
+        HttpResponse httpResponse = MsgSendUtil.sendSms(phone, verifyCode);
+        String jsonString = EntityUtils.toString(httpResponse.getEntity());
 
         System.err.println("jsonString是否为空字符串--{"+jsonString.equals("")+"}");
         System.err.println("jsonString是否等于null--{"+jsonString == null +"}");

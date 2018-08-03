@@ -1,7 +1,7 @@
 package com.wl.spacecraft.mapper;
 
 import com.wl.spacecraft.dto.commondto.GameRankEntity;
-import com.wl.spacecraft.dto.commondto.PagingInputDto;
+import com.wl.spacecraft.dto.requestdto.RankPagingInputDto;
 import com.wl.spacecraft.model.UserGame;
 import com.wl.spacecraft.utils.OwnerMapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -28,7 +28,7 @@ public interface UserGameMapper extends OwnerMapper<UserGame> {
      * @param body 请求参数
      * @return
      */
-    List<GameRankEntity> gameRankList(PagingInputDto body);
+    List<GameRankEntity> gameRankList(RankPagingInputDto body);
 
     /**
      * 获取金币排行榜的人员总数

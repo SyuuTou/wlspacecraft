@@ -6,6 +6,7 @@
       WARNING - @mbg.generated
     -->
     <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="app_key" jdbcType="VARCHAR" property="appKey" />
     <result column="phonenum" jdbcType="VARCHAR" property="phonenum" />
     <result column="token" jdbcType="VARCHAR" property="token" />
     <result column="game_id" jdbcType="VARCHAR" property="gameId" />

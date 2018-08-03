@@ -12,6 +12,12 @@ public class Community {
     private Integer id;
 
     /**
+     * 社区logo
+     */
+    @Column(name = "logo")
+    private String logo;
+
+    /**
      * 社区名称
      */
     @Column(name = "comm_name")
@@ -193,5 +199,13 @@ public class Community {
      */
     public void setDelFlag(Integer delFlag) {
         this.delFlag = delFlag;
+    }
+
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
     }
 }

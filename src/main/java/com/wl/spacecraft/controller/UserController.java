@@ -159,7 +159,7 @@ public class UserController extends GenericService {
      * @return
      */
     @PostMapping("og/rank{phone}")
-    public CommonDto<GameRankOutputDto> ogObtainRank(@PathVariable String phone, @RequestBody PagingInputDto body){
+    public CommonDto<GameRankOutputDto> ogObtainRank(@PathVariable String phone, @RequestBody RankPagingInputDto body){
 
         System.err.println("分页参数--》》 "+body);
         System.err.println(phone);

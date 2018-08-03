@@ -3,10 +3,20 @@ package com.wl.spacecraft.controller;
 import javax.annotation.Resource;
 
 import com.wl.spacecraft.controller.common.GenericController;
+import com.wl.spacecraft.mapper.AppUserMapper;
+import com.wl.spacecraft.mapper.MetaAppMapper;
+import com.wl.spacecraft.mapper.UserGameMapper;
+import com.wl.spacecraft.model.AppUser;
+import com.wl.spacecraft.model.Community;
+import com.wl.spacecraft.model.MetaApp;
+import com.wl.spacecraft.model.UserGame;
 import com.wl.spacecraft.service.common.JedisCommonService;
+import com.wl.spacecraft.service.community.CommunityService;
 import com.wl.spacecraft.service.user.UserService;
 import org.springframework.web.bind.annotation.*;
 import redis.clients.jedis.Jedis;
+
+import java.util.List;
 
 
 /**
@@ -20,24 +30,22 @@ public class TestController extends GenericController {
     private UserService userService;
     @Resource
     private JedisCommonService jedisCommonService;
+    @Resource
+    private CommunityService communityService;
+    @Resource
+    private AppUserMapper appUserMapper;
+    @Resource
+    private UserGameMapper userGameMapper;
+    @Resource
+    private MetaAppMapper metaAppMapper;
 
-    {
-        name="qwer";
-    }
-    private String name="123";
-
-//    private Jedis jedis= jedisCommonService.getJedis();
-{
-    System.err.println("初始化块执行");
-    System.err.println(userService);
-    System.err.println(jedisCommonService);
-    System.err.println(name);
-}
     @GetMapping("test")
     public Object test( ){
-        System.err.println(this.userService);;
-        System.err.println(this.jedisCommonService);;
-        return userService.test();
+        List<Community> communities = communityService.selectAll();
+        List<AppUser> appUsers = appUserMapper.selectAll();
+        List<UserGame> userGames = userGameMapper.selectAll();
+        List<MetaApp> metaApps = metaAppMapper.selectAll();
+        return metaApps;
     }
 
     @GetMapping("set/redis")

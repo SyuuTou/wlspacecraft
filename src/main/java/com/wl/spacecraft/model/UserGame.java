@@ -53,6 +53,24 @@ public class UserGame {
     private Date endTime;
 
     /**
+     * 游戏应用的key
+     * SPACECRAFT
+     * LEEKREAP
+     * JUMP
+     * BRICKS
+     */
+    @Column(name = "app_key")
+    private String appKey;
+
+    public String getAppKey() {
+        return appKey;
+    }
+
+    public void setAppKey(String appKey) {
+        this.appKey = appKey;
+    }
+
+    /**
      * 获取记录id
      *
      * @return id - 记录id
@@ -193,6 +211,8 @@ public class UserGame {
      * @param endTime 游戏结束时间
      */
     public void setEndTime(Date endTime) {
+
         this.endTime = endTime;
     }
+
 }

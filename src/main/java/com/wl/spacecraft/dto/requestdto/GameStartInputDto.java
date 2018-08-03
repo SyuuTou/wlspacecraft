@@ -20,6 +20,20 @@ public class GameStartInputDto {
      */
     private String tokenValidateStr;
 
+    /**
+     * appkey
+     * SPACECRAFT|LEEKREAP|JUMP|BRICKS
+     */
+    private String appKey;
+
+    public String getAppKey() {
+        return appKey;
+    }
+
+    public void setAppKey(String appKey) {
+        this.appKey = appKey;
+    }
+
     public String getPhone() {
         return phone;
     }
@@ -55,12 +69,14 @@ public class GameStartInputDto {
     }
 
     @Override
-    public String toString() {
+    public String
+    toString() {
         return "GameStartInputDto{" +
                 "phone='" + phone + '\'' +
                 ", token='" + token + '\'' +
                 ", expire=" + expire +
                 ", tokenValidateStr='" + tokenValidateStr + '\'' +
+                ", appKey='" + appKey + '\'' +
                 '}';
     }
 }
