@@ -3,8 +3,7 @@ package com.wl.spacecraft.service.user;
 import com.wl.spacecraft.dto.commondto.CommonDto;
 import com.wl.spacecraft.dto.requestdto.*;
 import com.wl.spacecraft.dto.responsedto.*;
-
-import java.util.List;
+import com.wl.spacecraft.model.AppUser;
 
 public interface UserService {
     /**
@@ -51,4 +50,8 @@ public interface UserService {
      * @return
      */
     Object test();
+    /**
+     * 根据手机号获取用户(供外部调用)
+     */
+    AppUser getUserViaPhone(String phone);
 }

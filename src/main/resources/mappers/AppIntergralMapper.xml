@@ -14,7 +14,9 @@
     <result column="system" jdbcType="INTEGER" property="system" />
     <result column="audit_status" jdbcType="INTEGER" property="auditStatus" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="creator" jdbcType="INTEGER" property="creator" />
     <result column="audit_time" jdbcType="TIMESTAMP" property="auditTime" />
+    <result column="auditor" jdbcType="INTEGER" property="auditor" />
   </resultMap>
 
 

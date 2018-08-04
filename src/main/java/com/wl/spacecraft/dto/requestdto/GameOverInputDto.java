@@ -25,6 +25,10 @@ public class GameOverInputDto {
      */
     private String gameId;
     /**
+     * 游戏应用的分类
+     */
+//    private String appKey;
+    /**
      * 获取的游戏金币
      */
     private Integer score;

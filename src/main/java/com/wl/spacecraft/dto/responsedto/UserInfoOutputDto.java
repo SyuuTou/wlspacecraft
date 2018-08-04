@@ -2,6 +2,9 @@ package com.wl.spacecraft.dto.responsedto;
 
 import com.wl.spacecraft.dto.commondto.GameConfigCommonOutputDto;
 import com.wl.spacecraft.dto.commondto.UserInfoCommonOutputDto;
+import com.wl.spacecraft.model.Community;
+
+import java.util.List;
 
 public class UserInfoOutputDto {
     /**
@@ -12,6 +15,19 @@ public class UserInfoOutputDto {
      * 游戏数据
      */
     private GameConfigCommonOutputDto gameData;
+
+    /**
+     * 社群列表
+     */
+    private List<Community> communities;
+
+    public List<Community> getCommunities() {
+        return communities;
+    }
+
+    public void setCommunities(List<Community> communities) {
+        this.communities = communities;
+    }
 
     public GameConfigCommonOutputDto getGameData() {
         return gameData;
@@ -35,6 +51,7 @@ public class UserInfoOutputDto {
         return "UserInfoOutputDto{" +
                 "userData=" + userData +
                 ", gameData=" + gameData +
+                ", communities=" + communities +
                 '}';
     }
 }

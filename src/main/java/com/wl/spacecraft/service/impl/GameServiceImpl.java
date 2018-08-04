@@ -49,7 +49,8 @@ public class GameServiceImpl extends GenericService implements GameService {
         if (list != null && list.size() > 0) {
             ogToday = list.get(0).getOgToday();
             if (ogToday == null) {
-                throw new ProjectException("DB数据存在异常,最新 OG当日领取上限 记录为null");
+                System.err.println("DB数据存在异常,最新 OG当日领取上限 记录为null");
+                throw new ProjectException("服务端错误");
             }
         }
 

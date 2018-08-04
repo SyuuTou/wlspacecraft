@@ -21,8 +21,16 @@ public interface UserGameMapper extends OwnerMapper<UserGame> {
      * @param endTime 此日24点
      * @return 返回今日已获取og数量
      */
-    Integer getLimite(@Param("phone")String phone, @Param("beginTime")Date beginTime, @Param("endTime") Date endTime);
-
+    Integer getTodayLimite(@Param("phone")String phone, @Param("beginTime")Date beginTime, @Param("endTime") Date endTime);
+    /**
+     * 返回用户今天在某款游戏中所获得的积分总量
+     * @param appKey
+     * @param phone
+     * @param beginTime
+     * @param endTime
+     * @return
+     */
+    Integer getTodayLimiteByApp(@Param("appKey")String appKey, @Param("phone")String phone, @Param("beginTime")Date beginTime, @Param("endTime") Date endTime);
     /**
      * 用户金币获得排行榜,带分页
      * @param body 请求参数
@@ -34,13 +42,13 @@ public interface UserGameMapper extends OwnerMapper<UserGame> {
      * 获取金币排行榜的人员总数
      * @return
      */
-    Integer getRankTotal();
+    Integer getRankTotal(RankPagingInputDto body);
 
     /**
      * 获取游戏金币总共赠送总量
      * @return
      */
-    Integer getOgRewardAmount();
+    Integer getOgRewardAmount(@Param("communityUsersPhones") List<String> communityUsersPhones);
 
     /**
      * 获取用户的游戏金币获取总量
@@ -50,8 +58,10 @@ public interface UserGameMapper extends OwnerMapper<UserGame> {
     Integer getOgRewardViaGame(@Param("phone") String phone);
 
     /**
-     * 获取用户获取金币排行榜
+     * 获取用户获取金币排行榜，不分页
      * @return
      */
-    List<GameRankEntity> getRankList();
+    List<GameRankEntity> getRankList(@Param("communityUsersPhones") List<String> communityUsersPhones);
+
+
 }

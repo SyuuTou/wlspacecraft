@@ -62,6 +62,16 @@ public class AppIntergral {
      */
     @Column(name = "audit_time")
     private Date auditTime;
+    /**
+     * 创建人
+     */
+    @Column(name="creator")
+    private Integer creator;
+    /**
+     * 审核人
+     */
+    @Column(name="auditor")
+    private Integer auditor;
 
     /**
      * 获取记录id
@@ -249,5 +259,21 @@ public class AppIntergral {
      */
     public void setAuditTime(Date auditTime) {
         this.auditTime = auditTime;
+    }
+
+    public Integer getCreator() {
+        return creator;
+    }
+
+    public void setCreator(Integer creator) {
+        this.creator = creator;
+    }
+
+    public Integer getAuditor() {
+        return auditor;
+    }
+
+    public void setAuditor(Integer auditor) {
+        this.auditor = auditor;
     }
 }

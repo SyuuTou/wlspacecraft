@@ -2,6 +2,7 @@ package com.wl.spacecraft.dto.responsedto;
 
 import com.wl.spacecraft.dto.commondto.GameRankEntity;
 import com.wl.spacecraft.dto.commondto.PagingOutputDto;
+import com.wl.spacecraft.model.Community;
 
 
 public class GameRankOutputDto {
@@ -10,6 +11,8 @@ public class GameRankOutputDto {
 
     /**
      * OG赠送总数
+     *  存在社区id时表示本社区内赠送总量
+     *  社区id不存在时表示所有赠送总量
      */
     private Integer ogRewardAmount;
 
@@ -19,12 +22,40 @@ public class GameRankOutputDto {
     private String phone;
     /**
      * 用户的当前排名
+     *  存在社区id时候表示社区排名
+     *  不存在社区id时表示世界排名
      */
     private Long myRank;
+    /**
+     * 我的排名说明
+     */
+    private String myRankNote;
     /**
      * 我的og总量
      */
     private Integer myOgAmount;
+
+    /**
+     * 我的社区信息
+     *  只有存在社区id时会存在该对象
+     */
+    private Community myCommunity;
+
+    public String getMyRankNote() {
+        return myRankNote;
+    }
+
+    public void setMyRankNote(String myRankNote) {
+        this.myRankNote = myRankNote;
+    }
+
+    public Community getMyCommunity() {
+        return myCommunity;
+    }
+
+    public void setMyCommunity(Community myCommunity) {
+        this.myCommunity = myCommunity;
+    }
 
     public Long getMyRank() {
         return myRank;
@@ -73,7 +104,9 @@ public class GameRankOutputDto {
                 ", ogRewardAmount=" + ogRewardAmount +
                 ", phone='" + phone + '\'' +
                 ", myRank=" + myRank +
+                ", myRankNote='" + myRankNote + '\'' +
                 ", myOgAmount=" + myOgAmount +
+                ", myCommunity=" + myCommunity +
                 '}';
     }
 }

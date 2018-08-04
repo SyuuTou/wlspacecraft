@@ -23,33 +23,61 @@
 
     <!--用户获取金币排行榜，分页-->
   <select id="gameRankList" resultMap="GameRankEntity">
-    select phonenum,case when isnull(sum(og_score)) then 0 else sum(og_score) end ogObtain from user_game
+    select phonenum,case when isnull(sum(og_score)) then 0 else sum(og_score) end ogObtain
+    from user_game
+    where 1=1
+    <!--获取社区内排行-->
+    <if test="communityUsersPhones != null and communityUsersPhones.size &gt; 0">
+      and phonenum in
+      <foreach collection="communityUsersPhones" index="index" item="item" open="(" close=")" separator=",">#{item}</foreach>
+    </if>
+    <!--获取游戏内排行-->
+    <if test="appKey != null">
+      and app_key =#{appKey}
+    </if>
     group by phonenum
     order by isnull(phonenum) asc, sum(og_score) desc
     limit #{start},#{pageSize}
   </select>
-
-
-  <!--用户获取金币排行榜，不分页-->
-  <select id="getRankList" resultMap="GameRankEntity">
-    select phonenum,case when isnull(sum(og_score)) then 0 else sum(og_score) end from user_game
-    group by phonenum
-    order by isnull(phonenum) asc, sum(og_score) desc
-  </select>
-
-
   <!--获取金币排行榜的总数-->
   <select id="getRankTotal" resultType="java.lang.Integer">
     select count(*) from(
       select 1 from user_game
-      group by phonenum
+      where 1=1
+      <!--获取社区内排行-->
+      <if test="communityUsersPhones != null and communityUsersPhones.size &gt; 0">
+        and phonenum in
+        <foreach collection="communityUsersPhones" index="index" item="item" open="(" close=")" separator=",">#{item}</foreach>
+      </if>
+      <!--获取游戏内排行-->
+      <if test="appKey != null">
+        and app_key =#{appKey}
+      </if>
+        group by phonenum
     ) tmp
   </select>
 
+  <!--用户获取金币排行榜，不分页-->
+  <select id="getRankList" resultMap="GameRankEntity">
+    select phonenum,case when isnull(sum(og_score)) then 0 else sum(og_score) end ogObtain
+      from user_game
+      where 1=1
+    <if test="communityUsersPhones != null and communityUsersPhones.size &gt; 0">
+      and phonenum in
+      <foreach collection="communityUsersPhones" index="index" item="item" open="(" close=")" separator=",">#{item}</foreach>
+    </if>
+    group by phonenum
+    order by isnull(phonenum) asc, sum(og_score) desc
+  </select>
 
-  <!--获取游戏金币总共赠送总量-->
+  <!--获取游戏金币赠送总量-->
   <select id="getOgRewardAmount" resultType="java.lang.Integer">
     select case when isnull(sum(og_score)) then 0 else sum(og_score) end amount from user_game
+    where 1=1
+    <if test="communityUsersPhones != null and communityUsersPhones.size &gt; 0">
+      and phonenum in
+      <foreach collection="communityUsersPhones" index="index" item="item" open="(" close=")" separator=",">#{item}</foreach>
+    </if>
   </select>
 
 
@@ -60,7 +88,7 @@
 
 
   <!--用户当日获取金币的总额-->
-  <select id="getLimite" resultType="java.lang.Integer">
+  <select id="getTodayLimite" resultType="java.lang.Integer">
 
     select case when ISNULL(sum(og_score)) then 0 else sum(og_score) end limite from user_game
     where phonenum = #{phone}
@@ -77,6 +105,16 @@
       and begin_time &gt;= #{beginTime}
       and end_time &lt;= #{endTime}
     ) tmp on au.phonenum = tmp.phonenum -->
+  </select>
+  <!--用户当日获取金币的总额-->
+  <select id="getTodayLimiteByApp" resultType="java.lang.Integer">
+
+    select case when ISNULL(sum(og_score)) then 0 else sum(og_score) end limite from user_game
+    where phonenum = #{phone}
+    and app_key=#{appKey}
+    and begin_time &gt;= #{beginTime}
+    and end_time &lt;= #{endTime}
+
   </select>
 
 </mapper>

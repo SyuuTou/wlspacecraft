@@ -37,7 +37,18 @@ public class UserInfoCommonOutputDto {
      * og币每日获取上限
      */
     private Integer topLimit;
+    /**
+     * 社区id
+     */
+    private Integer communityId;
 
+    public Integer getCommunityId() {
+        return communityId;
+    }
+
+    public void setCommunityId(Integer communityId) {
+        this.communityId = communityId;
+    }
 
     public Integer getTopLimit() {
         return topLimit;
@@ -105,6 +116,7 @@ public class UserInfoCommonOutputDto {
                 ", amount=" + amount +
                 ", limit=" + limit +
                 ", topLimit=" + topLimit +
+                ", communityId=" + communityId +
                 '}';
     }
 }

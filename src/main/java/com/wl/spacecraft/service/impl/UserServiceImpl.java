@@ -13,11 +13,9 @@ import com.wl.spacecraft.exception.project.ProjectException;
 import com.wl.spacecraft.mapper.AppIntergralMapper;
 import com.wl.spacecraft.mapper.AppUserMapper;
 import com.wl.spacecraft.mapper.UserGameMapper;
-import com.wl.spacecraft.model.AppIntergral;
-import com.wl.spacecraft.model.AppUser;
-import com.wl.spacecraft.model.MetaApp;
-import com.wl.spacecraft.model.UserGame;
+import com.wl.spacecraft.model.*;
 import com.wl.spacecraft.service.common.GenericService;
+import com.wl.spacecraft.service.community.CommunityService;
 import com.wl.spacecraft.service.game.GameService;
 import com.wl.spacecraft.service.user.UserService;
 import com.wl.spacecraft.utils.DateUtils;
@@ -68,6 +66,9 @@ public class UserServiceImpl extends GenericService implements UserService {
     @Autowired
     private AppIntergralMapper appIntergralMapper;
 
+    @Resource
+    private CommunityService communityService;
+
 
     /**
      * 用户信息的校验
@@ -87,7 +88,7 @@ public class UserServiceImpl extends GenericService implements UserService {
      * 验证前端传递的appKey是否有效
      *
      * @param appKey
-     * @return
+     * @return true表示有效。false表示无效
      */
     private boolean validateAppKey(String appKey) {
         List<MetaApp> metaApps = gameService.selectAllApps();
@@ -99,13 +100,7 @@ public class UserServiceImpl extends GenericService implements UserService {
             }
         }
 
-        System.err.println("flag"+flag);
-        if (!flag) {
-            throw new ProjectException("appKey有误");
-        }
-
         return flag;
-
     }
 
     /**
@@ -194,13 +189,23 @@ public class UserServiceImpl extends GenericService implements UserService {
     }
 
     /**
-     * 返回用户今日获取的金币上限
+     * 返回用户今日获取的金币
      *
      * @param phone 用户手机号
-     * @return
+     * @return 用户今日获取的金币
      */
     private Integer getTodayLimite(String phone) {
-        return userGameMapper.getLimite(phone, DateUtils.getStartTime(), DateUtils.getEndTime());
+        return userGameMapper.getTodayLimite(phone, DateUtils.getStartTime(), DateUtils.getEndTime());
+    }
+
+    /**
+     *
+     * @param phone 用户手机号
+     * @param appKey 游戏Key
+     * @return 返回今日内用户在这个游戏
+     */
+    private Integer getTodayLimiteByApp(String phone,String appKey) {
+        return userGameMapper.getTodayLimiteByApp(appKey,phone, DateUtils.getStartTime(), DateUtils.getEndTime());
     }
 
     /**
@@ -225,33 +230,53 @@ public class UserServiceImpl extends GenericService implements UserService {
     /**
      * 获取金币总共赠送总量
      *
-     * @return
+     * @return 金币赠送总量
      */
-    private Integer getOgRewardAmount() {
-        return userGameMapper.getOgRewardAmount();
+    private Integer getOgRewardAmount(List<String> communityUsersPhones) {
+        return userGameMapper.getOgRewardAmount(communityUsersPhones);
     }
 
     /**
      * 获取我的排名
+     * communityId不为null则取得社区排名
+     * communityId为null则取得世界排名
      *
-     * @return
+     * @return 排名
      */
-    private Long getMyRank(String phone) {
+    //TODO
+    private Long getMyRank(String phone, Integer communityId) {
 
         UserGame userGame = new UserGame();
         userGame.setPhonenum(phone);
         List<UserGame> userGames = userGameMapper.select(userGame);
-        //无rank记录，返回-1表示未参与
+        //无rank记录，返回-1表示未参与,-2表示该社区暂无用户,-3表示用户不在该社区内
         Long rankFlag = -1L;
         if (userGames == null || userGames.size() == 0) {
             System.err.println("没有本人的rank记录");
             return rankFlag;
         }
+        //排行List
+        List<GameRankEntity> rankList = new ArrayList<>();
+        if (communityId != null) {
+            List<String> userPhonesByCommunityId = this.getUserPhonesByCommunityId(communityId);
+            if (userPhonesByCommunityId == null || userPhonesByCommunityId.size() == 0) {
+                System.err.println("该社区暂无用户");
+                rankFlag = -2L;
+                return rankFlag;
+            }
+            if (!userPhonesByCommunityId.contains(phone)) {
+                System.err.println("用户不在该社区内");
+                rankFlag = -3L;
+                return rankFlag;
+            }
+            System.err.println("community de userPhones" + userPhonesByCommunityId);
+            rankList = userGameMapper.getRankList(userPhonesByCommunityId);
+            System.err.println("rankList--end" + rankList);
+        } else { //世界排名
+            rankList = userGameMapper.getRankList(null);
+        }
 
-        //存在rank记录,那么肯定是存在排名的
-        List<GameRankEntity> rankList = userGameMapper.getRankList();
         Long index = 1L;
-
         if (rankList != null && rankList.size() > 0) {
             for (GameRankEntity e : rankList) {
                 if (phone.equals(e.getPhone())) {
@@ -266,6 +291,28 @@ public class UserServiceImpl extends GenericService implements UserService {
         return rankFlag;
     }
 
+    /**
+     * 根据社区编号获取该社区下的所有人员
+     *
+     * @param communityId 社区id
+     * @return communityId为null的话会返回所有用户的手机号, 否则返回该社区下的用户的手机号
+     */
+    private List<String> getUserPhonesByCommunityId(Integer communityId) {
+        AppUser appUser = new AppUser();
+        appUser.setCommunityId(communityId);
+        List<AppUser> select = appUserMapper.select(appUser);
+
+        List<String> userPhones = new ArrayList<>();
+        for (AppUser e : select
+        ) {
+            userPhones.add(e.getPhonenum());
+        }
+
+        System.err.println("社区id " + communityId + " 下的所有用户-->" + userPhones);
+
+        return userPhones;
+    }
+
     //供测试使用
     @Override
     public Object test() {
@@ -278,6 +325,11 @@ public class UserServiceImpl extends GenericService implements UserService {
 //        map.put("topLimit",topLimit);
 
         return map;
+    }
+
+    @Override
+    public AppUser getUserViaPhone(String phone) {
+        return this.getUserByPhone(phone);
     }
 
     @Override
@@ -306,6 +358,8 @@ public class UserServiceImpl extends GenericService implements UserService {
 
         try {//存在该用户，更新用户的token以及登录时间
             AppUser user = this.getUserByPhone(body.getPhone());
+            //设置社区id为null即可，后端不做任何更新
+            user.setCommunityId(null);
             user.setToken(token);
             user.setLastLoginTime(new Date());
             appUserMapper.updateByPrimaryKeySelective(user);
@@ -314,6 +368,8 @@ public class UserServiceImpl extends GenericService implements UserService {
         } catch (Exception e) { //捕获到异常说明用户不存在，执行新用户的注册
 
             AppUser user = new AppUser();
+            //设置社区id
+            user.setCommunityId(body.getCommunityId());
             user.setPhonenum(body.getPhone());
             user.setToken(token);
             //新用户注册赠送金币
@@ -331,6 +387,8 @@ public class UserServiceImpl extends GenericService implements UserService {
 
         //设置用户的信息
         UserInfoCommonOutputDto user = new UserInfoCommonOutputDto();
+        //设置社群id
+        user.setCommunityId(this.getUserByPhone(body.getPhone()).getCommunityId());
         user.setPhone(body.getPhone());
         user.setToken(token);
         user.setAmount(this.getAmountByUser(body.getPhone()));
@@ -367,6 +425,7 @@ public class UserServiceImpl extends GenericService implements UserService {
         UserInfoOutputDto outputDto = new UserInfoOutputDto();
         //设置用户的基本信息数据
         UserInfoCommonOutputDto user = new UserInfoCommonOutputDto();
+        user.setCommunityId(this.getUserByPhone(body.getPhone()).getCommunityId());
         user.setPhone(body.getPhone());
         user.setToken(body.getToken());
         user.setAmount(this.getAmountByUser(body.getPhone()));
@@ -375,11 +434,12 @@ public class UserServiceImpl extends GenericService implements UserService {
         user.setTokenValidateStr(body.getTokenValidateStr());
         user.setTopLimit(gameService.getConfigOgToday());
 
-
         GameConfigCommonOutputDto gameData = gameService.getGameConfig().getData();
 
         outputDto.setGameData(gameData);
         outputDto.setUserData(user);
+        //设置社区
+        outputDto.setCommunities(communityService.selectAll());
 
         result.setData(outputDto);
         result.setMessage("success");
@@ -399,20 +459,22 @@ public class UserServiceImpl extends GenericService implements UserService {
         } catch (Exception e) {
             throw e;
         }
+
         //验证appKey的正确性
-        try {
-            validateAppKey(body.getAppKey());
-        } catch (Exception e) {
-            throw e;
+        boolean flag = validateAppKey(body.getAppKey());
+        if (!flag) {
+            throw new ProjectException("appKey有误");
         }
 
-        //积分的扣除
+        //用户总积分的判断
         AppUser au = this.getUserByPhone(body.getPhone());
         if (au.getAmount() < Integer.valueOf(env.getProperty("coinSubtract"))) {
             throw new OgLackException("用户金币不足");
         }
 
         //本日游戏积分没有到达上限
+        //TODO 取得该appKey积分的每日领取上限,应该是从配置表中取得
+        //TODO getTodayLimiteByApp
         if (this.getTodayLimite(body.getPhone()) < gameService.getConfigOgToday()) {
             au.setAmount(au.getAmount() - Integer.valueOf(env.getProperty("coinSubtract")));
             appUserMapper.updateByPrimaryKeySelective(au);
@@ -433,6 +495,7 @@ public class UserServiceImpl extends GenericService implements UserService {
         userGame.setToken(body.getToken());
         userGame.setGameId(random);
         userGame.setBeginTime(new Date());
+        //TODO 获取用户在该游戏中的积分？？？
         if (this.getTodayLimite(body.getPhone()) < gameService.getConfigOgToday()) {
             userGame.setOgConsume(Integer.valueOf(env.getProperty("coinSubtract")));
         } else {
@@ -463,7 +526,19 @@ public class UserServiceImpl extends GenericService implements UserService {
             throw e;
         }
 
+        UserGame userGame=new UserGame();
+        userGame.setGameId(body.getGameId());
+        try {
+            userGame= userGameMapper.selectOne(userGame);
+        }catch (Exception e){
+            System.err.println("DB存在gameId重复数据");
+            throw e;
+        }
+        String appKey = userGame.getAppKey();
+        System.err.println("appKey--->"+appKey);
+
         //获取用户今天已经获得的积分总数
+        //TODO 用户今天已经获得的积分总数(是在奔app中？)
         Integer todaySum = this.getTodayLimite(body.getPhone());
 
         System.err.println("***todaySum==" + todaySum + "*******");
@@ -596,19 +671,44 @@ public class UserServiceImpl extends GenericService implements UserService {
         if (body.getPageSize() == null) {
             body.setPageSize(pageSizeDefault);
         }
+
         //设置起始索引
         body.setStart((long) (body.getCurrentPage() - 1) * body.getPageSize());
 
-        //获取游戏排行榜的list
-        List<GameRankEntity> gameRankEntities = userGameMapper.gameRankList(body);
+        System.err.println("communityId: " + body.getCommunityId());
 
+        //获取游戏排行
+        List<GameRankEntity> gameRankEntities = new ArrayList<>();
+        //获取人员总数
+        Integer total = 0;
+
+        if (body.getCommunityId() != null) {  //获取社区排行以及空投总量信息
+            //根据社群id获取社群内所有用户的手机号
+            List<String> userPhones = this.getUserPhonesByCommunityId(body.getCommunityId());
+
+            if (userPhones != null && userPhones.size() > 0) {  //该社区内存在用户
+                body.setCommunityUsersPhones(userPhones);
+
+                System.err.println("分页数据" + body);
+                gameRankEntities = userGameMapper.gameRankList(body);
+                total = userGameMapper.getRankTotal(body);
+                //设置空投总量
+                rankOutputDto.setOgRewardAmount(this.getOgRewardAmount(userPhones));
+            } else { //社区内无用户
+                rankOutputDto.setOgRewardAmount(0);
+            }
+        } else {//获取世界排行以及空投总量信息
+            gameRankEntities = userGameMapper.gameRankList(body);
+            total = userGameMapper.getRankTotal(body);
+            //communityUsersPhones设置为null则会查询所有空投总量
+            rankOutputDto.setOgRewardAmount(this.getOgRewardAmount(null));
+        }
+        //排名索引设置以及手机号加密处理
         Long index = body.getStart() + 1;
         for (GameRankEntity e : gameRankEntities) {
             e.setRank(index++);
             e.setPhone(e.getPhone().replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2"));
         }
-
-        Integer total = userGameMapper.getRankTotal();
 
         pod.setList(gameRankEntities);
         pod.setTotal((long) total);
@@ -616,10 +716,38 @@ public class UserServiceImpl extends GenericService implements UserService {
         pod.setPageSize(body.getPageSize());
 
         rankOutputDto.setRankList(pod);
-        rankOutputDto.setMyRank(this.getMyRank(phone));
-        rankOutputDto.setOgRewardAmount(this.getOgRewardAmount());
+        //TODO 用户排名
+        System.err.println("231313");
+        Long myRank = this.getMyRank(phone, body.getCommunityId());
+        System.err.println("qweqwr");
+        switch (String.valueOf(myRank)) {
+            case "-1": {
+                rankOutputDto.setMyRankNote("用户未参与");
+            }
+            break;
+            case "-2": {
+                rankOutputDto.setMyRankNote("该社区暂无用户");
+            }
+            break;
+            case "-3": {
+                rankOutputDto.setMyRankNote("用户不在该社区内");
+            }
+            break;
+            default: {
+                rankOutputDto.setMyRankNote("用户真实排名");
+            }
 
+        }
+        rankOutputDto.setMyRank(myRank);
+
+        //设置用户的社群信息
+        if (body.getCommunityId() != null) {
+            rankOutputDto.setMyCommunity(communityService.getCommunityById(body.getCommunityId()));
+        }
+
+        //设置用户手机号
         rankOutputDto.setPhone(phone.replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2"));
+        //设置用户的og获取总量
         rankOutputDto.setMyOgAmount(this.getOgRewardViaGame(phone));
 
         result.setData(rankOutputDto);

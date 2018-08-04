@@ -4,8 +4,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.lhjl.tzzs.proxy.service.GenericService;
 import com.wl.spacecraft.dto.commondto.CommonDto;
 import com.wl.spacecraft.dto.responsedto.SendMsgOutputDto;
+import com.wl.spacecraft.exception.common.DataFormatException;
+import com.wl.spacecraft.exception.login.UserNotExistException;
+import com.wl.spacecraft.service.community.CommunityService;
 import com.wl.spacecraft.service.user.MsgService;
-import com.wl.spacecraft.utils.HttpUtils;
+import com.wl.spacecraft.service.user.UserService;
 import com.wl.spacecraft.utils.MD5Util;
 import com.wl.spacecraft.utils.MsgSendUtil;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -18,6 +21,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 @Service
@@ -32,6 +36,12 @@ public class MsgServiceImpl extends GenericService implements MsgService {
 
     @Autowired
     private Environment env;
+
+    @Resource
+    private CommunityService communityService;
+
+    @Resource
+    private UserService userService;
 
     @Override
     @Transactional
@@ -72,6 +82,18 @@ public class MsgServiceImpl extends GenericService implements MsgService {
                     result.setMessage("success");//发送成功
                     result.setStatus(200);
 
+                    try{//无异常表示该用户存在
+                        userService.getUserViaPhone(phone);
+                        sendMsgOutputDto.setUserStatus("login");
+                    }catch(Exception e){//出现异常，需要进行分类讨论
+                        //其实只可能出现以下异常，在保证短信发送的前提下，自定义的数据格式异常永远不会捕获
+                        if(e.getClass() == UserNotExistException.class){
+                            sendMsgOutputDto.setUserStatus("register");
+                        }else{
+                            throw e;
+                        }
+                    }
+                    sendMsgOutputDto.setCommunities(communityService.selectAll());
                     sendMsgOutputDto.setState(true);
                     sendMsgOutputDto.setNote("短信发送成功");
                     //设置过期时间已经MD5校验码

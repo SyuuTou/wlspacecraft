@@ -21,6 +21,18 @@ public class LoginInputDto {
      * 失效时间
      */
     private Date expire;
+    /**
+     * 社区id
+     */
+    private Integer communityId;
+
+    public Integer getCommunityId() {
+        return communityId;
+    }
+
+    public void setCommunityId(Integer communityId) {
+        this.communityId = communityId;
+    }
 
     public String getMsgValidateStr() {
         return msgValidateStr;
@@ -54,7 +66,6 @@ public class LoginInputDto {
         this.msgCode = msgCode;
     }
 
-
     @Override
     public String toString() {
         return "LoginInputDto{" +
@@ -62,6 +73,7 @@ public class LoginInputDto {
                 ", msgCode='" + msgCode + '\'' +
                 ", msgValidateStr='" + msgValidateStr + '\'' +
                 ", expire=" + expire +
+                ", communityId=" + communityId +
                 '}';
     }
 }

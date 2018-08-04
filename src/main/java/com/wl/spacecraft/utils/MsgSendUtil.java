@@ -1,12 +1,13 @@
 package com.wl.spacecraft.utils;
 
 import org.apache.http.HttpResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 短信验证码
+ * syuutou
+ */
 public class MsgSendUtil {
 
     private static String host = "https://feginesms.market.alicloudapi.com";

@@ -3,18 +3,15 @@ package com.wl.spacecraft.controller;
 import javax.annotation.Resource;
 
 import com.wl.spacecraft.controller.common.GenericController;
+import com.wl.spacecraft.mapper.AppIntergralMapper;
 import com.wl.spacecraft.mapper.AppUserMapper;
 import com.wl.spacecraft.mapper.MetaAppMapper;
 import com.wl.spacecraft.mapper.UserGameMapper;
-import com.wl.spacecraft.model.AppUser;
-import com.wl.spacecraft.model.Community;
-import com.wl.spacecraft.model.MetaApp;
-import com.wl.spacecraft.model.UserGame;
+import com.wl.spacecraft.model.*;
 import com.wl.spacecraft.service.common.JedisCommonService;
 import com.wl.spacecraft.service.community.CommunityService;
 import com.wl.spacecraft.service.user.UserService;
 import org.springframework.web.bind.annotation.*;
-import redis.clients.jedis.Jedis;
 
 import java.util.List;
 
@@ -38,6 +35,9 @@ public class TestController extends GenericController {
     private UserGameMapper userGameMapper;
     @Resource
     private MetaAppMapper metaAppMapper;
+    @Resource
+    private AppIntergralMapper appIntergralMapper;
+
 
     @GetMapping("test")
     public Object test( ){
@@ -45,7 +45,13 @@ public class TestController extends GenericController {
         List<AppUser> appUsers = appUserMapper.selectAll();
         List<UserGame> userGames = userGameMapper.selectAll();
         List<MetaApp> metaApps = metaAppMapper.selectAll();
-        return metaApps;
+        List<AppIntergral> appIntergrals = appIntergralMapper.selectAll();
+
+
+        AppUser appUser = new AppUser();
+        appUser.setCommunityId(null);
+        List<AppUser> select = appUserMapper.select(appUser);
+        return appIntergrals;
     }
 
     @GetMapping("set/redis")

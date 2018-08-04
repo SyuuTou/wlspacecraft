@@ -20,4 +20,10 @@ public class CommunityServiceImpl extends GenericService implements CommunitySer
     public List<Community> selectAll() {
         return communityMapper.selectAll();
     }
+
+    @Override
+    public Community getCommunityById(Integer communityId) {
+
+        return communityMapper.selectByPrimaryKey(communityId);
+    }
 }
