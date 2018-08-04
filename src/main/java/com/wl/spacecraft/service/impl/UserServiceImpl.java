@@ -538,7 +538,7 @@ public class UserServiceImpl extends GenericService implements UserService {
         System.err.println("appKey--->"+appKey);
 
         //获取用户今天已经获得的积分总数
-        //TODO 用户今天已经获得的积分总数(是在奔app中？)
+        //TODO 用户今天已经获得的积分总数(还是在奔app中？)
         Integer todaySum = this.getTodayLimite(body.getPhone());
 
         System.err.println("***todaySum==" + todaySum + "*******");
