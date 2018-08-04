@@ -194,6 +194,7 @@ public class UserServiceImpl extends GenericService implements UserService {
      * @param phone 用户手机号
      * @return 用户今日获取的金币
      */
+
     private Integer getTodayLimite(String phone) {
         return userGameMapper.getTodayLimite(phone, DateUtils.getStartTime(), DateUtils.getEndTime());
     }
@@ -322,9 +323,10 @@ public class UserServiceImpl extends GenericService implements UserService {
         map.put("ogPrice", gameService.getConfigOgPrice());
         map.put("diff", gameService.getConfigGameDifficulty());
         map.put("drop", gameService.getConfigDropogAmount());
+        Integer qwe = this.getTodayLimiteByApp("13691066251", "qwe");
 //        map.put("topLimit",topLimit);
 
-        return map;
+        return qwe;
     }
 
     @Override

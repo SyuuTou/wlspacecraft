@@ -51,7 +51,9 @@ public class TestController extends GenericController {
         AppUser appUser = new AppUser();
         appUser.setCommunityId(null);
         List<AppUser> select = appUserMapper.select(appUser);
-        return appIntergrals;
+
+        Object test = userService.test();
+        return test;
     }
 
     @GetMapping("set/redis")
