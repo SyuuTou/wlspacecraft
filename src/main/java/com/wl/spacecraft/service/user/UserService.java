@@ -54,4 +54,9 @@ public interface UserService {
      * 根据手机号获取用户(供外部调用)
      */
     AppUser getUserViaPhone(String phone);
+
+    /**
+     * 删除虚拟用户
+     */
+    void delVirtualUser();
 }

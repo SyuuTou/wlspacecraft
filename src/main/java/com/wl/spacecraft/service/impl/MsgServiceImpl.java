@@ -93,7 +93,7 @@ public class MsgServiceImpl extends GenericService implements MsgService {
                             throw e;
                         }
                     }
-                    sendMsgOutputDto.setCommunities(communityService.selectAll());
+                    sendMsgOutputDto.setCommunities(communityService.selectAllOrderBySort());
                     sendMsgOutputDto.setState(true);
                     sendMsgOutputDto.setNote("短信发送成功");
                     //设置过期时间已经MD5校验码

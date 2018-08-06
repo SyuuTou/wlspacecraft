@@ -34,6 +34,19 @@ public class AppUser {
     private Integer amount;
 
     private String token;
+    /**
+     * 真实用户标志
+     */
+    @Column(name="is_real")
+    private Integer isReal;
+
+    public Integer getIsReal() {
+        return isReal;
+    }
+
+    public void setIsReal(Integer isReal) {
+        this.isReal = isReal;
+    }
 
     /**
      * 上一次登录时间
@@ -251,11 +264,12 @@ public class AppUser {
     public String toString() {
         return "AppUser{" +
                 "userid=" + userid +
-                ", communityId='" + communityId + '\'' +
+                ", communityId=" + communityId +
                 ", nickName='" + nickName + '\'' +
                 ", phonenum='" + phonenum + '\'' +
                 ", amount=" + amount +
                 ", token='" + token + '\'' +
+                ", isReal=" + isReal +
                 ", lastLoginTime=" + lastLoginTime +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +

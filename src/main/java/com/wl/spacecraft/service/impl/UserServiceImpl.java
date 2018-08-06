@@ -1,5 +1,6 @@
 package com.wl.spacecraft.service.impl;
 
+import com.lhjl.tzzs.proxy.mapper.UsersMapper;
 import com.wl.spacecraft.dto.commondto.*;
 import com.wl.spacecraft.dto.requestdto.*;
 import com.wl.spacecraft.dto.responsedto.*;
@@ -27,6 +28,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -93,7 +95,7 @@ public class UserServiceImpl extends GenericService implements UserService {
     private boolean validateAppKey(String appKey) {
         boolean flag = false;
 
-        if(StringUtils.isBlank(appKey)){
+        if (StringUtils.isBlank(appKey)) {
             return false;
         }
 
@@ -323,7 +325,7 @@ public class UserServiceImpl extends GenericService implements UserService {
         map.put("ogPrice", gameService.getConfigOgPrice());
         map.put("diff", gameService.getConfigGameDifficulty());
         map.put("drop", gameService.getConfigDropogAmount());
-        Integer qwe = this.getTodayLimiteByApp("13691066251", "qwe");
+        Integer qwe = this.getTodayLimiteByApp("13691066251", "SPACECRAFT");
 //        map.put("topLimit",topLimit);
 
         return qwe;
@@ -332,6 +334,24 @@ public class UserServiceImpl extends GenericService implements UserService {
     @Override
     public AppUser getUserViaPhone(String phone) {
         return this.getUserByPhone(phone);
+    }
+
+    @Override
+    @Transactional
+    public void delVirtualUser() {
+        AppUser appUser=new AppUser();
+        //虚拟用户
+        appUser.setIsReal(0);
+        List<AppUser> select = appUserMapper.select(appUser);
+        for (AppUser e:select
+             ) {
+            String phonenum = e.getPhonenum();
+            UserGame ug=new UserGame();
+            ug.setPhonenum(phonenum);
+            userGameMapper.delete(ug);
+
+        }
+        appUserMapper.delete(appUser);
     }
 
     @Override
@@ -445,7 +465,7 @@ public class UserServiceImpl extends GenericService implements UserService {
         outputDto.setGameData(gameData);
         outputDto.setUserData(user);
         //设置社区
-        outputDto.setCommunities(communityService.selectAll());
+        outputDto.setCommunities(communityService.selectAllOrderBySort());
 
         result.setData(outputDto);
         result.setMessage("success");
@@ -502,7 +522,7 @@ public class UserServiceImpl extends GenericService implements UserService {
         userGame.setGameId(random);
         userGame.setBeginTime(new Date());
         //游戏记录积分的扣除
-        if (this.getTodayLimiteByApp(body.getPhone(),body.getAppKey()) < gameService.getConfigOgToday()) {
+        if (this.getTodayLimiteByApp(body.getPhone(), body.getAppKey()) < gameService.getConfigOgToday()) {
             userGame.setOgConsume(Integer.valueOf(env.getProperty("coinSubtract")));
         } else {
             userGame.setOgConsume(0);
@@ -544,7 +564,7 @@ public class UserServiceImpl extends GenericService implements UserService {
         System.err.println("appKey--->" + appKey);
 
         //获取用户今天在该游戏App中已经获得的积分总数
-        Integer todaySum = this.getTodayLimiteByApp(body.getPhone(),appKey);
+        Integer todaySum = this.getTodayLimiteByApp(body.getPhone(), appKey);
 
         System.err.println("***todaySum==" + todaySum + "*******");
 
@@ -565,13 +585,12 @@ public class UserServiceImpl extends GenericService implements UserService {
         try {
             ug = userGameMapper.selectOne(ug);
         } catch (Exception e) {
-            System.err.println("gameId存在重复，数据异常");
+            System.err.println("DB中gameId存在重复，数据异常");
             throw e;
         }
         ug.setEndTime(new Date());
         ug.setOgScore(body.getScore());
         userGameMapper.updateByPrimaryKeySelective(ug);
-
 
         //用户积分变更
         AppUser appuser = this.getUserByPhone(body.getPhone());
@@ -580,7 +599,7 @@ public class UserServiceImpl extends GenericService implements UserService {
 
         output.setResult(true);
         output.setPhone(body.getPhone());
-        output.setLimit(this.getTodayLimiteByApp(body.getPhone(),appKey) > gameService.getConfigOgToday() ? gameService.getConfigOgToday() : this.getTodayLimiteByApp(body.getPhone(),appKey));
+        output.setLimit(this.getTodayLimiteByApp(body.getPhone(), appKey) > gameService.getConfigOgToday() ? gameService.getConfigOgToday() : this.getTodayLimiteByApp(body.getPhone(), appKey));
         output.setAmount(appuser.getAmount());
 
         result.setData(output);

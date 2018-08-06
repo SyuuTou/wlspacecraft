@@ -16,6 +16,7 @@
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
     <result column="creator" property="creator" jdbcType="INTEGER" />
     <result column="updator" property="updator" jdbcType="INTEGER" />
+    <result column="is_real" property="isReal" jdbcType="INTEGER" />
   </resultMap>
 
 

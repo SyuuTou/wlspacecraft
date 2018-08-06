@@ -30,6 +30,12 @@ public class Community {
     private String commDesc;
 
     /**
+     * 排序
+     */
+    @Column(name = "sort")
+    private Integer sort;
+
+    /**
      * 创建时间
      */
     @Column(name = "create_time")
@@ -45,6 +51,15 @@ public class Community {
      * 创建人
      */
     private Integer creator;
+
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
+    }
 
     /**
      * 更新人

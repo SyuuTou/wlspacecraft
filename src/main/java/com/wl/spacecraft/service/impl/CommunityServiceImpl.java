@@ -6,6 +6,7 @@ import com.wl.spacecraft.service.common.GenericService;
 import com.wl.spacecraft.service.community.CommunityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Example;
 
 import java.util.List;
 
@@ -17,8 +18,13 @@ public class CommunityServiceImpl extends GenericService implements CommunitySer
 
 
     @Override
-    public List<Community> selectAll() {
-        return communityMapper.selectAll();
+    public List<Community> selectAllOrderBySort() {
+        Example example =new Example(Community.class);
+        example.setOrderByClause("isnull(sort) asc,sort asc");
+
+        List<Community> communities = communityMapper.selectByExample(example);
+
+        return communities;
     }
 
     @Override

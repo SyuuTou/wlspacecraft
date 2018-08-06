@@ -41,7 +41,7 @@ public class TestController extends GenericController {
 
     @GetMapping("test")
     public Object test( ){
-        List<Community> communities = communityService.selectAll();
+        List<Community> communities = communityService.selectAllOrderBySort();
         List<AppUser> appUsers = appUserMapper.selectAll();
         List<UserGame> userGames = userGameMapper.selectAll();
         List<MetaApp> metaApps = metaAppMapper.selectAll();
@@ -53,7 +53,7 @@ public class TestController extends GenericController {
         List<AppUser> select = appUserMapper.select(appUser);
 
         Object test = userService.test();
-        return test;
+        return appUsers;
     }
 
     @GetMapping("set/redis")

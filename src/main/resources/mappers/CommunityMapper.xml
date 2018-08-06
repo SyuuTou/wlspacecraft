@@ -9,6 +9,7 @@
     <result column="logo" property="logo" jdbcType="VARCHAR" />
     <result column="comm_name" property="commName" jdbcType="VARCHAR" />
     <result column="comm_desc" property="commDesc" jdbcType="VARCHAR" />
+    <result column="sort" property="sort" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
     <result column="creator" property="creator" jdbcType="INTEGER" />

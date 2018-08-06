@@ -7,10 +7,10 @@ import java.util.List;
 public interface CommunityService {
 
     /**
-     * 获取所有的社区
+     * 获取所有的社区,按照自定义排序
      * @return 所有社区
      */
-    List<Community> selectAll();
+    List<Community> selectAllOrderBySort();
 
     /**
      * 根据社区id获取社群信息
