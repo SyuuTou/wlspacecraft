@@ -32,7 +32,9 @@ public class RankPagingInputDto {
 
     /**
      * 游戏类型
+     *
      */
+    //TODO appKey是为了获取游戏排行，目前此功能是不需要的
     private String appKey;
 
     public String getAppKey() {
