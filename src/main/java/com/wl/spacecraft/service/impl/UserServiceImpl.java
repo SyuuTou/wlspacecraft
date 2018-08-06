@@ -91,15 +91,18 @@ public class UserServiceImpl extends GenericService implements UserService {
      * @return true表示有效。false表示无效
      */
     private boolean validateAppKey(String appKey) {
-        List<MetaApp> metaApps = gameService.selectAllApps();
-
         boolean flag = false;
+
+        if(StringUtils.isBlank(appKey)){
+            return false;
+        }
+
+        List<MetaApp> metaApps = gameService.selectAllApps();
         for (MetaApp e : metaApps) {
             if (e.getAppKey().equals(appKey)) {
                 flag = true;
             }
         }
-
         return flag;
     }
 
@@ -200,13 +203,12 @@ public class UserServiceImpl extends GenericService implements UserService {
     }
 
     /**
-     *
-     * @param phone 用户手机号
+     * @param phone  用户手机号
      * @param appKey 游戏Key
      * @return 返回今日内用户在这个游戏
      */
-    private Integer getTodayLimiteByApp(String phone,String appKey) {
-        return userGameMapper.getTodayLimiteByApp(appKey,phone, DateUtils.getStartTime(), DateUtils.getEndTime());
+    private Integer getTodayLimiteByApp(String phone, String appKey) {
+        return userGameMapper.getTodayLimiteByApp(appKey, phone, DateUtils.getStartTime(), DateUtils.getEndTime());
     }
 
     /**
@@ -270,9 +272,7 @@ public class UserServiceImpl extends GenericService implements UserService {
                 rankFlag = -3L;
                 return rankFlag;
             }
-            System.err.println("community de userPhones" + userPhonesByCommunityId);
             rankList = userGameMapper.getRankList(userPhonesByCommunityId);
-            System.err.println("rankList--end" + rankList);
         } else { //世界排名
             rankList = userGameMapper.getRankList(null);
         }
@@ -358,9 +358,10 @@ public class UserServiceImpl extends GenericService implements UserService {
 
         LoginOutputDto output = new LoginOutputDto();
 
-        try {//存在该用户，更新用户的token以及登录时间
+        try {//无异常，表示存在该用户，更新用户的token以及登录时间
             AppUser user = this.getUserByPhone(body.getPhone());
             //设置社区id为null即可，后端不做任何更新
+            //TODO 社区id，登录
             user.setCommunityId(null);
             user.setToken(token);
             user.setLastLoginTime(new Date());
@@ -371,6 +372,7 @@ public class UserServiceImpl extends GenericService implements UserService {
 
             AppUser user = new AppUser();
             //设置社区id
+            //TODO。注册
             user.setCommunityId(body.getCommunityId());
             user.setPhonenum(body.getPhone());
             user.setToken(token);
@@ -389,7 +391,7 @@ public class UserServiceImpl extends GenericService implements UserService {
 
         //设置用户的信息
         UserInfoCommonOutputDto user = new UserInfoCommonOutputDto();
-        //设置社群id
+        //TODO 设置社群id
         user.setCommunityId(this.getUserByPhone(body.getPhone()).getCommunityId());
         user.setPhone(body.getPhone());
         user.setToken(token);
@@ -398,10 +400,12 @@ public class UserServiceImpl extends GenericService implements UserService {
         user.setLimit(this.getTodayLimite(body.getPhone()));
         user.setTokenValidateStr(tokenValidateStr);
         user.setTopLimit(gameService.getConfigOgToday());
+
         output.setUserData(user);
 
         //设置游戏元数据
         GameConfigCommonOutputDto gameData = gameService.getGameConfig().getData();
+
         output.setGameData(gameData);
 
         result.setData(output);
@@ -475,9 +479,8 @@ public class UserServiceImpl extends GenericService implements UserService {
         }
 
         //本日游戏积分没有到达上限
-        //TODO 取得该appKey积分的每日领取上限,应该是从配置表中取得
-        //TODO getTodayLimiteByApp
-        if (this.getTodayLimite(body.getPhone()) < gameService.getConfigOgToday()) {
+        System.err.println("用户在" + body.getAppKey() + "中的今日Og已获取总量：" + this.getTodayLimiteByApp(body.getPhone(), body.getAppKey()));
+        if (this.getTodayLimiteByApp(body.getPhone(), body.getAppKey()) < gameService.getConfigOgToday()) {
             au.setAmount(au.getAmount() - Integer.valueOf(env.getProperty("coinSubtract")));
             appUserMapper.updateByPrimaryKeySelective(au);
         }
@@ -492,13 +495,14 @@ public class UserServiceImpl extends GenericService implements UserService {
         System.err.println("游戏的唯一16位识别码" + random);
 
         UserGame userGame = new UserGame();
+        //设置appKey
         userGame.setAppKey(body.getAppKey().toUpperCase());
         userGame.setPhonenum(body.getPhone());
         userGame.setToken(body.getToken());
         userGame.setGameId(random);
         userGame.setBeginTime(new Date());
-        //TODO 获取用户在该游戏中的积分？？？
-        if (this.getTodayLimite(body.getPhone()) < gameService.getConfigOgToday()) {
+        //游戏记录积分的扣除
+        if (this.getTodayLimiteByApp(body.getPhone(),body.getAppKey()) < gameService.getConfigOgToday()) {
             userGame.setOgConsume(Integer.valueOf(env.getProperty("coinSubtract")));
         } else {
             userGame.setOgConsume(0);
@@ -527,26 +531,26 @@ public class UserServiceImpl extends GenericService implements UserService {
         } catch (Exception e) {
             throw e;
         }
-
-        UserGame userGame=new UserGame();
+        //根据游戏id搜寻用户唯一的一条游戏记录，并获取appKey
+        UserGame userGame = new UserGame();
         userGame.setGameId(body.getGameId());
         try {
-            userGame= userGameMapper.selectOne(userGame);
-        }catch (Exception e){
+            userGame = userGameMapper.selectOne(userGame);
+        } catch (Exception e) {
             System.err.println("DB存在gameId重复数据");
             throw e;
         }
         String appKey = userGame.getAppKey();
-        System.err.println("appKey--->"+appKey);
+        System.err.println("appKey--->" + appKey);
 
-        //获取用户今天已经获得的积分总数
-        //TODO 用户今天已经获得的积分总数(还是在奔app中？)
-        Integer todaySum = this.getTodayLimite(body.getPhone());
+        //获取用户今天在该游戏App中已经获得的积分总数
+        Integer todaySum = this.getTodayLimiteByApp(body.getPhone(),appKey);
 
         System.err.println("***todaySum==" + todaySum + "*******");
 
-        //超出了每日获取og的最大限制,则只能增加到最大限额
+        //超出了该游戏内每日获取og的最大限制,则只能增加到最大限额
         if (todaySum + body.getScore() > gameService.getConfigOgToday()) {
+            //重新设置应该增加的og总数
             body.setScore(gameService.getConfigOgToday() - todaySum);
         }
 
@@ -561,7 +565,8 @@ public class UserServiceImpl extends GenericService implements UserService {
         try {
             ug = userGameMapper.selectOne(ug);
         } catch (Exception e) {
-            throw new ProjectException("gameId存在重复，数据异常");
+            System.err.println("gameId存在重复，数据异常");
+            throw e;
         }
         ug.setEndTime(new Date());
         ug.setOgScore(body.getScore());
@@ -575,7 +580,7 @@ public class UserServiceImpl extends GenericService implements UserService {
 
         output.setResult(true);
         output.setPhone(body.getPhone());
-        output.setLimit(this.getTodayLimite(body.getPhone()) > gameService.getConfigOgToday() ? gameService.getConfigOgToday() : this.getTodayLimite(body.getPhone()));
+        output.setLimit(this.getTodayLimiteByApp(body.getPhone(),appKey) > gameService.getConfigOgToday() ? gameService.getConfigOgToday() : this.getTodayLimiteByApp(body.getPhone(),appKey));
         output.setAmount(appuser.getAmount());
 
         result.setData(output);
@@ -719,9 +724,7 @@ public class UserServiceImpl extends GenericService implements UserService {
 
         rankOutputDto.setRankList(pod);
         //TODO 用户排名
-        System.err.println("231313");
         Long myRank = this.getMyRank(phone, body.getCommunityId());
-        System.err.println("qweqwr");
         switch (String.valueOf(myRank)) {
             case "-1": {
                 rankOutputDto.setMyRankNote("用户未参与");
