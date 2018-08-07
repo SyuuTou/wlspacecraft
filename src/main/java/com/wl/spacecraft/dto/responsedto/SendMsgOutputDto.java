@@ -1,9 +1,6 @@
 package com.wl.spacecraft.dto.responsedto;
 
-import com.wl.spacecraft.model.Community;
-
 import java.util.Date;
-import java.util.List;
 
 public class SendMsgOutputDto {
     /**
@@ -26,32 +23,6 @@ public class SendMsgOutputDto {
      * 发送说明
      */
     private String note;
-
-    /**
-     * 用户状态
-     * register/login
-     */
-    private String userStatus;
-    /**
-     * 社区
-     */
-    private List<Community> communities;
-
-    public String getUserStatus() {
-        return userStatus;
-    }
-
-    public void setUserStatus(String userStatus) {
-        this.userStatus = userStatus;
-    }
-
-    public List<Community> getCommunities() {
-        return communities;
-    }
-
-    public void setCommunities(List<Community> communities) {
-        this.communities = communities;
-    }
 
     public String getMsgValidateStr() {
         return msgValidateStr;
@@ -92,8 +63,6 @@ public class SendMsgOutputDto {
                 ", expire=" + expire +
                 ", state=" + state +
                 ", note='" + note + '\'' +
-                ", userStatus='" + userStatus + '\'' +
-                ", communities=" + communities +
                 '}';
     }
 }

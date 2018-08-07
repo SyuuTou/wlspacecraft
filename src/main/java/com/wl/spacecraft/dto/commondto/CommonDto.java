@@ -4,6 +4,9 @@ public class CommonDto<T> {
 
     private String message;
     private Integer status ;
+    /**
+     * 冗余字段，前端接收时区分响应体类型用
+     */
     private String type;
     private T data;
 

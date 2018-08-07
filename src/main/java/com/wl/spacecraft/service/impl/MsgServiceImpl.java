@@ -82,18 +82,6 @@ public class MsgServiceImpl extends GenericService implements MsgService {
                     result.setMessage("success");//发送成功
                     result.setStatus(200);
 
-                    try{//无异常表示该用户存在
-                        userService.getUserViaPhone(phone);
-                        sendMsgOutputDto.setUserStatus("login");
-                    }catch(Exception e){//出现异常，需要进行分类讨论
-                        //其实只可能出现以下异常，在保证短信发送的前提下，自定义的数据格式异常永远不会捕获
-                        if(e.getClass() == UserNotExistException.class){
-                            sendMsgOutputDto.setUserStatus("register");
-                        }else{
-                            throw e;
-                        }
-                    }
-                    sendMsgOutputDto.setCommunities(communityService.selectAllOrderBySort());
                     sendMsgOutputDto.setState(true);
                     sendMsgOutputDto.setNote("短信发送成功");
                     //设置过期时间已经MD5校验码

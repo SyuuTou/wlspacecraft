@@ -59,4 +59,11 @@ public interface UserService {
      * 删除虚拟用户
      */
     void delVirtualUser();
+
+    /**
+     * 社区注册
+     * @param body 用户信息以及社区id
+     * @return 社区注册成功与否的标志
+     */
+    CommonDto<Boolean> communityRegistry(CommunityRegistryInputDto body);
 }

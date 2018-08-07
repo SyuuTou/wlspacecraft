@@ -24,15 +24,10 @@ public class LoginInputDto {
     /**
      * 社区id
      */
-    private Integer communityId;
+    //业务修改暂时废弃以下字段
+//    private Integer communityId;
 
-    public Integer getCommunityId() {
-        return communityId;
-    }
 
-    public void setCommunityId(Integer communityId) {
-        this.communityId = communityId;
-    }
 
     public String getMsgValidateStr() {
         return msgValidateStr;
@@ -73,7 +68,6 @@ public class LoginInputDto {
                 ", msgCode='" + msgCode + '\'' +
                 ", msgValidateStr='" + msgValidateStr + '\'' +
                 ", expire=" + expire +
-                ", communityId=" + communityId +
                 '}';
     }
 }

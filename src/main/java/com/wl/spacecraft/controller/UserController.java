@@ -68,6 +68,29 @@ public class UserController extends GenericService {
     }
 
     /**
+     * 注册社区
+     *
+     * @param body
+     * @return
+     */
+    @PostMapping("community/registry")
+    public CommonDto<Boolean> communityRegistry(@RequestBody CommunityRegistryInputDto body) {
+        System.err.println(body);
+        CommonDto<Boolean> result = new CommonDto<>();
+        try {
+            result = userService.communityRegistry(body);
+        } catch (Exception e) {
+            this.LOGGER.info(e.getMessage(), e.fillInStackTrace());
+
+            result.setData(null);
+            result.setMessage(e instanceof ProjectException ? e.getMessage() : "failed");
+            result.setStatus(500);
+            result.setType(null);
+        }
+        return result;
+    }
+
+    /**
      * 查询用户数据，
      * @param body 缓存数据
      * @return  用户信息输出

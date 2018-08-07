@@ -28,7 +28,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -89,7 +88,7 @@ public class UserServiceImpl extends GenericService implements UserService {
     /**
      * 验证前端传递的appKey是否有效
      *
-     * @param appKey
+     * @param appKey 游戏app代码
      * @return true表示有效。false表示无效
      */
     private boolean validateAppKey(String appKey) {
@@ -339,19 +338,49 @@ public class UserServiceImpl extends GenericService implements UserService {
     @Override
     @Transactional
     public void delVirtualUser() {
-        AppUser appUser=new AppUser();
+        AppUser appUser = new AppUser();
         //虚拟用户
         appUser.setIsReal(0);
         List<AppUser> select = appUserMapper.select(appUser);
-        for (AppUser e:select
-             ) {
+        for (AppUser e : select
+        ) {
             String phonenum = e.getPhonenum();
-            UserGame ug=new UserGame();
+            UserGame ug = new UserGame();
             ug.setPhonenum(phonenum);
             userGameMapper.delete(ug);
 
         }
         appUserMapper.delete(appUser);
+    }
+
+    @Override
+    @Transactional
+    public CommonDto<Boolean> communityRegistry(CommunityRegistryInputDto body) {
+        //进行用户有效性判断
+        validateUser(body.getPhone(), body.getToken(), body.getExpire(), body.getTokenValidateStr());
+
+        CommonDto<Boolean> result = new CommonDto<>();
+        //查询该手机号码的用户
+        AppUser appUser = new AppUser();
+        appUser.setPhonenum(body.getPhone());
+        appUser = appUserMapper.selectOne(appUser);
+
+        if (appUser.getCommunityId() != null) {
+//            throw new ProjectException("用户已经注册社区");
+            result.setData(false);
+            result.setStatus(500);
+            result.setMessage("用户已经注册社区");
+        }else{
+            appUser.setCommunityId(body.getCommunityId());
+            appUserMapper.updateByPrimaryKeySelective(appUser);
+
+            result.setData(true);
+            result.setStatus(200);
+            result.setMessage("success");
+        }
+
+        result.setType(null);
+        return result;
     }
 
     @Override
@@ -380,20 +409,16 @@ public class UserServiceImpl extends GenericService implements UserService {
 
         try {//无异常，表示存在该用户，更新用户的token以及登录时间
             AppUser user = this.getUserByPhone(body.getPhone());
-            //设置社区id为null即可，后端不做任何更新
-            //TODO 社区id，登录
-            user.setCommunityId(null);
+
             user.setToken(token);
             user.setLastLoginTime(new Date());
             appUserMapper.updateByPrimaryKeySelective(user);
 
             output.setNote("登录成功");
+            output.setUserStatus("login");
         } catch (Exception e) { //捕获到异常说明用户不存在，执行新用户的注册
 
             AppUser user = new AppUser();
-            //设置社区id
-            //TODO。注册
-            user.setCommunityId(body.getCommunityId());
             user.setPhonenum(body.getPhone());
             user.setToken(token);
             //新用户注册赠送金币
@@ -403,8 +428,10 @@ public class UserServiceImpl extends GenericService implements UserService {
             appUserMapper.insertSelective(user);
 
             output.setNote("注册成功");
+            output.setUserStatus("register");
         }
 
+        output.setCommunities(communityService.selectAllOrderBySort());
         output.setResult(true);
 
         CommonDto<LoginOutputDto> result = new CommonDto<>();
@@ -451,6 +478,7 @@ public class UserServiceImpl extends GenericService implements UserService {
         UserInfoOutputDto outputDto = new UserInfoOutputDto();
         //设置用户的基本信息数据
         UserInfoCommonOutputDto user = new UserInfoCommonOutputDto();
+        //取得社区id
         user.setCommunityId(this.getUserByPhone(body.getPhone()).getCommunityId());
         user.setPhone(body.getPhone());
         user.setToken(body.getToken());
@@ -480,11 +508,7 @@ public class UserServiceImpl extends GenericService implements UserService {
     public CommonDto<GameStartOutputDto> startGame(GameStartInputDto body) {
 
         //进行用户有效性判断
-        try {
-            validateUser(body.getPhone(), body.getToken(), body.getExpire(), body.getTokenValidateStr());
-        } catch (Exception e) {
-            throw e;
-        }
+        validateUser(body.getPhone(), body.getToken(), body.getExpire(), body.getTokenValidateStr());
 
         //验证appKey的正确性
         boolean flag = validateAppKey(body.getAppKey());
@@ -546,11 +570,8 @@ public class UserServiceImpl extends GenericService implements UserService {
     @Transactional
     public CommonDto<GameOverOutputDto> overGame(GameOverInputDto body) {
         //进行用户身份信息校验
-        try {
-            validateUser(body.getPhone(), body.getToken(), body.getExpire(), body.getTokenValidateStr());
-        } catch (Exception e) {
-            throw e;
-        }
+        validateUser(body.getPhone(), body.getToken(), body.getExpire(), body.getTokenValidateStr());
+
         //根据游戏id搜寻用户唯一的一条游戏记录，并获取appKey
         UserGame userGame = new UserGame();
         userGame.setGameId(body.getGameId());
@@ -618,11 +639,7 @@ public class UserServiceImpl extends GenericService implements UserService {
             throw new DataFormatException("提币地址输入有误");
         }
         //进行用户身份信息校验
-        try {
-            validateUser(body.getPhone(), body.getToken(), body.getExpire(), body.getTokenValidateStr());
-        } catch (Exception e) {
-            throw e;
-        }
+        validateUser(body.getPhone(), body.getToken(), body.getExpire(), body.getTokenValidateStr());
 
         if (body.getIntegralChange() < Integer.valueOf(env.getProperty("moneyDrawBaseLine"))) {
             throw new AccountException("最小提币数量500 OG");
@@ -677,11 +694,7 @@ public class UserServiceImpl extends GenericService implements UserService {
     @Transactional(readOnly = true)
     public CommonDto<GameRankOutputDto> gameRank(String phone, RankPagingInputDto body) {
 
-        try {
-            this.getUserByPhone(phone);
-        } catch (Exception e) {
-            throw e;
-        }
+        this.getUserByPhone(phone);
 
         CommonDto<GameRankOutputDto> result = new CommonDto<>();
         //分页输出数据
@@ -730,7 +743,7 @@ public class UserServiceImpl extends GenericService implements UserService {
             rankOutputDto.setOgRewardAmount(this.getOgRewardAmount(null));
         }
         //排名索引设置以及手机号加密处理
-        Long index = body.getStart() + 1;
+        long index = body.getStart() + 1;
         for (GameRankEntity e : gameRankEntities) {
             e.setRank(index++);
             e.setPhone(e.getPhone().replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2"));
@@ -742,7 +755,7 @@ public class UserServiceImpl extends GenericService implements UserService {
         pod.setPageSize(body.getPageSize());
 
         rankOutputDto.setRankList(pod);
-        //TODO 用户排名
+        //取得用户排名
         Long myRank = this.getMyRank(phone, body.getCommunityId());
         switch (String.valueOf(myRank)) {
             case "-1": {
