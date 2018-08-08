@@ -8,6 +8,7 @@
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="app_name" property="appName" jdbcType="VARCHAR" />
     <result column="app_key" property="appKey" jdbcType="VARCHAR" />
+    <result column="app_bkground" property="appBkground" jdbcType="VARCHAR" />
     <result column="app_description" property="appDescription" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="del_flag" property="delFlag" jdbcType="INTEGER" />

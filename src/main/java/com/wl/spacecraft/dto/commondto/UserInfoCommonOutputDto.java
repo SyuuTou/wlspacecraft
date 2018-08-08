@@ -1,6 +1,10 @@
 package com.wl.spacecraft.dto.commondto;
 
+import com.wl.spacecraft.dto.responsedto.MetaAppOutputDto;
+
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 用户数据输出实体
@@ -29,14 +33,25 @@ public class UserInfoCommonOutputDto {
     private Integer amount;
 
     /**
-     * 今日已获取og数量
+     * 今日已获取og数量,
+     * deprecated
      */
-    private Integer limit;
+//    private Integer limit;
 
     /**
      * og币每日获取上限
      */
     private Integer topLimit;
+    /**
+     * 返回各个游戏的今日已领取上限
+     * deprecated
+     */
+//    private Map<String, Integer> myTodaytGotLimitMap;
+    /**
+     *返回各个游戏的今日已领取上限
+     * list
+     */
+    private List<MetaAppOutputDto> myAppOgTodayAmountList;
     /**
      * 社区id
      */
@@ -49,6 +64,7 @@ public class UserInfoCommonOutputDto {
     public void setCommunityId(Integer communityId) {
         this.communityId = communityId;
     }
+
 
     public Integer getTopLimit() {
         return topLimit;
@@ -78,9 +94,6 @@ public class UserInfoCommonOutputDto {
         return amount;
     }
 
-    public Integer getLimit() {
-        return limit;
-    }
 
     public void setPhone(String phone) {
         this.phone = phone;
@@ -102,8 +115,13 @@ public class UserInfoCommonOutputDto {
         this.amount = amount;
     }
 
-    public void setLimit(Integer limit) {
-        this.limit = limit;
+
+    public List<MetaAppOutputDto> getMyAppOgTodayAmountList() {
+        return myAppOgTodayAmountList;
+    }
+
+    public void setMyAppOgTodayAmountList(List<MetaAppOutputDto> myAppOgTodayAmountList) {
+        this.myAppOgTodayAmountList = myAppOgTodayAmountList;
     }
 
     @Override
@@ -114,8 +132,8 @@ public class UserInfoCommonOutputDto {
                 ", expire=" + expire +
                 ", tokenValidateStr='" + tokenValidateStr + '\'' +
                 ", amount=" + amount +
-                ", limit=" + limit +
                 ", topLimit=" + topLimit +
+                ", myAppOgTodayAmountList=" + myAppOgTodayAmountList +
                 ", communityId=" + communityId +
                 '}';
     }

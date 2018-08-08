@@ -67,9 +67,6 @@ public class MsgServiceImpl extends GenericService implements MsgService {
         HttpResponse httpResponse = MsgSendUtil.sendSms(phone, verifyCode);
         String jsonString = EntityUtils.toString(httpResponse.getEntity());
 
-        System.err.println("jsonString是否为空字符串--{"+jsonString.equals("")+"}");
-        System.err.println("jsonString是否等于null--{"+jsonString == null +"}");
-
         if ( StringUtils.isNotBlank(jsonString) ){
             JSONObject jsonObject = JSONObject.parseObject(jsonString);
 
@@ -87,6 +84,8 @@ public class MsgServiceImpl extends GenericService implements MsgService {
                     //设置过期时间已经MD5校验码
                     sendMsgOutputDto.setExpire(expire);
                     sendMsgOutputDto.setMsgValidateStr(verification);
+
+                    System.err.println("验证码发送成功之后返回体："+sendMsgOutputDto);
                 } break;
                 default : { //发送失败
                     result.setMessage("failed");

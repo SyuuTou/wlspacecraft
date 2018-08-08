@@ -2,6 +2,7 @@ package com.wl.spacecraft.service.impl;
 
 import com.wl.spacecraft.dto.commondto.CommonDto;
 import com.wl.spacecraft.dto.commondto.GameConfigCommonOutputDto;
+import com.wl.spacecraft.dto.responsedto.MetaAppOutputDto;
 import com.wl.spacecraft.exception.project.ProjectException;
 import com.wl.spacecraft.mapper.*;
 import com.wl.spacecraft.model.*;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -33,10 +35,11 @@ public class GameServiceImpl extends GenericService implements GameService {
     @Autowired
     private MetaAppMapper metaAppMapper;
 
+    @Autowired
+    private ConfigMinRechargeAmountMapper configMinRechargeAmountMapper;
 
     @Override
     @Transactional
-
     public Integer getConfigOgToday() {
 
         Example example = new Example(ConfigOgToday.class);
@@ -56,6 +59,19 @@ public class GameServiceImpl extends GenericService implements GameService {
 
         return ogToday;
 
+    }
+
+    @Override
+    public ConfigMinRechargeAmount getMinRechargeAmountRecord() {
+
+        Example example = new Example(ConfigMinRechargeAmount.class);
+        example.setOrderByClause("create_time desc");
+
+        List<ConfigMinRechargeAmount> list = configMinRechargeAmountMapper.selectByExample(example);
+        if(list.size()>0){
+            return list.get(0);
+        }
+        return null;
     }
 
     @Override
@@ -116,10 +132,37 @@ public class GameServiceImpl extends GenericService implements GameService {
         return currentDropOg;
     }
 
+    @Override
+    public CommonDto<List<MetaAppOutputDto>> metaAppInfo() {
+        CommonDto<List<MetaAppOutputDto>> result=new CommonDto<>();
+
+        List<MetaApp> metaApps = this.selectAllApps();
+        List<MetaAppOutputDto> list=new ArrayList<>();
+        for (MetaApp e:metaApps
+             ) {
+            MetaAppOutputDto obj=new MetaAppOutputDto();
+            obj.setAppBkground(e.getAppBkground());
+            obj.setAppKey(e.getAppKey());
+            obj.setAppName(e.getAppName());
+            obj.setAppDescription(e.getAppDescription());
+            list.add(obj);
+        }
+
+        result.setData(list);
+        result.setMessage("success");
+        result.setStatus(200);
+
+        return result;
+    }
+
 
     @Override
     public List<MetaApp> selectAllApps() {
-        return metaAppMapper.selectAll();
+        MetaApp obj=new MetaApp();
+        //设置有效标志
+        obj.setDelFlag(0);
+        List<MetaApp> list = metaAppMapper.select(obj);
+        return list;
     }
 
     @Override
@@ -127,7 +170,7 @@ public class GameServiceImpl extends GenericService implements GameService {
     public CommonDto<GameConfigCommonOutputDto> getGameConfig() {
         CommonDto<GameConfigCommonOutputDto> result = new CommonDto<>();
 
-        MetaGameData config = metaGameDataMapper.getGameConfig();
+
 
         GameConfigCommonOutputDto outputData = new GameConfigCommonOutputDto();
 
@@ -143,11 +186,13 @@ public class GameServiceImpl extends GenericService implements GameService {
 
         }
 
-        if (config != null) {
-            outputData.setStoneCreateSpeed(config.getStoneCreateSpeed());
-            outputData.setStoneMoveSpeed(config.getStoneMoveSpeed());
-            outputData.setOgCreateSpeed(config.getOgCreateSpeed());
-        }
+        //Deprecated,暂时废弃以下游戏数据
+//        MetaGameData config = metaGameDataMapper.getGameConfig();
+//        if (config != null) {
+//            outputData.setStoneCreateSpeed(config.getStoneCreateSpeed());
+//            outputData.setStoneMoveSpeed(config.getStoneMoveSpeed());
+//            outputData.setOgCreateSpeed(config.getOgCreateSpeed());
+//        }
 
         result.setData(outputData);
         result.setMessage("游戏配置元数据");

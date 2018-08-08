@@ -6,21 +6,27 @@ import com.wl.spacecraft.dto.commondto.UserInfoCommonOutputDto;
 import com.wl.spacecraft.dto.requestdto.*;
 import com.wl.spacecraft.dto.responsedto.*;
 import com.wl.spacecraft.exception.project.ProjectException;
+import com.wl.spacecraft.model.MetaApp;
 import com.wl.spacecraft.service.common.GenericService;
+import com.wl.spacecraft.service.game.GameService;
 import com.wl.spacecraft.service.user.MsgService;
 import com.wl.spacecraft.service.user.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @RestController
 public class UserController extends GenericService {
 
     @Resource
-    UserService userService;
+    private UserService userService;
 
     @Resource
-    MsgService msgService;
+    private MsgService msgService;
+
+    @Resource
+    private GameService gameService;
 
     /**
      * 短信验证码发送
@@ -109,6 +115,26 @@ public class UserController extends GenericService {
             result.setMessage(e instanceof ProjectException ? e.getMessage() : "failed");
             result.setStatus(500);
             result.setType("query");
+        }
+        return result;
+    }
+
+    /**
+     *
+     * @return
+     */
+    @GetMapping("meta/app")
+    public CommonDto<List<MetaAppOutputDto>> metaAppInfo() {
+
+        CommonDto<List<MetaAppOutputDto>> result = new CommonDto<>();
+        try {
+            result = gameService.metaAppInfo();
+        } catch (Exception e) {
+            this.LOGGER.info(e.getMessage(), e.fillInStackTrace());
+
+            result.setData(null);
+            result.setMessage(e instanceof ProjectException ? e.getMessage() : "failed");
+            result.setStatus(500);
         }
         return result;
     }

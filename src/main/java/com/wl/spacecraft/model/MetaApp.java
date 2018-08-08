@@ -27,6 +27,13 @@ public class MetaApp {
     private String appKey;
 
     /**
+     * app背景图片
+     */
+    @Column(name = "app_bkground")
+    private String appBkground;
+
+
+    /**
      * app描述
      */
     @Column(name = "app_description")
@@ -95,12 +102,21 @@ public class MetaApp {
         this.delFlag = delFlag;
     }
 
+    public String getAppBkground() {
+        return appBkground;
+    }
+
+    public void setAppBkground(String appBkground) {
+        this.appBkground = appBkground;
+    }
+
     @Override
     public String toString() {
         return "MetaApp{" +
                 "id=" + id +
                 ", appName='" + appName + '\'' +
                 ", appKey='" + appKey + '\'' +
+                ", appBkground='" + appBkground + '\'' +
                 ", appDescription='" + appDescription + '\'' +
                 ", createTime=" + createTime +
                 ", delFlag=" + delFlag +

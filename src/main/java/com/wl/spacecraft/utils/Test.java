@@ -15,6 +15,8 @@ public class Test{
         ArrayList<String> strings = new ArrayList<>();
         strings.add("qwe");
         System.err.println(strings.contains("qwe"));;
+
+        System.err.println(new ArrayList<>().get(0));
     }
 
 }

@@ -204,6 +204,44 @@ public class UserServiceImpl extends GenericService implements UserService {
     }
 
     /**
+     * 获取用户今日在每款游戏app中获取的og总量
+     *
+     * @param phone 用户的手机号
+     * @return key：appKey ;value:用户在在app中的今日获取总量
+     */
+    private List<MetaAppOutputDto> getMyAppOgTodayAmountList(String phone) {
+//        HashMap<String, Integer> map = new HashMap<String, Integer>();
+        //获取所有的app元数据
+//        List<MetaApp> metaApps = gameService.selectAllApps();
+//        //start
+//        List<MetaAppOutputDto> list = new ArrayList<>();
+//        for (MetaApp e : metaApps
+//        ) {
+//            MetaAppOutputDto obj = new MetaAppOutputDto();
+//            obj.setAppName(e.getAppName());
+//            obj.setAppKey(e.getAppKey());
+//            obj.setAppBkground(e.getAppBkground());
+//            obj.setAppDescription(e.getAppDescription());
+//            obj.setTodaytGotAmount(this.getTodayLimiteByApp(phone, e.getAppKey()));
+//            list.add(obj);
+//        }
+        //获取所有的app元数据
+        CommonDto<List<MetaAppOutputDto>> listCommonDto = gameService.metaAppInfo();
+        List<MetaAppOutputDto> list = listCommonDto.getData();
+        //设置每个app的用户今日获取总量
+        list.forEach((e)->{
+            e.setTodaytGotAmount(this.getTodayLimiteByApp(phone, e.getAppKey()));
+        });
+        return list;
+        //end
+//        for (MetaApp e : metaApps
+//        ) {
+//            map.put(e.getAppKey(), this.getTodayLimiteByApp(phone, e.getAppKey()));
+//        }
+//        return map;
+    }
+
+    /**
      * @param phone  用户手机号
      * @param appKey 游戏Key
      * @return 返回今日内用户在这个游戏
@@ -317,18 +355,25 @@ public class UserServiceImpl extends GenericService implements UserService {
 
     //供测试使用
     @Override
+    @Transactional
     public Object test() {
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("ogtoday", gameService.getConfigOgToday());
-        map.put("ogPrice", gameService.getConfigOgPrice());
-        map.put("diff", gameService.getConfigGameDifficulty());
-        map.put("drop", gameService.getConfigDropogAmount());
-        Integer qwe = this.getTodayLimiteByApp("13691066251", "SPACECRAFT");
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("ogtoday", gameService.getConfigOgToday());
+//        map.put("ogPrice", gameService.getConfigOgPrice());
+//        map.put("diff", gameService.getConfigGameDifficulty());
+//        map.put("drop", gameService.getConfigDropogAmount());
+//        Integer qwe = this.getTodayLimiteByApp("13691066251", "SPACECRAFT");
 //        map.put("topLimit",topLimit);
+        AppUser au =new AppUser();
+        au.setUserid(1);
+        au.setNickName("小明");
+        appUserMapper.updateByPrimaryKeySelective(au);
+        throw new ProjectException("自行抛出的异常");
+//        return null;
 
-        return qwe;
     }
+
 
     @Override
     public AppUser getUserViaPhone(String phone) {
@@ -370,7 +415,7 @@ public class UserServiceImpl extends GenericService implements UserService {
             result.setData(false);
             result.setStatus(500);
             result.setMessage("用户已经注册社区");
-        }else{
+        } else {
             appUser.setCommunityId(body.getCommunityId());
             appUserMapper.updateByPrimaryKeySelective(appUser);
 
@@ -438,22 +483,26 @@ public class UserServiceImpl extends GenericService implements UserService {
 
         //设置用户的信息
         UserInfoCommonOutputDto user = new UserInfoCommonOutputDto();
-        //TODO 设置社群id
-        user.setCommunityId(this.getUserByPhone(body.getPhone()).getCommunityId());
+
         user.setPhone(body.getPhone());
         user.setToken(token);
-        user.setAmount(this.getAmountByUser(body.getPhone()));
         user.setExpire(expire);
-        user.setLimit(this.getTodayLimite(body.getPhone()));
         user.setTokenValidateStr(tokenValidateStr);
-        user.setTopLimit(gameService.getConfigOgToday());
 
+        //注册用户此刻社群id是为null的
+        user.setCommunityId(this.getUserByPhone(body.getPhone()).getCommunityId());
+        user.setAmount(this.getAmountByUser(body.getPhone()));
+        //返回用户在今日每个app已经获取的og总量
+        user.setMyAppOgTodayAmountList(this.getMyAppOgTodayAmountList(body.getPhone()));
+
+        user.setTopLimit(gameService.getConfigOgToday());
         output.setUserData(user);
 
         //设置游戏元数据
         GameConfigCommonOutputDto gameData = gameService.getGameConfig().getData();
-
         output.setGameData(gameData);
+
+        System.err.println("登录成功之后返回体：" + output);
 
         result.setData(output);
         result.setMessage("success");
@@ -467,15 +516,11 @@ public class UserServiceImpl extends GenericService implements UserService {
     @Transactional(readOnly = true)
     public CommonDto<UserInfoOutputDto> getUserInfo(UserInfoInputDto body) {
         //进行用户有效性判断
-        try {
-            validateUser(body.getPhone(), body.getToken(), body.getExpire(), body.getTokenValidateStr());
-        } catch (Exception e) {
-            throw e;
-        }
+        validateUser(body.getPhone(), body.getToken(), body.getExpire(), body.getTokenValidateStr());
 
         CommonDto<UserInfoOutputDto> result = new CommonDto<>();
-
         UserInfoOutputDto outputDto = new UserInfoOutputDto();
+
         //设置用户的基本信息数据
         UserInfoCommonOutputDto user = new UserInfoCommonOutputDto();
         //取得社区id
@@ -484,7 +529,9 @@ public class UserServiceImpl extends GenericService implements UserService {
         user.setToken(body.getToken());
         user.setAmount(this.getAmountByUser(body.getPhone()));
         user.setExpire(body.getExpire());
-        user.setLimit(this.getTodayLimite(body.getPhone()));
+        //返回用户在今日内没局app内已经获取的游戏总量
+        user.setMyAppOgTodayAmountList(this.getMyAppOgTodayAmountList(body.getPhone()));
+
         user.setTokenValidateStr(body.getTokenValidateStr());
         user.setTopLimit(gameService.getConfigOgToday());
 

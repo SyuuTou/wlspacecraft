@@ -34,7 +34,7 @@
             <!--&lt;!&ndash;oracle 配置&ndash;&gt;-->
             <!--&lt;!&ndash;<generatedKey column="id" sqlStatement="select SEQ_{1}.nextval from dual" identity="false" type="pre"/>&ndash;&gt;-->
         <!--</table>-->
-        <table tableName="sys_menu">
+        <table tableName="block_station">
             <!--mysql 配置-->
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
             <!--oracle 配置-->

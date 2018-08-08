@@ -32,7 +32,6 @@ public class LoginOutputDto {
      */
     private UserInfoCommonOutputDto userData;
 
-
     /**
      * 游戏数据
      */

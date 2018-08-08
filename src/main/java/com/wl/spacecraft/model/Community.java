@@ -3,6 +3,7 @@ package com.wl.spacecraft.model;
 import java.util.Date;
 import javax.persistence.*;
 
+@Table(name = "community")
 public class Community {
     /**
      * 社区id_自动生成

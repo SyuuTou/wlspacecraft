@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.*;
 
+/**
+ * Eth同OG兑换比例
+ */
 @Table(name = "config_og_price")
 public class ConfigOgPrice {
     /**

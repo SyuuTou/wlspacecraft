@@ -2,9 +2,12 @@ package com.wl.spacecraft.service.game;
 
 import com.wl.spacecraft.dto.commondto.CommonDto;
 import com.wl.spacecraft.dto.commondto.GameConfigCommonOutputDto;
+import com.wl.spacecraft.dto.responsedto.MetaAppOutputDto;
+import com.wl.spacecraft.model.ConfigMinRechargeAmount;
 import com.wl.spacecraft.model.ConfigOgPrice;
 import com.wl.spacecraft.model.MetaApp;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface GameService {
@@ -26,6 +29,12 @@ public interface GameService {
     Integer getConfigOgToday();
 
     /**
+     * 获取最小充值总量
+     * @return
+     */
+    ConfigMinRechargeAmount getMinRechargeAmountRecord();
+
+    /**
      * 获取Eth同OG兑换比例
      * @return
      */
@@ -44,4 +53,10 @@ public interface GameService {
     Integer getConfigDropogAmount();
 
 
+
+    /**
+     * 获取游戏数据
+     * @return
+     */
+    CommonDto<List<MetaAppOutputDto>> metaAppInfo();
 }
