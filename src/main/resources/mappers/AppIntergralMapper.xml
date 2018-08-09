@@ -8,6 +8,7 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="userid" jdbcType="INTEGER" property="userid" />
     <result column="wallet" jdbcType="VARCHAR" property="wallet" />
+    <result column="app_key" jdbcType="VARCHAR" property="appKey" />
     <result column="type" jdbcType="INTEGER" property="type" />
     <result column="integral_change" jdbcType="INTEGER" property="integralChange" />
     <result column="note" jdbcType="VARCHAR" property="note" />

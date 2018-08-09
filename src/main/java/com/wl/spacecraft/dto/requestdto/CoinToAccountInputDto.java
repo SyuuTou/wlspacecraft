@@ -21,6 +21,19 @@ public class CoinToAccountInputDto {
      * 提币地址
      */
     private String address;
+    /**
+     * appKey
+     * 作为提币时候游戏种类区分
+     */
+    private String appKey;
+
+    public String getAppKey() {
+        return appKey;
+    }
+
+    public void setAppKey(String appKey) {
+        this.appKey = appKey;
+    }
 
     public String getPhone() {
         return phone;
@@ -81,6 +94,7 @@ public class CoinToAccountInputDto {
                 ", tokenValidateStr='" + tokenValidateStr + '\'' +
                 ", integralChange=" + integralChange +
                 ", address='" + address + '\'' +
+                ", appKey='" + appKey + '\'' +
                 '}';
     }
 }

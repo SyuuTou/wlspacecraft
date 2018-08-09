@@ -3,6 +3,7 @@ package com.wl.spacecraft.dto.responsedto;
 import com.wl.spacecraft.dto.commondto.GameRankEntity;
 import com.wl.spacecraft.dto.commondto.PagingOutputDto;
 import com.wl.spacecraft.model.Community;
+import com.wl.spacecraft.model.CommunityGroup;
 
 
 public class GameRankOutputDto {
@@ -40,6 +41,20 @@ public class GameRankOutputDto {
      *  只有存在社区id时会存在该对象
      */
     private Community myCommunity;
+    /**
+     * 我的群组信息
+     *  只有存在群组id时会存在该对象
+     */
+    private CommunityGroup myGroup;
+
+    public CommunityGroup getMyGroup() {
+        return myGroup;
+    }
+
+
+    public void setMyGroup(CommunityGroup myGroup) {
+        this.myGroup = myGroup;
+    }
 
     public String getMyRankNote() {
         return myRankNote;
@@ -107,6 +122,7 @@ public class GameRankOutputDto {
                 ", myRankNote='" + myRankNote + '\'' +
                 ", myOgAmount=" + myOgAmount +
                 ", myCommunity=" + myCommunity +
+                ", myGroup=" + myGroup +
                 '}';
     }
 }

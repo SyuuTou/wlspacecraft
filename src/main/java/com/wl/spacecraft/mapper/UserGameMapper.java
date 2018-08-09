@@ -61,7 +61,7 @@ public interface UserGameMapper extends OwnerMapper<UserGame> {
      * 获取用户获取金币排行榜，不分页
      * @return
      */
-    List<GameRankEntity> getRankList(@Param("communityUsersPhones") List<String> communityUsersPhones);
+    List<GameRankEntity> getRankList(@Param("usersPhones") List<String> usersPhones);
 
 
 }

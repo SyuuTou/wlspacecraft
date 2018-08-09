@@ -32,18 +32,11 @@
       <foreach collection="communityUsersPhones" index="index" item="item" open="(" close=")" separator=",">#{item}</foreach>
     </if>
 
-    <!--<choose>-->
-      <!--<when test="groupUserPhones != null and groupUserPhones.size &gt; 0">-->
-          <!--and phonenum in-->
-          <!--<foreach collection="groupUserPhones" index="index" item="item" open="(" close=")" separator=",">#{item}</foreach>-->
-      <!--</when>-->
-      <!--<otherwise>-->
-        <!--<if test="communityUsersPhones != null and communityUsersPhones.size &gt; 0">-->
-          <!--and phonenum in-->
-          <!--<foreach collection="communityUsersPhones" index="index" item="item" open="(" close=")" separator=",">#{item}</foreach>-->
-        <!--</if>-->
-      <!--</otherwise>-->
-    <!--</choose>-->
+    <!--获取子群内排行-->
+    <if test="groupUserPhones != null and groupUserPhones.size &gt; 0">
+      and phonenum in
+      <foreach collection="groupUserPhones" index="index" item="item" open="(" close=")" separator=",">#{item}</foreach>
+    </if>
 
     <!--获取游戏内排行-->
     <if test="appKey != null">
@@ -63,6 +56,13 @@
         and phonenum in
         <foreach collection="communityUsersPhones" index="index" item="item" open="(" close=")" separator=",">#{item}</foreach>
       </if>
+
+    <!--获取子群内排行-->
+    <if test="groupUserPhones != null and groupUserPhones.size &gt; 0">
+      and phonenum in
+      <foreach collection="groupUserPhones" index="index" item="item" open="(" close=")" separator=",">#{item}</foreach>
+    </if>
+
       <!--获取游戏内排行-->
       <if test="appKey != null">
         and app_key =#{appKey}
@@ -76,9 +76,9 @@
     select phonenum,case when isnull(sum(og_score)) then 0 else sum(og_score) end ogObtain
       from user_game
       where 1=1
-    <if test="communityUsersPhones != null and communityUsersPhones.size &gt; 0">
+    <if test="usersPhones != null and usersPhones.size &gt; 0">
       and phonenum in
-      <foreach collection="communityUsersPhones" index="index" item="item" open="(" close=")" separator=",">#{item}</foreach>
+      <foreach collection="usersPhones" index="index" item="item" open="(" close=")" separator=",">#{item}</foreach>
     </if>
     group by phonenum
     order by isnull(phonenum) asc, sum(og_score) desc

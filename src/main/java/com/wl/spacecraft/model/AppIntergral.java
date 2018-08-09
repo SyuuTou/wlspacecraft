@@ -21,10 +21,13 @@ public class AppIntergral {
      * 钱包地址
      */
     private String wallet;
+    /**
+     * appKey
+     */
+    private String appKey;
 
     /**
-     * 1充币
-            2提币
+     * 1充币，2提币
      */
     private Integer type;
 
@@ -45,8 +48,7 @@ public class AppIntergral {
     private Integer system;
 
     /**
-     * 1待审核
-2已审核
+     * 1待审核，2已审核
      */
     @Column(name = "audit_status")
     private Integer auditStatus;
@@ -72,6 +74,14 @@ public class AppIntergral {
      */
     @Column(name="auditor")
     private Integer auditor;
+
+    public String getAppKey() {
+        return appKey;
+    }
+
+    public void setAppKey(String appKey) {
+        this.appKey = appKey;
+    }
 
     /**
      * 获取记录id

@@ -214,7 +214,7 @@ public class UserController extends GenericService {
     @PostMapping("og/rank{phone}")
     public CommonDto<GameRankOutputDto> gameRank(@PathVariable String phone, @RequestBody RankPagingInputDto body) {
 
-        System.err.println("分页参数--》》 " + body);
+        System.err.println("分页参数--> :" + body);
         System.err.println(phone);
 
         CommonDto<GameRankOutputDto> result = new CommonDto<>();

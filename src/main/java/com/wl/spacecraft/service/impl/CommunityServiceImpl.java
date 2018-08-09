@@ -57,7 +57,40 @@ public class CommunityServiceImpl extends GenericService implements CommunitySer
     }
 
     @Override
-    public Community getCommunityById(Integer communityId) {
-        return communityMapper.selectByPrimaryKey(communityId);
+    public Community getCommunityByCommunityId(Integer communityId) {
+
+//        Example example = new Example(Community.class);
+//        example.and().andEqualTo("delFlag",0).andEqualTo("id",communityId);
+        Community community=new Community();
+        community.setDelFlag(0);
+        community.setId(communityId);
+        List<Community> communities = communityMapper.select(community);
+        if(communities.size()>0){
+            return communities.get(0);
+        }
+        return null;
+    }
+
+    @Override
+    public CommunityGroup getGroupByGroupId(Integer groupId) {
+
+        Example example = new Example(CommunityGroup.class);
+        example.and().andEqualTo("delFlag",0).andEqualTo("id",groupId);
+
+        CommunityGroup group=new CommunityGroup();
+        group.setDelFlag(0);
+        group.setId(groupId);
+
+        List<CommunityGroup> communityGroups = communityGroupMapper.select(group);
+
+        if(communityGroups.size()>0){
+            return communityGroups.get(0);
+        }
+        return null;
+    }
+
+    @Override
+    public Object test() {
+        return this.getCommunityByCommunityId(1);
     }
 }

@@ -49,8 +49,6 @@ public class TestController extends GenericController {
     @Resource
     private CommunityGroupMapper communityGroupMapper;
     @Resource
-    private CommunityService communityServicem;
-    @Resource
     private ConfigWechatMapper configWechatMapper;
 
 
@@ -67,14 +65,15 @@ public class TestController extends GenericController {
 //        List<AppIntergral> appIntergrals = appIntergralMapper.selectAll();
 //        List<BlockStation> blockStations = blockStationMapper.selectAll();
 //        List<CommunityGroup> communityGroups = communityGroupMapper.selectAll();
-        List<ConfigWechat> configWechats = configWechatMapper.selectAllOrderBySort();
+//        List<ConfigWechat> configWechats = configWechatMapper.selectAllOrderBySort();
+        Object test = communityService.test();
 //        AppUser appUser = new AppUser();
 //        appUser.setCommunityId(null);
 //        List<AppUser> select = appUserMapper.select(appUser);
 //
 //
 //        Object test = userService.test();
-        return configWechats;
+        return test;
     }
 
     @GetMapping("test2")

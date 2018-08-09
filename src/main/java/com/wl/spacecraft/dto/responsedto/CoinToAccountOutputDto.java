@@ -10,19 +10,9 @@ public class CoinToAccountOutputDto {
 
     private String phone;
     /**
-     * og总数
+     * 用户的og总数
      */
     private Integer  amount;
-//    /**
-//     * 今日已获取og数量
-//     */
-//    private Integer limit;
-//
-//    /**
-//     * 每日获取游戏积分上限
-//     */
-//    private Integer topLimit;
-
     public boolean isResult() {
         return result;
     }

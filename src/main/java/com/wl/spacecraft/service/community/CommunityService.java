@@ -1,6 +1,7 @@
 package com.wl.spacecraft.service.community;
 
 import com.wl.spacecraft.model.Community;
+import com.wl.spacecraft.model.CommunityGroup;
 
 import java.util.List;
 
@@ -16,6 +17,16 @@ public interface CommunityService {
      * 根据社区id获取社群信息
      * @return 返回社群信息
      */
-    Community getCommunityById(Integer communityId);
+    Community getCommunityByCommunityId(Integer communityId);
+
+    /**
+     * 根据群组id获取群组信息
+     * @return 返回群组信息
+     */
+    CommunityGroup getGroupByGroupId(Integer groupId);
+    /**
+     * 测试用
+     */
+    Object test();
 
 }
