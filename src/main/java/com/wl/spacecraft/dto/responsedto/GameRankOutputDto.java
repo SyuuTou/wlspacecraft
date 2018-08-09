@@ -22,6 +22,10 @@ public class GameRankOutputDto {
      */
     private String phone;
     /**
+     * 排行类型
+     */
+    private String rankType;
+    /**
      * 用户的当前排名
      *  存在社区id时候表示社区排名
      *  不存在社区id时表示世界排名
@@ -51,6 +55,13 @@ public class GameRankOutputDto {
         return myGroup;
     }
 
+    public String getRankType() {
+        return rankType;
+    }
+
+    public void setRankType(String rankType) {
+        this.rankType = rankType;
+    }
 
     public void setMyGroup(CommunityGroup myGroup) {
         this.myGroup = myGroup;
@@ -118,6 +129,7 @@ public class GameRankOutputDto {
                 "rankList=" + rankList +
                 ", ogRewardAmount=" + ogRewardAmount +
                 ", phone='" + phone + '\'' +
+                ", rankType='" + rankType + '\'' +
                 ", myRank=" + myRank +
                 ", myRankNote='" + myRankNote + '\'' +
                 ", myOgAmount=" + myOgAmount +

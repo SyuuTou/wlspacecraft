@@ -282,8 +282,7 @@ public class UserServiceImpl extends GenericService implements UserService {
         //排行List
         List<GameRankEntity> rankList;
         if (communityId != null) {
-            if (groupId != null) {//子群排名
-
+            if (groupId != null) {//群组排名
                 List<String> userPhonesByGroupId = this.getUserPhonesByCommunityOrGroupId(groupId, GROUP_KEY);
                 if (userPhonesByGroupId == null || userPhonesByGroupId.size() == 0) {
                     System.err.println("该群组暂无用户");
@@ -355,7 +354,7 @@ public class UserServiceImpl extends GenericService implements UserService {
             userPhones.add(e.getPhonenum());
         }
 
-        System.err.println(key+"下 " + communityOrGroupId + " ：下的所有用户-->" + userPhones);
+        System.err.println(key + "下 " + communityOrGroupId + " ：下的所有用户-->" + userPhones);
 
         return userPhones;
     }
@@ -777,6 +776,9 @@ public class UserServiceImpl extends GenericService implements UserService {
         if (body.getCommunityId() != null) {//获取社区或者子群排行信息
 
             if (body.getGroupId() != null) {//获取子群排行
+                //设置排行类型
+                rankOutputDto.setRankType("群组排行");
+
                 List<String> userPhones = this.getUserPhonesByCommunityOrGroupId(body.getGroupId(), GROUP_KEY);
                 if (userPhones != null && userPhones.size() > 0) {
                     //设置子群用户
@@ -792,6 +794,9 @@ public class UserServiceImpl extends GenericService implements UserService {
                 }
 
             } else {//获取社区排行
+                //设置排行类型
+                rankOutputDto.setRankType("社区排行");
+
                 //根据社群id获取社群内所有用户的手机号
                 List<String> userPhones = this.getUserPhonesByCommunityOrGroupId(body.getCommunityId(), COMMUNITY_KEY);
 
@@ -813,6 +818,9 @@ public class UserServiceImpl extends GenericService implements UserService {
             total = userGameMapper.getRankTotal(body);
             //设置所有空投总量
             rankOutputDto.setOgRewardAmount(this.getOgRewardAmount(null));
+            //设置排行类型
+            rankOutputDto.setRankType("世界排行");
+
         }
 
         //排名索引设置以及手机号加密处理
@@ -859,13 +867,14 @@ public class UserServiceImpl extends GenericService implements UserService {
         }
 
         //设置用户的社群信息
-        if (body.getCommunityId() != null) {
-            System.err.println("我的社群");
-            rankOutputDto.setMyCommunity(communityService.getCommunityByCommunityId(body.getCommunityId()));
+        Integer communityId = this.getUserByPhone(phone).getCommunityId();
+        if (communityId != null) {
+            rankOutputDto.setMyCommunity(communityService.getCommunityByCommunityId(communityId));
         }
         //设置用户的群组信息
-        if (body.getGroupId() != null) {
-            rankOutputDto.setMyGroup(communityService.getGroupByGroupId(body.getGroupId()));
+        Integer groupId = this.getUserByPhone(phone).getGroupId();
+        if (groupId != null) {
+            rankOutputDto.setMyGroup(communityService.getGroupByGroupId(groupId));
         }
 
         //设置用户手机号
