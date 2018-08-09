@@ -18,6 +18,12 @@ public class AppUser {
     private Integer communityId;
 
     /**
+     * 社区id
+     */
+    @Column(name = "group_id")
+    private Integer groupId;
+
+    /**
      * 昵称
      */
     @Column(name = "nick_name")
@@ -75,6 +81,14 @@ public class AppUser {
      * 更新人
      */
     private Integer updator;
+
+    public Integer getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Integer groupId) {
+        this.groupId = groupId;
+    }
 
     /**
      * 获取用户id
@@ -265,6 +279,7 @@ public class AppUser {
         return "AppUser{" +
                 "userid=" + userid +
                 ", communityId=" + communityId +
+                ", groupId=" + groupId +
                 ", nickName='" + nickName + '\'' +
                 ", phonenum='" + phonenum + '\'' +
                 ", amount=" + amount +

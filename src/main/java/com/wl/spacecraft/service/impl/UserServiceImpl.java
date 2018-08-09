@@ -198,7 +198,7 @@ public class UserServiceImpl extends GenericService implements UserService {
      * @param phone 用户手机号
      * @return 用户今日获取的金币
      */
-
+    //TODO 该方法目前已经作废
     private Integer getTodayLimite(String phone) {
         return userGameMapper.getTodayLimite(phone, DateUtils.getStartTime(), DateUtils.getEndTime());
     }
@@ -369,8 +369,8 @@ public class UserServiceImpl extends GenericService implements UserService {
         au.setUserid(1);
         au.setNickName("小明");
         appUserMapper.updateByPrimaryKeySelective(au);
-        throw new ProjectException("自行抛出的异常");
-//        return null;
+//        throw new ProjectException("自行抛出的异常");
+        return null;
 
     }
 
@@ -417,6 +417,7 @@ public class UserServiceImpl extends GenericService implements UserService {
             result.setMessage("用户已经注册社区");
         } else {
             appUser.setCommunityId(body.getCommunityId());
+            appUser.setGroupId(body.getGroupId());
             appUserMapper.updateByPrimaryKeySelective(appUser);
 
             result.setData(true);
@@ -475,8 +476,7 @@ public class UserServiceImpl extends GenericService implements UserService {
             output.setNote("注册成功");
             output.setUserStatus("register");
         }
-
-        output.setCommunities(communityService.selectAllOrderBySort());
+        output.setCommunities(communityService.selectAllCommunitiesOrderBySort());
         output.setResult(true);
 
         CommonDto<LoginOutputDto> result = new CommonDto<>();
@@ -489,7 +489,7 @@ public class UserServiceImpl extends GenericService implements UserService {
         user.setExpire(expire);
         user.setTokenValidateStr(tokenValidateStr);
 
-        //注册用户此刻社群id是为null的
+        //注册用户此刻社群id是为null的，当前业务前端暂时不需要
         user.setCommunityId(this.getUserByPhone(body.getPhone()).getCommunityId());
         user.setAmount(this.getAmountByUser(body.getPhone()));
         //返回用户在今日每个app已经获取的og总量
@@ -540,7 +540,7 @@ public class UserServiceImpl extends GenericService implements UserService {
         outputDto.setGameData(gameData);
         outputDto.setUserData(user);
         //设置社区
-        outputDto.setCommunities(communityService.selectAllOrderBySort());
+        outputDto.setCommunities(communityService.selectAllCommunitiesOrderBySort());
 
         result.setData(outputDto);
         result.setMessage("success");
@@ -820,7 +820,6 @@ public class UserServiceImpl extends GenericService implements UserService {
             default: {
                 rankOutputDto.setMyRankNote("用户真实排名");
             }
-
         }
         rankOutputDto.setMyRank(myRank);
 

@@ -9,6 +9,7 @@ import com.wl.spacecraft.mapper.*;
 import com.wl.spacecraft.model.*;
 import com.wl.spacecraft.service.common.JedisCommonService;
 import com.wl.spacecraft.service.community.CommunityService;
+import com.wl.spacecraft.service.impl.CommunityServiceImpl;
 import com.wl.spacecraft.service.user.UserService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -44,23 +45,31 @@ public class TestController extends GenericController {
     @Resource
     private BlockStationMapper blockStationMapper;
 
+    @Resource
+    private CommunityGroupMapper communityGroupMapper;
+    @Resource
+    private CommunityService communityServicem;
+
+
+
 
     @GetMapping("test")
     public Object test(){
-        List<Community> communities = communityService.selectAllOrderBySort();
-        List<AppUser> appUsers = appUserMapper.selectAll();
-        List<UserGame> userGames = userGameMapper.selectAll();
-        List<MetaApp> metaApps = metaAppMapper.selectAll();
-        List<AppIntergral> appIntergrals = appIntergralMapper.selectAll();
-        List<BlockStation> blockStations = blockStationMapper.selectAll();
-
-        AppUser appUser = new AppUser();
-        appUser.setCommunityId(null);
-        List<AppUser> select = appUserMapper.select(appUser);
-
-
-        Object test = userService.test();
-        return blockStations;
+        List<Community> communities = communityService.selectAllCommunitiesOrderBySort();
+//        List<AppUser> appUsers = appUserMapper.selectAll();
+//        List<UserGame> userGames = userGameMapper.selectAll();
+//        List<MetaApp> metaApps = metaAppMapper.selectAll();
+//        List<AppIntergral> appIntergrals = appIntergralMapper.selectAll();
+//        List<BlockStation> blockStations = blockStationMapper.selectAll();
+//        List<CommunityGroup> communityGroups = communityGroupMapper.selectAll();
+//
+//        AppUser appUser = new AppUser();
+//        appUser.setCommunityId(null);
+//        List<AppUser> select = appUserMapper.select(appUser);
+//
+//
+//        Object test = userService.test();
+        return communities;
     }
 
     @GetMapping("test2")

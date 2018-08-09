@@ -23,6 +23,18 @@ public class CommunityRegistryInputDto {
      * 社区id
      */
     private Integer communityId;
+    /**
+     * 群id
+     */
+    private Integer groupId;
+
+    public Integer getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Integer groupId) {
+        this.groupId = groupId;
+    }
 
     public String getPhone() {
         return phone;
@@ -61,6 +73,19 @@ public class CommunityRegistryInputDto {
     }
 
     public void setCommunityId(Integer communityId) {
+
         this.communityId = communityId;
+    }
+
+    @Override
+    public String toString() {
+        return "CommunityRegistryInputDto{" +
+                "phone='" + phone + '\'' +
+                ", token='" + token + '\'' +
+                ", expire=" + expire +
+                ", tokenValidateStr='" + tokenValidateStr + '\'' +
+                ", communityId=" + communityId +
+                ", groupId=" + groupId +
+                '}';
     }
 }

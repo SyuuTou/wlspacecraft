@@ -1,6 +1,8 @@
 package com.wl.spacecraft.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.*;
 
 @Table(name = "community")
@@ -53,6 +55,19 @@ public class Community {
      */
     private Integer creator;
 
+    /**
+     * 子群
+     */
+    @Transient
+    private List<CommunityGroup> groups=new ArrayList<>();
+
+    public List<CommunityGroup> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<CommunityGroup> groups) {
+        this.groups = groups;
+    }
 
     public Integer getSort() {
         return sort;
@@ -222,6 +237,24 @@ public class Community {
     }
 
     public void setLogo(String logo) {
+
         this.logo = logo;
+    }
+
+    @Override
+    public String toString() {
+        return "Community{" +
+                "id=" + id +
+                ", logo='" + logo + '\'' +
+                ", commName='" + commName + '\'' +
+                ", commDesc='" + commDesc + '\'' +
+                ", sort=" + sort +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                ", creator=" + creator +
+                ", groups=" + groups +
+                ", updator=" + updator +
+                ", delFlag=" + delFlag +
+                '}';
     }
 }
