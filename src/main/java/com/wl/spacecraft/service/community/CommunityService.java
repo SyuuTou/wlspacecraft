@@ -7,8 +7,8 @@ import java.util.List;
 public interface CommunityService {
 
     /**
-     * 获取所有的社区,按照自定义排序
-     * @return 所有社区
+     * 获取所有的社区以及社区,按照自定义排序
+     * @return 所有社区以及社区下的子群List，按照自定义排序进行排序
      */
     List<Community> selectAllCommunitiesOrderBySort();
 

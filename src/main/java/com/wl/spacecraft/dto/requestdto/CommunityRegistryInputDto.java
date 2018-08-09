@@ -19,6 +19,14 @@ public class CommunityRegistryInputDto {
      * token校验字符串
      */
     private String tokenValidateStr;
+
+    /**
+     * 以下分为三种情况
+     *  communityId以及groupId均为null
+     *  communityId以及groupId均不为null
+     *  communityId不为null,groupId为null
+     */
+
     /**
      * 社区id
      */

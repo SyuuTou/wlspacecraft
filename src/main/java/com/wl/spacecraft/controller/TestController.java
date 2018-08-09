@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import tk.mybatis.mapper.entity.Example;
 
 import java.util.HashMap;
 import java.util.List;
@@ -49,27 +50,31 @@ public class TestController extends GenericController {
     private CommunityGroupMapper communityGroupMapper;
     @Resource
     private CommunityService communityServicem;
+    @Resource
+    private ConfigWechatMapper configWechatMapper;
+
 
 
 
 
     @GetMapping("test")
     public Object test(){
-        List<Community> communities = communityService.selectAllCommunitiesOrderBySort();
+//        List<Community> communities = communityService.selectAllCommunitiesOrderBySort();
 //        List<AppUser> appUsers = appUserMapper.selectAll();
+//        AppUser appUser = appUserMapper.testMapper(11);
 //        List<UserGame> userGames = userGameMapper.selectAll();
 //        List<MetaApp> metaApps = metaAppMapper.selectAll();
 //        List<AppIntergral> appIntergrals = appIntergralMapper.selectAll();
 //        List<BlockStation> blockStations = blockStationMapper.selectAll();
 //        List<CommunityGroup> communityGroups = communityGroupMapper.selectAll();
-//
+        List<ConfigWechat> configWechats = configWechatMapper.selectAllOrderBySort();
 //        AppUser appUser = new AppUser();
 //        appUser.setCommunityId(null);
 //        List<AppUser> select = appUserMapper.select(appUser);
 //
 //
 //        Object test = userService.test();
-        return communities;
+        return configWechats;
     }
 
     @GetMapping("test2")

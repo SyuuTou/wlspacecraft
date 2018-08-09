@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -27,17 +26,16 @@ public class CommunityServiceImpl extends GenericService implements CommunitySer
      * 根据社区id获取子群列表
      *
      * @param communityId
-     * @return
+     * @return 群组list
      */
-    public List<CommunityGroup> getGroupsByCommunityId(Integer communityId) {
-        List<CommunityGroup> list = new ArrayList<>();
+    private List<CommunityGroup> getGroupsByCommunityId(Integer communityId) {
 
         Example example=new Example(CommunityGroup.class);
         example.and().andEqualTo("delFlag",0).andEqualTo("communityId",communityId);
         example.setOrderByClause("isnull(sort) asc,sort asc");
-        list =communityGroupMapper.selectByExample(example);
+        List<CommunityGroup> list =communityGroupMapper.selectByExample(example);
 
-        System.err.println("communityId： "+communityId+" 下面的子群"+list);
+        System.err.println("communityId "+communityId+" ：下面的子群"+list);
 
         return list;
     }
@@ -47,11 +45,8 @@ public class CommunityServiceImpl extends GenericService implements CommunitySer
 
         Example example = new Example(Community.class);
         example.setOrderByClause("isnull(sort) asc,sort asc");
-        /**
-         * 获取所有的社区
-         */
+        //根据自定义排序获取所有的社区
         List<Community> communities = communityMapper.selectByExample(example);
-
         for (Community e : communities
         ) {
             //设置社区下的所有子群
@@ -63,7 +58,6 @@ public class CommunityServiceImpl extends GenericService implements CommunitySer
 
     @Override
     public Community getCommunityById(Integer communityId) {
-
         return communityMapper.selectByPrimaryKey(communityId);
     }
 }

@@ -26,9 +26,19 @@ public class RankPagingInputDto {
      */
     private Integer communityId;
     /**
-     * 社区用户手机
+     * 如果存在社区id设置该字段
+     * 社区内用户手机号
      */
     private List<String> communityUsersPhones;
+    /**
+     * 子群id
+     */
+    private Integer groupId;
+    /**
+     * 如果存在子群id设置该字段
+     * 子群内所有用户手机号
+     */
+    private List<String> groupUserPhones;
 
     /**
      * 游戏类型
@@ -36,6 +46,22 @@ public class RankPagingInputDto {
      */
     //TODO appKey是为了获取游戏排行，目前此功能是不需要的
     private String appKey;
+
+    public Integer getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Integer groupId) {
+        this.groupId = groupId;
+    }
+
+    public List<String> getGroupUserPhones() {
+        return groupUserPhones;
+    }
+
+    public void setGroupUserPhones(List<String> groupUserPhones) {
+        this.groupUserPhones = groupUserPhones;
+    }
 
     public String getAppKey() {
         return appKey;
@@ -102,6 +128,8 @@ public class RankPagingInputDto {
                 ", start=" + start +
                 ", communityId=" + communityId +
                 ", communityUsersPhones=" + communityUsersPhones +
+                ", groupId=" + groupId +
+                ", groupUserPhones=" + groupUserPhones +
                 ", appKey='" + appKey + '\'' +
                 '}';
     }

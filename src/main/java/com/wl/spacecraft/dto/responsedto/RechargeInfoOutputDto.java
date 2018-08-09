@@ -1,8 +1,10 @@
 package com.wl.spacecraft.dto.responsedto;
 
 import com.wl.spacecraft.model.ConfigOgPrice;
+import com.wl.spacecraft.model.ConfigWechat;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 充值信息输出dto
@@ -12,18 +14,24 @@ public class RechargeInfoOutputDto {
      * 最小充值金额
      */
     private BigDecimal minRechargeAmount;
+
     /**
-     * 微信客服1
+     * 客服人员
      */
-    private String wechatNum1;
+    List<ConfigWechat> wechats;
+
     /**
-     * 微信客服2
-     */
-    private String wechatNum2;
-    /**
-     *Eth同OG兑换比例
+     * Eth同OG兑换比例
      */
     private ConfigOgPrice configOgPrice;
+
+    public List<ConfigWechat> getWechats() {
+        return wechats;
+    }
+
+    public void setWechats(List<ConfigWechat> wechats) {
+        this.wechats = wechats;
+    }
 
     public BigDecimal getMinRechargeAmount() {
         return minRechargeAmount;
@@ -33,21 +41,6 @@ public class RechargeInfoOutputDto {
         this.minRechargeAmount = minRechargeAmount;
     }
 
-    public String getWechatNum1() {
-        return wechatNum1;
-    }
-
-    public void setWechatNum1(String wechatNum1) {
-        this.wechatNum1 = wechatNum1;
-    }
-
-    public String getWechatNum2() {
-        return wechatNum2;
-    }
-
-    public void setWechatNum2(String wechatNum2) {
-        this.wechatNum2 = wechatNum2;
-    }
 
     public ConfigOgPrice getConfigOgPrice() {
         return configOgPrice;
@@ -59,10 +52,9 @@ public class RechargeInfoOutputDto {
 
     @Override
     public String toString() {
-        return "ChargeInfoOutputDto{" +
+        return "RechargeInfoOutputDto{" +
                 "minRechargeAmount=" + minRechargeAmount +
-                ", wechatNum1='" + wechatNum1 + '\'' +
-                ", wechatNum2='" + wechatNum2 + '\'' +
+                ", wechats=" + wechats +
                 ", configOgPrice=" + configOgPrice +
                 '}';
     }

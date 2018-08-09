@@ -48,7 +48,7 @@ public interface UserGameMapper extends OwnerMapper<UserGame> {
      * 获取游戏金币总共赠送总量
      * @return
      */
-    Integer getOgRewardAmount(@Param("communityUsersPhones") List<String> communityUsersPhones);
+    Integer getOgRewardAmount(@Param("usersPhones") List<String> usersPhones);
 
     /**
      * 获取用户的游戏金币获取总量

@@ -34,7 +34,7 @@ public class CommunityGroup {
      * 自定义排序
      */
     @Column(name = "sort")
-    private String sort;
+    private Integer sort;
 
 
     /**
@@ -69,11 +69,12 @@ public class CommunityGroup {
     @Column(name = "del_flag")
     private Integer delFlag;
 
-    public String getSort() {
+
+    public Integer getSort() {
         return sort;
     }
 
-    public void setSort(String sort) {
+    public void setSort(Integer sort) {
         this.sort = sort;
     }
 

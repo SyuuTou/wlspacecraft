@@ -120,8 +120,8 @@ public class UserController extends GenericService {
     }
 
     /**
-     *
-     * @return
+     * app元数据信息回显
+     * @return app元数据信息
      */
     @GetMapping("meta/app")
     public CommonDto<List<MetaAppOutputDto>> metaAppInfo() {

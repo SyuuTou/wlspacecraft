@@ -41,7 +41,7 @@ public class PayController extends GenericController {
     }
 
     /**
-     * 用户充值信息的回显,区块站
+     * 用户充值信息的回显
      * @return 充值信息回显
      */
     @GetMapping("transaction/info")
