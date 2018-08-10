@@ -1,22 +1,75 @@
 package com.wl.spacecraft.utils;
 
 
-import org.apache.http.util.TextUtils;
-
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
-public class Test{
+import static java.util.stream.Collectors.toList;
+
+class Person {
+    private String name;
+    private int age;
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                '}';
+    }
+}
+
+public class Test {
     public static void main(String[] args) {
-        boolean qwe = TextUtils.isEmpty(" ");
-        System.err.println(qwe);
+        List<Person> list = new ArrayList<>();
+        list.add(new Person("jack", 20));
+        list.add(new Person("mike", 25));
+        list.add(new Person("tom", 30));
+        ;
 
-        String s = String.valueOf(" "+"qwe");
-        System.err.println(s);
-        ArrayList<String> strings = new ArrayList<>();
-        strings.add("qwe");
-        System.err.println(strings.contains("qwe"));;
+//        list = list.stream()
+//                .filter(person -> person.getAge() == 20)
+//                .collect(toList());
 
-        System.err.println(new ArrayList<>().get(0));
+//        list = list.stream()
+//                .sorted((p1, p2) -> p1.getAge() - p2.getAge())
+//                .collect(toList());
+
+//        list = list.stream()
+//                .sorted(Comparator.comparingInt(Person::getAge))
+//                .collect(toList());
+
+//        list = list.stream()
+//                .limit(2)
+//                .collect(toList());
+        List<String> newlist =
+                list.stream().map(Person::getName).collect(toList());
+
+
+        System.err.println(newlist);
+
     }
 
 }

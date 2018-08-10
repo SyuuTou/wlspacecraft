@@ -11,8 +11,9 @@ public class GameRankOutputDto {
     PagingOutputDto<GameRankEntity> rankList;
 
     /**
-     * OG赠送总数
+     * OG空投总量
      *  存在社区id时表示本社区内赠送总量
+     *  存在群id时表示本社区内赠送总量
      *  社区id不存在时表示所有赠送总量
      */
     private Integer ogRewardAmount;

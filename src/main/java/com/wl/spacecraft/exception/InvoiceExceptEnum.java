@@ -1,5 +1,7 @@
 package com.wl.spacecraft.exception;
 
+import java.util.Arrays;
+
 public enum InvoiceExceptEnum {
 
     SUCCESS("0000","开票成功"),
@@ -69,6 +71,14 @@ public enum InvoiceExceptEnum {
         return null;
     }
 
+//    @Override
+//    public String toString() {
+//        return "InvoiceExceptEnum{" +
+//                "code='" + code + '\'' +
+//                ", name='" + name + '\'' +
+//                '}';
+//    }
+
     public String getCode() {
         return code;
     }
@@ -83,5 +93,14 @@ public enum InvoiceExceptEnum {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public static void main(String[] args) {
+        System.err.println(
+                Arrays.toString(values())
+        );
+        System.err.println(
+                values().getClass()
+        );
     }
 }
