@@ -1,6 +1,7 @@
 package com.wl.spacecraft.utils;
 
 
+import java.rmi.ServerError;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -41,7 +42,7 @@ class Person {
     }
 }
 
-public class Test {
+public class TestStream {
     public static void main(String[] args) {
         List<Person> list = new ArrayList<>();
         list.add(new Person("jack", 20));
@@ -69,6 +70,7 @@ public class Test {
 
 
         System.err.println(newlist);
+        System.err.println(null != new Integer(1));
 
     }
 

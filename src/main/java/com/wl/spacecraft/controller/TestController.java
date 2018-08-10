@@ -141,6 +141,12 @@ public class TestController extends GenericController {
 
     }
 
+    @PostMapping("list/chuandi")
+    public Object testList(){
+
+        return null;
+    }
+
 
 }
 
