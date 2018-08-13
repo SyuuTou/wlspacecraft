@@ -79,7 +79,7 @@ public class UserController extends GenericService {
      * @param body
      * @return
      */
-    @PostMapping("community/registry")
+    @PostMapping("community/register")
     public CommonDto<Boolean> communityRegistry(@RequestBody CommunityRegistryInputDto body) {
         System.err.println(body);
         CommonDto<Boolean> result = new CommonDto<>();

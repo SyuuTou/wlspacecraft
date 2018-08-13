@@ -55,7 +55,7 @@ public class TestController extends GenericController {
 
 
 
-    @GetMapping("test")
+    @GetMapping("test/demo")
     public Object test(){
 //        List<Community> communities = communityService.selectAllCommunitiesOrderBySort();
 //        List<AppUser> appUsers = appUserMapper.selectAll();

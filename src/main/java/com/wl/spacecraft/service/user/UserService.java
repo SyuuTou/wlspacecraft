@@ -5,6 +5,8 @@ import com.wl.spacecraft.dto.requestdto.*;
 import com.wl.spacecraft.dto.responsedto.*;
 import com.wl.spacecraft.model.AppUser;
 
+import java.util.List;
+
 public interface UserService {
     /**
      * 返回用户大厅界面 的基本信息
@@ -66,4 +68,19 @@ public interface UserService {
      * @return 社区注册成功与否的标志
      */
     CommonDto<Boolean> communityRegistry(CommunityRegistryInputDto body);
+
+    /**
+     * 根据社区或者群组id取得该领域下的所有用户
+     * @param communityOrGroupId
+     * @param key 社区或者群组的标志
+     * @return 该领域下的手机list
+     */
+    List<String> getUserPhonesByCommunityOrGroupId(Integer communityOrGroupId, String key);
+
+    /**
+     * 获取用户的金币总共赠送总量
+     * @param usersPhones 用户
+     * @return 该用户list中的所有og投放总量
+     */
+    Integer getOgRewardAmount(List<String> usersPhones);
 }

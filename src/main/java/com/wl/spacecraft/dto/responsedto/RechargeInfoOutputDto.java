@@ -14,6 +14,10 @@ public class RechargeInfoOutputDto {
      * 最小充值金额
      */
     private BigDecimal minRechargeAmount;
+    /**
+     * 最小提币金额
+     */
+    private BigDecimal minExtractAmount  ;
 
     /**
      * 客服人员
@@ -24,6 +28,14 @@ public class RechargeInfoOutputDto {
      * Eth同OG兑换比例
      */
     private ConfigOgPrice configOgPrice;
+
+    public BigDecimal getMinExtractAmount() {
+        return minExtractAmount;
+    }
+
+    public void setMinExtractAmount(BigDecimal minExtractAmount) {
+        this.minExtractAmount = minExtractAmount;
+    }
 
     public List<ConfigWechat> getWechats() {
         return wechats;
@@ -54,6 +66,7 @@ public class RechargeInfoOutputDto {
     public String toString() {
         return "RechargeInfoOutputDto{" +
                 "minRechargeAmount=" + minRechargeAmount +
+                ", minExtractAmount=" + minExtractAmount +
                 ", wechats=" + wechats +
                 ", configOgPrice=" + configOgPrice +
                 '}';

@@ -3,6 +3,7 @@ package com.wl.spacecraft.service.game;
 import com.wl.spacecraft.dto.commondto.CommonDto;
 import com.wl.spacecraft.dto.commondto.GameConfigCommonOutputDto;
 import com.wl.spacecraft.dto.responsedto.MetaAppOutputDto;
+import com.wl.spacecraft.model.ConfigMinExtractAmount;
 import com.wl.spacecraft.model.ConfigMinRechargeAmount;
 import com.wl.spacecraft.model.ConfigOgPrice;
 import com.wl.spacecraft.model.MetaApp;
@@ -30,9 +31,15 @@ public interface GameService {
 
     /**
      * 获取最小充值总量
-     * @return
+     * @return 最小充值总量记录
      */
     ConfigMinRechargeAmount getMinRechargeAmountRecord();
+
+    /**
+     * 获取最小提币总量
+     * @return 最小提币总量记录
+     */
+    ConfigMinExtractAmount getMinExtractAmountRecord();
 
     /**
      * 获取Eth同OG兑换比例
@@ -59,4 +66,6 @@ public interface GameService {
      * @return
      */
     CommonDto<List<MetaAppOutputDto>> metaAppInfo();
+
+
 }

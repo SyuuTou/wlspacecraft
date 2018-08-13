@@ -6,6 +6,7 @@ import com.wl.spacecraft.dto.responsedto.TransactionInfoOutputDto;
 import com.wl.spacecraft.mapper.BlockStationMapper;
 import com.wl.spacecraft.mapper.ConfigWechatMapper;
 import com.wl.spacecraft.model.BlockStation;
+import com.wl.spacecraft.model.ConfigMinExtractAmount;
 import com.wl.spacecraft.model.ConfigMinRechargeAmount;
 import com.wl.spacecraft.model.ConfigWechat;
 import com.wl.spacecraft.service.common.GenericService;
@@ -58,15 +59,23 @@ public class PayServiceImpl extends GenericService implements PayService {
         RechargeInfoOutputDto obj = new RechargeInfoOutputDto();
         //设置默认的最小充值金额
         obj.setMinRechargeAmount(new BigDecimal(500));
+        //设置默认的最小提币金额
+        obj.setMinExtractAmount(new BigDecimal(500));
 
         //重置最小充值金额
-        ConfigMinRechargeAmount record = gameService.getMinRechargeAmountRecord();
-        if (record != null && record.getAmount() != null) {
-            obj.setMinRechargeAmount(record.getAmount());
+        ConfigMinRechargeAmount minRechargeAmount = gameService.getMinRechargeAmountRecord();
+        if (minRechargeAmount != null && minRechargeAmount.getAmount() != null) {
+            obj.setMinRechargeAmount(minRechargeAmount.getAmount());
         }
+
+        //重置最小提币金额
+        ConfigMinExtractAmount minExtractAmount = gameService.getMinExtractAmountRecord();
+        if (minExtractAmount != null && minExtractAmount.getAmount() != null) {
+            obj.setMinExtractAmount(minExtractAmount.getAmount());
+        }
+
         //设置微信客服
         List<ConfigWechat> configWechats = configWechatMapper.selectAllOrderBySort();
-        System.err.println(configWechats);
         obj.setWechats(configWechats);
         //设置og的兑换比率
         obj.setConfigOgPrice(gameService.getConfigOgPrice());

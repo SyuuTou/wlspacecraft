@@ -8,49 +8,19 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.wl.spacecraft.utils.httpclient.HttpClientUtil;
 import junit.framework.TestCase;
+import org.apache.http.client.ClientProtocolException;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.lhjl.Person;
+import sun.security.jgss.HttpCaller;
 
 
 public class HttpClientTest extends TestCase {
-
-    @Test
-    public void testJson() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("phone", "13691066251");
-        map.put("msgCode", "4343434");
-
-        /**
-         * 将普通对象转换为json字符串,然后再转换成json对象
-         */
-        String mapJsonStr = new Gson().toJson(map);
-        System.err.println(mapJsonStr);
-        //将json字符串转换为json对象
-        com.alibaba.fastjson.JSONObject jsonObject = com.alibaba.fastjson.JSONObject.parseObject(mapJsonStr);
-        System.err.println(jsonObject.get("phone"));
-        /**
-         * 直接将普通对象转换为json对象
-         */
-        net.sf.json.JSONObject jsonObject1 = net.sf.json.JSONObject.fromObject(map);
-
-
-        /**
-         * 将json对象转换为map
-         */
-        Map jsonObjectToMap = jsonObject;
-        System.err.println(jsonObjectToMap+"--"+jsonObject.getClass());
-
-        /**
-         * 将Json对象转换为字符串
-         */
-        String jsonObjectToString = new Gson().toJson(jsonObject);
-        System.err.println(jsonObjectToString);
-
-    }
 
     @Test
     public void testMetaApp() {
@@ -92,13 +62,38 @@ public class HttpClientTest extends TestCase {
 
     @Test
     //测试图片上传
-    public void upload() throws Exception {
+    public void testUpload() throws Exception {
+        //TODO 实现图片上传
+        String url="http://localhost:9090/upload/image/sample";
+        String filePath="/Users/syuutousan/Downloads/icon/aixin.png";
 
-//        String jsonStr = new Gson().toJson();
-        System.err.println();
+        HttpClientUtil.upload(url,filePath);
 
-//        String s = HttpClientUtil.doPost("http://120.79.143.55:9090/og/rank13691066251");
         System.err.println();
+    }
+    @Test
+    public void testUpload2() {
+        String url = "http://localhost:8081/lieni-app-inf-oa/resume/background/education/verify/sync";
+        String fileUrl = "/Users/syuutousan/Downloads/icon/aixin.png";
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("operatorJobNumber", "102800038");
+        map.put("operatorEmail", "pengyuqian@aimsen.com1");
+        map.put("realed", "1");
+        map.put("resumeEducationBackgroundId", "6045");
+        try {
+            System.out.println(HttpClientUtil.post(url, "degreeIcon", new File(fileUrl), map));
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Test
+    public void testTest() throws Exception {
+        String s = HttpClientUtil.doGet("http://localhost:9090/test");
+        System.err.println(s);
     }
 
 }

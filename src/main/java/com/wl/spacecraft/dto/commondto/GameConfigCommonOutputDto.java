@@ -27,14 +27,14 @@ public class GameConfigCommonOutputDto {
      */
     private Integer difficulty;
 
-    /**
-     * 基础价格
-     */
-    private BigDecimal currentBasePrice;
-    /**
-     * 当前奖金
-     */
-    private BigDecimal currentBonus;
+//    /**
+//     * 基础价格
+//     */
+//    private BigDecimal currentBasePrice;
+//    /**
+//     * 当前奖金
+//     */
+//    private BigDecimal currentBonus;
 
 
 
@@ -46,28 +46,10 @@ public class GameConfigCommonOutputDto {
         this.difficulty = difficulty;
     }
 
-    public BigDecimal getCurrentBasePrice() {
-        return currentBasePrice;
-    }
-
-    public void setCurrentBasePrice(BigDecimal currentBasePrice) {
-        this.currentBasePrice = currentBasePrice;
-    }
-
-    public BigDecimal getCurrentBonus() {
-        return currentBonus;
-    }
-
-    public void setCurrentBonus(BigDecimal currentBonus) {
-        this.currentBonus = currentBonus;
-    }
-
     @Override
     public String toString() {
         return "GameConfigCommonOutputDto{" +
                 "difficulty=" + difficulty +
-                ", currentBasePrice=" + currentBasePrice +
-                ", currentBonus=" + currentBonus +
                 '}';
     }
 }

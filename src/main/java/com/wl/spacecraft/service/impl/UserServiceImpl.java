@@ -256,7 +256,7 @@ public class UserServiceImpl extends GenericService implements UserService {
      *
      * @return 金币赠送总量
      */
-    private Integer getOgRewardAmount(List<String> usersPhones) {
+    public Integer getOgRewardAmount(List<String> usersPhones) {
         return userGameMapper.getOgRewardAmount(usersPhones);
     }
 
@@ -330,8 +330,10 @@ public class UserServiceImpl extends GenericService implements UserService {
     /**
      * @param communityOrGroupId 社区或者子群id
      * @return 社区或者子群的所有用户的手机号list
+     * public,社区服务要使用到该方法
      */
-    private List<String> getUserPhonesByCommunityOrGroupId(Integer communityOrGroupId, String key) {
+    @Override
+    public List<String> getUserPhonesByCommunityOrGroupId(Integer communityOrGroupId, String key) {
         AppUser appUser = new AppUser();
         switch (key) {
             case COMMUNITY_KEY: {
@@ -478,8 +480,9 @@ public class UserServiceImpl extends GenericService implements UserService {
             output.setNote("注册成功");
             output.setUserStatus("register");
         }
-        output.setCommunities(communityService.selectAllCommunitiesOrderBySort());
         output.setResult(true);
+
+        output.setCommunities(communityService.selectAllCommunitiesOrderBySort());
 
         CommonDto<LoginOutputDto> result = new CommonDto<>();
 
@@ -778,7 +781,13 @@ public class UserServiceImpl extends GenericService implements UserService {
             if (body.getGroupId() != null) {//获取子群排行
                 //设置排行类型
                 rankOutputDto.setRankType("群组排行");
+                //设置排行类型的具体名称
+                CommunityGroup group = communityService.getGroupByGroupId(body.getGroupId());
+                if(group!=null){
+                    rankOutputDto.setRankTypeName(group.getGroupName());
+                }
 
+                //根据群组id获取群组内所有用户的手机号
                 List<String> userPhones = this.getUserPhonesByCommunityOrGroupId(body.getGroupId(), GROUP_KEY);
                 if (userPhones != null && userPhones.size() > 0) {
                     //设置子群用户
@@ -796,8 +805,13 @@ public class UserServiceImpl extends GenericService implements UserService {
             } else {//获取社区排行
                 //设置排行类型
                 rankOutputDto.setRankType("社区排行");
+                //设置排行类型的具体名称
+                Community community = communityService.getCommunityByCommunityId(body.getCommunityId());
+                if(community!=null){
+                    rankOutputDto.setRankTypeName(community.getCommName());
+                }
 
-                //根据社群id获取社群内所有用户的手机号
+                //根据社区id获取社群内所有用户的手机号
                 List<String> userPhones = this.getUserPhonesByCommunityOrGroupId(body.getCommunityId(), COMMUNITY_KEY);
 
                 if (userPhones != null && userPhones.size() > 0) {  //该社区内存在用户
@@ -814,12 +828,15 @@ public class UserServiceImpl extends GenericService implements UserService {
                 }
             }
         } else {//获取世界排行以及空投总量信息
+            //设置排行类型
+            rankOutputDto.setRankType("世界排行");
+            //设置排行类型的具体名称
+            rankOutputDto.setRankTypeName("世界");
+
             gameRankEntities = userGameMapper.gameRankList(body);
             total = userGameMapper.getRankTotal(body);
             //设置所有空投总量
             rankOutputDto.setOgRewardAmount(this.getOgRewardAmount(null));
-            //设置排行类型
-            rankOutputDto.setRankType("世界排行");
 
         }
 
@@ -866,7 +883,7 @@ public class UserServiceImpl extends GenericService implements UserService {
             }
         }
 
-        //设置用户的社群信息
+        //设置用户的社区信息
         Integer communityId = this.getUserByPhone(phone).getCommunityId();
         if (communityId != null) {
             rankOutputDto.setMyCommunity(communityService.getCommunityByCommunityId(communityId));

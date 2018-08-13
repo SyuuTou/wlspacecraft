@@ -27,6 +27,10 @@ public class GameRankOutputDto {
      */
     private String rankType;
     /**
+     * 当前的社区或者群组名称
+     */
+    private String rankTypeName;
+    /**
      * 用户的当前排名
      *  存在社区id时候表示社区排名
      *  不存在社区id时表示世界排名
@@ -42,15 +46,21 @@ public class GameRankOutputDto {
     private Integer myOgAmount;
 
     /**
-     * 我的社区信息
-     *  只有存在社区id时会存在该对象
+     * 该用户所在的社区信息
      */
     private Community myCommunity;
     /**
-     * 我的群组信息
-     *  只有存在群组id时会存在该对象
+     * 该用户所在的群组信息
      */
     private CommunityGroup myGroup;
+
+    public String getRankTypeName() {
+        return rankTypeName;
+    }
+
+    public void setRankTypeName(String rankTypeName) {
+        this.rankTypeName = rankTypeName;
+    }
 
     public CommunityGroup getMyGroup() {
         return myGroup;
@@ -134,6 +144,7 @@ public class GameRankOutputDto {
                 ", myRank=" + myRank +
                 ", myRankNote='" + myRankNote + '\'' +
                 ", myOgAmount=" + myOgAmount +
+                ", rankTypeName='" + rankTypeName + '\'' +
                 ", myCommunity=" + myCommunity +
                 ", myGroup=" + myGroup +
                 '}';

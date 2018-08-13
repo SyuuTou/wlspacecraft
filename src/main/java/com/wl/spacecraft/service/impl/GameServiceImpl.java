@@ -8,17 +8,22 @@ import com.wl.spacecraft.mapper.*;
 import com.wl.spacecraft.model.*;
 import com.wl.spacecraft.service.common.GenericService;
 import com.wl.spacecraft.service.game.GameService;
+import com.wl.spacecraft.utils.fdfsclient.FIleOptUtils;
+import com.wl.spacecraft.utils.fdfsclient.FastDFSClient;
+import com.wl.spacecraft.utils.fdfsclient.FastDFSException;
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class GameServiceImpl extends GenericService implements GameService {
+
+    private FastDFSClient fastDFSClient = new FastDFSClient();
 
     @Autowired
     private MetaGameDataMapper metaGameDataMapper;
@@ -37,6 +42,9 @@ public class GameServiceImpl extends GenericService implements GameService {
 
     @Autowired
     private ConfigMinRechargeAmountMapper configMinRechargeAmountMapper;
+    @Autowired
+    private ConfigMinExtractAmountMapper configMinExtractAmountMapper;
+
 
     @Override
     @Transactional
@@ -68,6 +76,18 @@ public class GameServiceImpl extends GenericService implements GameService {
         example.setOrderByClause("create_time desc");
 
         List<ConfigMinRechargeAmount> list = configMinRechargeAmountMapper.selectByExample(example);
+        if(list.size()>0){
+            return list.get(0);
+        }
+        return null;
+    }
+
+    @Override
+    public ConfigMinExtractAmount getMinExtractAmountRecord() {
+        Example example = new Example(ConfigMinExtractAmount.class);
+        example.setOrderByClause("create_time desc");
+
+        List<ConfigMinExtractAmount> list = configMinExtractAmountMapper.selectByExample(example);
         if(list.size()>0){
             return list.get(0);
         }
@@ -142,6 +162,13 @@ public class GameServiceImpl extends GenericService implements GameService {
              ) {
             MetaAppOutputDto obj=new MetaAppOutputDto();
             obj.setAppBkground(e.getAppBkground());
+
+            //图片的字节base64编码
+            if(obj.getAppBkground()!=null){
+                String base64 = FIleOptUtils.downloadToBase64(e.getAppBkground());
+                obj.setBase64(base64);
+            }
+
             obj.setAppKey(e.getAppKey());
             obj.setAppName(e.getAppName());
             obj.setAppDescription(e.getAppDescription());
@@ -179,12 +206,13 @@ public class GameServiceImpl extends GenericService implements GameService {
 
         //设置OG币同其他的兑换比率
         //配置表可能存在没有数据的情况，引发空指针异常
-        try {
+
+        /*try {
             outputData.setCurrentBasePrice(this.getConfigOgPrice().getCurrentBasePrice());
             outputData.setCurrentBonus(this.getConfigOgPrice().getCurrentBonus());
         } catch (Exception e) {
 
-        }
+        }*/
 
         //Deprecated,暂时废弃以下游戏数据
 //        MetaGameData config = metaGameDataMapper.getGameConfig();

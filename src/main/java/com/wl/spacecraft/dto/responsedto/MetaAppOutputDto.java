@@ -1,5 +1,8 @@
 package com.wl.spacecraft.dto.responsedto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 public class MetaAppOutputDto {
     /**
      * appkey
@@ -8,7 +11,13 @@ public class MetaAppOutputDto {
     /**
      * app唯一标志
      */
+
+//    @JsonInclude(Include.NON_NULL)
     private String appBkground;
+    /**
+     * 图片的字节数组
+     */
+    private String base64;
     /**
      * app名称
      */
@@ -21,6 +30,14 @@ public class MetaAppOutputDto {
      * 今日在该app中已经获取的OG总量
      */
     private Integer todaytGotAmount;
+
+    public String getBase64() {
+        return base64;
+    }
+
+    public void setBase64(String base64) {
+        this.base64 = base64;
+    }
 
     public String getAppKey() {
         return appKey;
@@ -67,6 +84,7 @@ public class MetaAppOutputDto {
         return "MetaAppOutputDto{" +
                 "appKey='" + appKey + '\'' +
                 ", appBkground='" + appBkground + '\'' +
+                ", base64='" + base64 + '\'' +
                 ", appName='" + appName + '\'' +
                 ", appDescription='" + appDescription + '\'' +
                 ", todaytGotAmount=" + todaytGotAmount +

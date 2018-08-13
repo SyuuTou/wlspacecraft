@@ -1,5 +1,7 @@
 package com.wl.spacecraft.dto.commondto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 public class CommonDto<T> {
 
     private String message;
@@ -7,6 +9,7 @@ public class CommonDto<T> {
     /**
      * 冗余字段，前端接收时区分响应体类型用
      */
+//    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String type;
     private T data;
 

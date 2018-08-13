@@ -1,9 +1,7 @@
 package com.wl.spacecraft.model;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Arrays;
 import java.util.Date;
 
 public class MetaApp {
@@ -31,6 +29,12 @@ public class MetaApp {
      */
     @Column(name = "app_bkground")
     private String appBkground;
+
+    /**
+     * 图片的字节数组
+     */
+    @Transient
+    private byte[] bytes;
 
 
     /**
@@ -110,6 +114,15 @@ public class MetaApp {
         this.appBkground = appBkground;
     }
 
+
+    public byte[] getBytes() {
+        return bytes;
+    }
+
+    public void setBytes(byte[] bytes) {
+        this.bytes = bytes;
+    }
+
     @Override
     public String toString() {
         return "MetaApp{" +
@@ -117,6 +130,7 @@ public class MetaApp {
                 ", appName='" + appName + '\'' +
                 ", appKey='" + appKey + '\'' +
                 ", appBkground='" + appBkground + '\'' +
+                ", bytes=" + Arrays.toString(bytes) +
                 ", appDescription='" + appDescription + '\'' +
                 ", createTime=" + createTime +
                 ", delFlag=" + delFlag +

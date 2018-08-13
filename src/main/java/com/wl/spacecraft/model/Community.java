@@ -1,5 +1,8 @@
 package com.wl.spacecraft.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,6 +20,7 @@ public class Community {
     /**
      * 社区logo
      */
+//    @JsonInclude(Include.NON_NULL)
     @Column(name = "logo")
     private String logo;
 
@@ -60,6 +64,33 @@ public class Community {
      */
     @Transient
     private List<CommunityGroup> groups=new ArrayList<>();
+
+    /**
+     * 社区投放og的总量
+     */
+    @Transient
+    private Long ogAmount;
+    /**
+     * 社区logo的base64编码
+     */
+    @Transient
+    private String base64;
+
+    public String getBase64() {
+        return base64;
+    }
+
+    public void setBase64(String base64) {
+        this.base64 = base64;
+    }
+
+    public Long getOgAmount() {
+        return ogAmount;
+    }
+
+    public void setOgAmount(Long ogAmount) {
+        this.ogAmount = ogAmount;
+    }
 
     public List<CommunityGroup> getGroups() {
         return groups;
@@ -253,6 +284,8 @@ public class Community {
                 ", updateTime=" + updateTime +
                 ", creator=" + creator +
                 ", groups=" + groups +
+                ", ogAmount=" + ogAmount +
+                ", base64='" + base64 + '\'' +
                 ", updator=" + updator +
                 ", delFlag=" + delFlag +
                 '}';

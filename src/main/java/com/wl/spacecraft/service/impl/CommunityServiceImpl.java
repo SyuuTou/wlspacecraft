@@ -6,14 +6,20 @@ import com.wl.spacecraft.model.Community;
 import com.wl.spacecraft.model.CommunityGroup;
 import com.wl.spacecraft.service.common.GenericService;
 import com.wl.spacecraft.service.community.CommunityService;
+import com.wl.spacecraft.service.user.UserService;
+import com.wl.spacecraft.utils.fdfsclient.FIleOptUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 @Service
 public class CommunityServiceImpl extends GenericService implements CommunityService {
+
+    @Resource
+    private UserService userService;
 
     @Autowired
     private CommunityMapper communityMapper;
@@ -44,12 +50,33 @@ public class CommunityServiceImpl extends GenericService implements CommunitySer
     public List<Community> selectAllCommunitiesOrderBySort() {
 
         Example example = new Example(Community.class);
+        example.and().andEqualTo("delFlag",0);
         example.setOrderByClause("isnull(sort) asc,sort asc");
         //根据自定义排序获取所有的社区
         List<Community> communities = communityMapper.selectByExample(example);
+        //设置每个社区og投放总量
+        for (Community e:communities
+             ) {
+            List<String> phones = userService.getUserPhonesByCommunityOrGroupId(e.getId(), "COMMUNITY");
+            if (phones == null || phones.size() == 0) {
+                e.setOgAmount(0L);
+            }else{
+                Integer ogRewardAmount = userService.getOgRewardAmount(phones);
+                e.setOgAmount((long)ogRewardAmount);
+            }
+        }
+        //设置社区有logo的base64编码
         for (Community e : communities
         ) {
-            //设置社区下的所有子群
+            if(e.getLogo()!=null){
+                String base64 = FIleOptUtils.downloadToBase64(e.getLogo());
+                e.setBase64(base64);
+            }
+        }
+
+        //设置社区下的所有子群
+        for (Community e : communities
+        ) {
             List<CommunityGroup> groups = this.getGroupsByCommunityId(e.getId());
             e.setGroups(groups);
         }
@@ -64,6 +91,7 @@ public class CommunityServiceImpl extends GenericService implements CommunitySer
         Community community=new Community();
         community.setDelFlag(0);
         community.setId(communityId);
+
         List<Community> communities = communityMapper.select(community);
         if(communities.size()>0){
             return communities.get(0);
@@ -74,8 +102,8 @@ public class CommunityServiceImpl extends GenericService implements CommunitySer
     @Override
     public CommunityGroup getGroupByGroupId(Integer groupId) {
 
-        Example example = new Example(CommunityGroup.class);
-        example.and().andEqualTo("delFlag",0).andEqualTo("id",groupId);
+//        Example example = new Example(CommunityGroup.class);
+//        example.and().andEqualTo("delFlag",0).andEqualTo("id",groupId);
 
         CommunityGroup group=new CommunityGroup();
         group.setDelFlag(0);

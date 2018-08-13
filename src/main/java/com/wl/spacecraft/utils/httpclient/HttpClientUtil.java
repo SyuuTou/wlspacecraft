@@ -316,5 +316,32 @@ public class HttpClientUtil {
         }
     }
 
+
+    public static String post(String serverUrl, String fileParamName, File file, Map<String, String> params)
+            throws ClientProtocolException, IOException {
+        HttpPost httpPost = new HttpPost(serverUrl);
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        // 上传的文件
+        builder.addBinaryBody(fileParamName, file);
+        // 设置其他参数
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            builder.addTextBody(entry.getKey(), entry.getValue(), ContentType.TEXT_PLAIN.withCharset("UTF-8"));
+        }
+        HttpEntity httpEntity = builder.build();
+        httpPost.setEntity(httpEntity);
+        HttpClient httpClient = HttpClients.createDefault();
+        HttpResponse response = httpClient.execute(httpPost);
+        if (null == response || response.getStatusLine() == null) {
+//            logger.info("Post Request For Url[{}] is not ok. Response is null", serverUrl);
+            return null;
+        } else if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+//            logger.info("Post Request For Url[{}] is not ok. Response Status Code is {}", serverUrl,
+//                    response.getStatusLine().getStatusCode());
+            return null;
+        }
+        return EntityUtils.toString(response.getEntity());
+    }
+
+
 }
 
