@@ -14,7 +14,7 @@ import java.util.List;
 public interface GameService {
 
     /**
-     * 获取app类型元数据
+     * 获取app元数据
      */
     List<MetaApp> selectAllApps();
 

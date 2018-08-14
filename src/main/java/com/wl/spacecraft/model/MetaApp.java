@@ -33,8 +33,7 @@ public class MetaApp {
     /**
      * 图片的字节数组
      */
-    @Transient
-    private byte[] bytes;
+    private Integer sort;
 
 
     /**
@@ -115,12 +114,12 @@ public class MetaApp {
     }
 
 
-    public byte[] getBytes() {
-        return bytes;
+    public Integer getSort() {
+        return sort;
     }
 
-    public void setBytes(byte[] bytes) {
-        this.bytes = bytes;
+    public void setSort(Integer sort) {
+        this.sort = sort;
     }
 
     @Override
@@ -130,7 +129,7 @@ public class MetaApp {
                 ", appName='" + appName + '\'' +
                 ", appKey='" + appKey + '\'' +
                 ", appBkground='" + appBkground + '\'' +
-                ", bytes=" + Arrays.toString(bytes) +
+                ", sort=" + sort +
                 ", appDescription='" + appDescription + '\'' +
                 ", createTime=" + createTime +
                 ", delFlag=" + delFlag +

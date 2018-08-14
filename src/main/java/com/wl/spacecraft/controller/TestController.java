@@ -9,6 +9,7 @@ import com.wl.spacecraft.mapper.*;
 import com.wl.spacecraft.model.*;
 import com.wl.spacecraft.service.common.JedisCommonService;
 import com.wl.spacecraft.service.community.CommunityService;
+import com.wl.spacecraft.service.game.GameService;
 import com.wl.spacecraft.service.impl.CommunityServiceImpl;
 import com.wl.spacecraft.service.user.UserService;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,8 @@ public class TestController extends GenericController {
     @Resource
     private UserService userService;
     @Resource
+    private GameService gameService;
+    @Resource
     private JedisCommonService jedisCommonService;
     @Resource
     private CommunityService communityService;
@@ -51,10 +54,6 @@ public class TestController extends GenericController {
     @Resource
     private ConfigWechatMapper configWechatMapper;
 
-
-
-
-
     @GetMapping("test/demo")
     public Object test(){
 //        List<Community> communities = communityService.selectAllCommunitiesOrderBySort();
@@ -66,14 +65,15 @@ public class TestController extends GenericController {
 //        List<BlockStation> blockStations = blockStationMapper.selectAll();
 //        List<CommunityGroup> communityGroups = communityGroupMapper.selectAll();
 //        List<ConfigWechat> configWechats = configWechatMapper.selectAllOrderBySort();
-        Object test = communityService.test();
+//        Object test = communityService.test();
+        List<MetaApp> metaApps = gameService.selectAllApps();
 //        AppUser appUser = new AppUser();
 //        appUser.setCommunityId(null);
 //        List<AppUser> select = appUserMapper.select(appUser);
 //
 //
 //        Object test = userService.test();
-        return test;
+        return metaApps;
     }
 
     @GetMapping("test2")

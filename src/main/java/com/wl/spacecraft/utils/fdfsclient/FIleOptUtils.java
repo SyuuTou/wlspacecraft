@@ -14,14 +14,14 @@ public class FIleOptUtils {
      */
     public static String downloadToBase64(String fileUrl) {
 
-        //对请求路径进行拆分处理
-        String filePath = fileUrl.substring(fileUrl.indexOf("group"));
-        System.err.println(filePath);
+        //取得文件id
+        String fileId = fileUrl.substring(fileUrl.indexOf("group"));
+        System.err.println(fileId);
 
         byte[] download = new byte[0];
 
         try {
-            download = fastDFSClient.download(filePath);
+            download = fastDFSClient.download(fileId);
         } catch (FastDFSException e) {
 
             e.printStackTrace();

@@ -10,8 +10,6 @@ import com.wl.spacecraft.service.common.GenericService;
 import com.wl.spacecraft.service.game.GameService;
 import com.wl.spacecraft.utils.fdfsclient.FIleOptUtils;
 import com.wl.spacecraft.utils.fdfsclient.FastDFSClient;
-import com.wl.spacecraft.utils.fdfsclient.FastDFSException;
-import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,11 +20,6 @@ import java.util.List;
 
 @Service
 public class GameServiceImpl extends GenericService implements GameService {
-
-    private FastDFSClient fastDFSClient = new FastDFSClient();
-
-    @Autowired
-    private MetaGameDataMapper metaGameDataMapper;
 
     @Autowired
     private ConfigOgTodayMapper configOgTodayMapper;
@@ -185,11 +178,12 @@ public class GameServiceImpl extends GenericService implements GameService {
 
     @Override
     public List<MetaApp> selectAllApps() {
-        MetaApp obj=new MetaApp();
-        //设置有效标志
-        obj.setDelFlag(0);
-        List<MetaApp> list = metaAppMapper.select(obj);
-        return list;
+        Example example=new Example(MetaApp.class);
+        example.and().andEqualTo("delFlag",0);
+        example.setOrderByClause("isnull(sort) asc,sort asc");
+
+        List<MetaApp> metaApps = metaAppMapper.selectByExample(example);
+        return metaApps;
     }
 
     @Override

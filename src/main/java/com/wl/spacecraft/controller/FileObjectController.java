@@ -233,9 +233,9 @@ public class FileObjectController {
      * @return
      * @throws FastDFSException
      */
-    @RequestMapping("/img/uoload")
-    public Object download() throws FastDFSException {
-        String filePath="/Users/syuutousan/Downloads/icon/yxl.jpeg";
+    @RequestMapping("/img/upload")
+    public Object upload() throws FastDFSException {
+        String filePath="/Users/syuutousan/Downloads/icon/aixin.png";
         String s = fastDFSClient.uploadFileWithFilepath(filePath);
         //返回上传成功后的文件路径
         System.err.println(s);

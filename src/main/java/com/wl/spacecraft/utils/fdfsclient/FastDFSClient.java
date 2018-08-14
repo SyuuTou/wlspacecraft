@@ -10,6 +10,7 @@ import org.csource.fastdfs.StorageClient1;
 import org.csource.fastdfs.TrackerServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -32,6 +33,7 @@ import java.util.Map;
  * @name FastDFSClient
  * @date 2017-10-12 10:13
  */
+@Component
 public class FastDFSClient {
     /**
      * 路径分隔符

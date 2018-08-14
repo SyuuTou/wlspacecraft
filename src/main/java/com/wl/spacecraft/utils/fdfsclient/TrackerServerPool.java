@@ -29,6 +29,7 @@ public class TrackerServerPool {
      * TrackerServer 配置文件路径
      */
     private static final String FASTDFS_CONFIG_PATH = "application-dev-l.properties";
+//    private static final String FASTDFS_CONFIG_PATH = "application.properties";
 
     /**
      * 最大连接数 default 8.
