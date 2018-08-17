@@ -1,6 +1,8 @@
 package com.wl.spacecraft.utils;
 
 
+import java.io.File;
+import java.io.IOException;
 import java.rmi.ServerError;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -74,12 +76,7 @@ public class TestStream {
         System.err.println(null != new Integer(1));
 
 
-        Instant now     = Instant.now();
-        Instant later   = now.plusSeconds(3);
-        Instant earlier = now.minusSeconds(3);
-        System.err.println(now.toString());
-        System.err.println(later);
-        System.err.println(earlier);
+
 
     }
 

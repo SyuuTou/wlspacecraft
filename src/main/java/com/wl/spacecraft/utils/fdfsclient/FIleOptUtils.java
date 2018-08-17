@@ -4,6 +4,9 @@ import org.apache.commons.codec.binary.Base64;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 @Component
 public class FIleOptUtils {
     //第一种方式，静态变量注入
@@ -42,8 +45,6 @@ public class FIleOptUtils {
         System.err.println(string);
         return string;
     }
-
-
     public static void main(String[] args) throws FastDFSException {
 //        FIleOptUtils.downloadToBase64(null);
         System.err.println(fastDFSClient);

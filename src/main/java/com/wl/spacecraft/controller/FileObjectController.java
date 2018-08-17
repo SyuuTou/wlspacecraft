@@ -1,5 +1,6 @@
 package com.wl.spacecraft.controller;
 
+import com.wl.spacecraft.utils.FileCopyUtil;
 import com.wl.spacecraft.utils.fdfsclient.*;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,10 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
@@ -226,20 +224,38 @@ public class FileObjectController {
 
     /**
      * 模拟文件下载
+     *
      * @param fileUrl 文件的url访问路径
      * @return
      * @throws FastDFSException
      */
     @RequestMapping("/img/download")
-    public String download(String fileUrl) throws FastDFSException, FileNotFoundException {
-        String url="onlygame.us:8080/group1/M00/00/00/rB9feFt01KSAWzNYAADRCnNkqcQ075.png";
+    public String download(String fileUrl) throws FastDFSException, IOException {
+        String url = "onlygame.us:8080/group1/M00/00/00/rB9feFt1XnaAaAT_AABWwJMwWIc766.png";
+        String fileId = "group1/M00/00/00/rB9feFt1XnaAaAT_AABWwJMwWIc766.png";
+
+        //客户端下载并进行base64编码
         String base64 = FIleOptUtils.downloadToBase64(url);
-        System.err.println(base64.length());
-        return base64;
+
+//        转存方式一,通过客户端提供的api下载并实现转存
+//        fastDFSClient.downloadFile(fileId,new FileOutputStream(new File("/usr/local/image/a.png")));
+
+//        转存方式二,通过客户端下载并自行转存实现
+        byte[] download = fastDFSClient.download(fileId);
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(download);
+        //拷贝方式1
+        long copyByArray = new FileCopyUtil(byteArrayInputStream, "/usr/local/image/a/a.png").copyByArray();
+        System.err.println(copyByArray);
+        //拷贝方式2
+        long copyOneByOne = new FileCopyUtil(byteArrayInputStream, "/usr/local/image/b/a.png").copyByOne();
+        System.err.println(copyOneByOne);
+
+        return null;
     }
 
     /**
      * 根据文件id删除文件
+     *
      * @param fileUrl
      * @return 成功后返回0
      * @throws FastDFSException
@@ -247,7 +263,7 @@ public class FileObjectController {
      */
     @RequestMapping("/img/delete")
     public Object delete(String fileUrl) throws FastDFSException, FileNotFoundException {
-        String url="onlygame.us:8080/group1/M00/00/00/rB9feFt01KSAWzNYAADRCnNkqcQ075.png";
+        String url = "onlygame.us:8080/group1/M00/00/00/rB9feFt01KSAWzNYAADRCnNkqcQ075.png";
         int i = fastDFSClient.deleteFile("group1/M00/00/00/rB9feFt01KSAWzNYAADRCnNkqcQ075.png");
         System.err.println(i);
         return i;
@@ -255,6 +271,7 @@ public class FileObjectController {
 
     /**
      * 本地文件上传，根据文件路径
+     *
      * @return 成功后返回文件id
      * @throws FastDFSException
      */
@@ -262,15 +279,15 @@ public class FileObjectController {
     public Object upload() throws FastDFSException {
         System.err.println(fastDFSClient);
 
-        String filePath="/Users/syuutousan/Downloads/icon/aixin.png";
+        String filePath = "/Users/syuutousan/Downloads/icon/aixin.png";
         //文件id
         String fileId = fastDFSClient.uploadFileWithFilepath(filePath);
         //文件的可访问url
-        String fileUrl=fileServerAddr+"/"+fileId;
+        String fileUrl = fileServerAddr + "/" + fileId;
 
         Map<String, String> map = new HashMap<>();
-        map.put("fileId",fileId);
-        map.put("fileUrl",fileUrl);
+        map.put("fileId", fileId);
+        map.put("fileUrl", fileUrl);
 
         System.err.println(map);
 
