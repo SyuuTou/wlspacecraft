@@ -1,14 +1,10 @@
 package com.wl.spacecraft.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.*;
 
-@Table(name = "community")
 public class Community {
     /**
      * 社区id_自动生成
@@ -20,8 +16,6 @@ public class Community {
     /**
      * 社区logo
      */
-//    @JsonInclude(Include.NON_NULL)
-    @Column(name = "logo")
     private String logo;
 
     /**
@@ -31,16 +25,15 @@ public class Community {
     private String commName;
 
     /**
+     * 自定义排序，(运维人员根据重要性进行自定义排序，数值越小重要性越高)
+     */
+    private Integer sort;
+
+    /**
      * 社区描述
      */
     @Column(name = "comm_desc")
     private String commDesc;
-
-    /**
-     * 排序
-     */
-    @Column(name = "sort")
-    private Integer sort;
 
     /**
      * 创建时间
@@ -60,6 +53,21 @@ public class Community {
     private Integer creator;
 
     /**
+     * 更新人
+     */
+    private Integer updator;
+
+    /**
+     * 是否有效，0有效，1无效
+     */
+    @Column(name = "del_flag")
+    private Integer delFlag;
+
+    /**
+     * 社区logo的base64编码
+     */
+    private String base64;
+    /**
      * 子群
      */
     @Transient
@@ -70,27 +78,6 @@ public class Community {
      */
     @Transient
     private Long ogAmount;
-    /**
-     * 社区logo的base64编码
-     */
-    @Transient
-    private String base64;
-
-    public String getBase64() {
-        return base64;
-    }
-
-    public void setBase64(String base64) {
-        this.base64 = base64;
-    }
-
-    public Long getOgAmount() {
-        return ogAmount;
-    }
-
-    public void setOgAmount(Long ogAmount) {
-        this.ogAmount = ogAmount;
-    }
 
     public List<CommunityGroup> getGroups() {
         return groups;
@@ -100,24 +87,13 @@ public class Community {
         this.groups = groups;
     }
 
-    public Integer getSort() {
-        return sort;
+    public Long getOgAmount() {
+        return ogAmount;
     }
 
-    public void setSort(Integer sort) {
-        this.sort = sort;
+    public void setOgAmount(Long ogAmount) {
+        this.ogAmount = ogAmount;
     }
-
-    /**
-     * 更新人
-     */
-    private Integer updator;
-
-    /**
-     * 是否有效，0有效，1无效
-     */
-    @Column(name = "del_flag")
-    private Integer delFlag;
 
     /**
      * 获取社区id_自动生成
@@ -138,6 +114,24 @@ public class Community {
     }
 
     /**
+     * 获取社区logo
+     *
+     * @return logo - 社区logo
+     */
+    public String getLogo() {
+        return logo;
+    }
+
+    /**
+     * 设置社区logo
+     *
+     * @param logo 社区logo
+     */
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
+
+    /**
      * 获取社区名称
      *
      * @return comm_name - 社区名称
@@ -153,6 +147,24 @@ public class Community {
      */
     public void setCommName(String commName) {
         this.commName = commName;
+    }
+
+    /**
+     * 获取自定义排序，(运维人员根据重要性进行自定义排序，数值越小重要性越高)
+     *
+     * @return sort - 自定义排序，(运维人员根据重要性进行自定义排序，数值越小重要性越高)
+     */
+    public Integer getSort() {
+        return sort;
+    }
+
+    /**
+     * 设置自定义排序，(运维人员根据重要性进行自定义排序，数值越小重要性越高)
+     *
+     * @param sort 自定义排序，(运维人员根据重要性进行自定义排序，数值越小重要性越高)
+     */
+    public void setSort(Integer sort) {
+        this.sort = sort;
     }
 
     /**
@@ -263,31 +275,21 @@ public class Community {
         this.delFlag = delFlag;
     }
 
-    public String getLogo() {
-        return logo;
+    /**
+     * 获取社区logo的base64编码
+     *
+     * @return base64 - 社区logo的base64编码
+     */
+    public String getBase64() {
+        return base64;
     }
 
-    public void setLogo(String logo) {
-
-        this.logo = logo;
-    }
-
-    @Override
-    public String toString() {
-        return "Community{" +
-                "id=" + id +
-                ", logo='" + logo + '\'' +
-                ", commName='" + commName + '\'' +
-                ", commDesc='" + commDesc + '\'' +
-                ", sort=" + sort +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
-                ", creator=" + creator +
-                ", groups=" + groups +
-                ", ogAmount=" + ogAmount +
-                ", base64='" + base64 + '\'' +
-                ", updator=" + updator +
-                ", delFlag=" + delFlag +
-                '}';
+    /**
+     * 设置社区logo的base64编码
+     *
+     * @param base64 社区logo的base64编码
+     */
+    public void setBase64(String base64) {
+        this.base64 = base64;
     }
 }

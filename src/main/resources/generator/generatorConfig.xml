@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!DOCTYPE generatorConfiguration
         PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
         "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 
 <generatorConfiguration>
-    <properties resource="application-dev-t.properties"/>
+    <properties resource="application-pro.properties"/>
 
     <context id="Mysql" targetRuntime="MyBatis3Simple" defaultModelType="flat">
         <property name="beginningDelimiter" value="`"/>
@@ -34,7 +35,7 @@
             <!--&lt;!&ndash;oracle 配置&ndash;&gt;-->
             <!--&lt;!&ndash;<generatedKey column="id" sqlStatement="select SEQ_{1}.nextval from dual" identity="false" type="pre"/>&ndash;&gt;-->
         <!--</table>-->
-        <table tableName="block_station">
+        <table tableName="community">
             <!--mysql 配置-->
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
             <!--oracle 配置-->

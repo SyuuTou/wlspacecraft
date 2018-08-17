@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -17,7 +18,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * 文件接口
@@ -33,7 +36,12 @@ import java.util.Locale;
 @RestController
 public class FileObjectController {
 
-    private FastDFSClient fastDFSClient = new FastDFSClient();
+    @Resource
+    private FastDFSClient fastDFSClient;
+//    private FastDFSClient fastDFSClient = new FastDFSClient();
+
+//    @Resource
+//    private FIleOptUtils fIleOptUtils;
 
     /**
      * 文件服务器地址
@@ -218,29 +226,55 @@ public class FileObjectController {
 
     /**
      * 模拟文件下载
-     * @param filePath
+     * @param fileUrl 文件的url访问路径
      * @return
      * @throws FastDFSException
      */
     @RequestMapping("/img/download")
-    public String download(String filePath) throws FastDFSException, FileNotFoundException {
-        String base64 = FIleOptUtils.downloadToBase64(filePath);
+    public String download(String fileUrl) throws FastDFSException, FileNotFoundException {
+        String url="onlygame.us:8080/group1/M00/00/00/rB9feFt01KSAWzNYAADRCnNkqcQ075.png";
+        String base64 = FIleOptUtils.downloadToBase64(url);
+        System.err.println(base64.length());
         return base64;
     }
 
     /**
-     * 模拟文件上传
-     * @return
+     * 根据文件id删除文件
+     * @param fileUrl
+     * @return 成功后返回0
+     * @throws FastDFSException
+     * @throws FileNotFoundException
+     */
+    @RequestMapping("/img/delete")
+    public Object delete(String fileUrl) throws FastDFSException, FileNotFoundException {
+        String url="onlygame.us:8080/group1/M00/00/00/rB9feFt01KSAWzNYAADRCnNkqcQ075.png";
+        int i = fastDFSClient.deleteFile("group1/M00/00/00/rB9feFt01KSAWzNYAADRCnNkqcQ075.png");
+        System.err.println(i);
+        return i;
+    }
+
+    /**
+     * 本地文件上传，根据文件路径
+     * @return 成功后返回文件id
      * @throws FastDFSException
      */
     @RequestMapping("/img/upload")
     public Object upload() throws FastDFSException {
-        String filePath="/Users/syuutousan/Downloads/icon/aixin.png";
-        String s = fastDFSClient.uploadFileWithFilepath(filePath);
-        //返回上传成功后的文件路径
-        System.err.println(s);
+        System.err.println(fastDFSClient);
 
-        return s;
+        String filePath="/Users/syuutousan/Downloads/icon/aixin.png";
+        //文件id
+        String fileId = fastDFSClient.uploadFileWithFilepath(filePath);
+        //文件的可访问url
+        String fileUrl=fileServerAddr+"/"+fileId;
+
+        Map<String, String> map = new HashMap<>();
+        map.put("fileId",fileId);
+        map.put("fileUrl",fileUrl);
+
+        System.err.println(map);
+
+        return map;
     }
 
 }

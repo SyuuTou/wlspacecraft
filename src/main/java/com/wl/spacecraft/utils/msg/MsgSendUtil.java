@@ -1,4 +1,4 @@
-package com.wl.spacecraft.utils;
+package com.wl.spacecraft.utils.msg;
 
 import org.apache.http.HttpResponse;
 import java.util.HashMap;

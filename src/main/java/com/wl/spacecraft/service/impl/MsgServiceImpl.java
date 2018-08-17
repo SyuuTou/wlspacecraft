@@ -4,13 +4,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.lhjl.tzzs.proxy.service.GenericService;
 import com.wl.spacecraft.dto.commondto.CommonDto;
 import com.wl.spacecraft.dto.responsedto.SendMsgOutputDto;
-import com.wl.spacecraft.exception.common.DataFormatException;
-import com.wl.spacecraft.exception.login.UserNotExistException;
 import com.wl.spacecraft.service.community.CommunityService;
 import com.wl.spacecraft.service.user.MsgService;
 import com.wl.spacecraft.service.user.UserService;
 import com.wl.spacecraft.utils.MD5Util;
-import com.wl.spacecraft.utils.MsgSendUtil;
+import com.wl.spacecraft.utils.msg.MsgSendUtil;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
@@ -51,6 +49,7 @@ public class MsgServiceImpl extends GenericService implements MsgService {
         SendMsgOutputDto sendMsgOutputDto = new SendMsgOutputDto();
 
         String verifyCode = RandomStringUtils.random(4,"0123456789");//四位随机数
+//        this.LOGGER.info()
         System.err.println("短信验证码--˘>>>>"+verifyCode);
 
         Calendar calendar = Calendar.getInstance();

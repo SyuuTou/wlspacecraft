@@ -59,7 +59,7 @@ public class FastDFSClient {
     /**
      * 文件最大的大小
      */
-    private int maxFileSize = 100 * 1000 * 1000;
+    private int maxFileSize = 100 * 1024 * 1024;
 
     public FastDFSClient() {
         initExt();

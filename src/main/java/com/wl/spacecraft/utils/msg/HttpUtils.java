@@ -1,4 +1,4 @@
-package com.wl.spacecraft.utils;
+package com.wl.spacecraft.utils.msg;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

@@ -1,10 +1,19 @@
 package com.wl.spacecraft.utils.fdfsclient;
 
 import org.apache.commons.codec.binary.Base64;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+@Component
 public class FIleOptUtils {
-
-    private static FastDFSClient fastDFSClient = new FastDFSClient();
+    //第一种方式，静态变量注入
+     private static FastDFSClient fastDFSClient;
+    @Resource
+    public void setFastDFSClient(FastDFSClient fastDFSClient) {
+        FIleOptUtils.fastDFSClient = fastDFSClient;
+    }
+    //第二种方式，普通生成对象方式
+//    private static FastDFSClient fastDFSClient = new FastDFSClient();
 
     /**
      * 将文件的url访问路径下载为字节数组并进行base64编码
@@ -14,7 +23,7 @@ public class FIleOptUtils {
      */
     public static String downloadToBase64(String fileUrl) {
 
-        //取得文件id
+        //取得文件id(是在文件id存在group的情况下进行拆分)
         String fileId = fileUrl.substring(fileUrl.indexOf("group"));
         System.err.println(fileId);
 
@@ -37,7 +46,7 @@ public class FIleOptUtils {
 
     public static void main(String[] args) throws FastDFSException {
 //        FIleOptUtils.downloadToBase64(null);
-        System.err.println(FIleOptUtils.downloadToBase64("http://onlygame.us:8080/group1/M00/00/00/rB9feFtv-iGAQBRBAAG2tITFUoc347.png"));
+        System.err.println(fastDFSClient);
     }
 
 }

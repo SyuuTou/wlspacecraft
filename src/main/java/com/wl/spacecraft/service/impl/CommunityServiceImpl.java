@@ -7,7 +7,6 @@ import com.wl.spacecraft.model.CommunityGroup;
 import com.wl.spacecraft.service.common.GenericService;
 import com.wl.spacecraft.service.community.CommunityService;
 import com.wl.spacecraft.service.user.UserService;
-import com.wl.spacecraft.utils.fdfsclient.FIleOptUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
@@ -66,13 +65,13 @@ public class CommunityServiceImpl extends GenericService implements CommunitySer
             }
         }
         //设置社区有logo的base64编码
-        for (Community e : communities
-        ) {
-            if(e.getLogo()!=null){
-                String base64 = FIleOptUtils.downloadToBase64(e.getLogo());
-                e.setBase64(base64);
-            }
-        }
+//        for (Community e : communities
+//        ) {
+//            if(e.getLogo()!=null){
+//                String base64 = FIleOptUtils.downloadToBase64(e.getLogo());
+//                e.setBase64(base64);
+//            }
+//        }
 
         //设置社区下的所有子群
         for (Community e : communities

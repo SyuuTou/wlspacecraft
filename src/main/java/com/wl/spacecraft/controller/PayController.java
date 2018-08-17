@@ -22,7 +22,7 @@ public class PayController extends GenericController {
     private PayService payService;
 
     /**
-     * 用户充值信息的回显
+     * 用户充值以及提币信息的回显
      * @return 充值信息回显
      */
     @GetMapping("recharge/info")

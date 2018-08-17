@@ -156,12 +156,13 @@ public class GameServiceImpl extends GenericService implements GameService {
             MetaAppOutputDto obj=new MetaAppOutputDto();
             obj.setAppBkground(e.getAppBkground());
 
-            //图片的字节base64编码
-            if(obj.getAppBkground()!=null){
-                String base64 = FIleOptUtils.downloadToBase64(e.getAppBkground());
-                obj.setBase64(base64);
-            }
-
+            //设置图片的字节base64编码
+            obj.setBase64(e.getBase64());
+            //避免以下在程序中的转换操作
+//            if(obj.getAppBkground()!=null){
+//                String base64 = FIleOptUtils.downloadToBase64(e.getAppBkground());
+//                obj.setBase64(base64);
+//            }
             obj.setAppKey(e.getAppKey());
             obj.setAppName(e.getAppName());
             obj.setAppDescription(e.getAppDescription());
