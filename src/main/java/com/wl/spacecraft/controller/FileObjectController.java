@@ -286,6 +286,7 @@ public class FileObjectController {
         String fileUrl = fileServerAddr + "/" + fileId;
 
         Map<String, String> map = new HashMap<>();
+
         map.put("fileId", fileId);
         map.put("fileUrl", fileUrl);
 
