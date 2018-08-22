@@ -76,10 +76,10 @@ public class FileCopyUtil implements Closeable {
         long start = System.currentTimeMillis();
         byte[] data = new byte[1024];
 
-        int temp = 0;//保存读取到的字节个数
+        int len = 0;//保存读取到的字节个数
         //将每一次读取的数据保存到data数组里面，返回读取到的字节个数
-        while ((temp = this.in.read(data)) != -1) {
-            this.out.write(data, 0, temp);
+        while ((len = this.in.read(data)) != -1) {
+            this.out.write(data, 0, len);
         }
         long end = System.currentTimeMillis();
         return end - start;

@@ -392,6 +392,7 @@ public class FastDFSClient {
                 if (StringUtils.isNotBlank(contentType)) {
                     // 文件编码 处理文件名中的 '+'、' ' 特殊字符
                     String encoderName = URLEncoder.encode(filename, "UTF-8").replace("+", "%20").replace("%2B", "+");
+                    //设置content-disposition响应头控制浏览器以下载的形式打开文件
                     response.setHeader("Content-Disposition", "attachment;filename=\"" + encoderName + "\"");
                     response.setContentType(contentType + ";charset=UTF-8");
                     response.setHeader("Accept-Ranges", "bytes");
@@ -441,7 +442,6 @@ public class FastDFSClient {
 
         TrackerServer trackerServer = TrackerServerPool.borrowObject();
         StorageClient1 storageClient = new StorageClient1(trackerServer, null);
-        InputStream is = null;
         byte[] fileByte = null;
         try {
             fileByte = storageClient.download_file1(filepath);
@@ -495,7 +495,7 @@ public class FastDFSClient {
     /**
      * 获取文件信息
      * 
-     * @param filepath 文件路径
+     * @param fileId 文件id
      * @return 文件信息
      * 
      * <pre>
@@ -507,12 +507,12 @@ public class FastDFSClient {
      *  }  <br>
      * </pre>
      */
-    public Map<String, Object> getFileInfo(String filepath) throws FastDFSException {
+    public Map<String, Object> getFileInfo(String fileId) throws FastDFSException {
         TrackerServer trackerServer = TrackerServerPool.borrowObject();
         StorageClient1 storageClient = new StorageClient1(trackerServer, null);
         FileInfo fileInfo = null;
         try {
-            fileInfo = storageClient.get_file_info1(filepath);
+            fileInfo = storageClient.get_file_info1(fileId);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (MyException e) {
@@ -534,15 +534,15 @@ public class FastDFSClient {
     /**
      * 获取文件描述信息
      * 
-     * @param filepath 文件路径
+     * @param fileId 文件Id
      * @return 文件描述信息
      */
-    public Map<String, Object> getFileDescriptions(String filepath) throws FastDFSException {
+    public Map<String, Object> getFileDescriptions(String fileId) throws FastDFSException {
         TrackerServer trackerServer = TrackerServerPool.borrowObject();
         StorageClient1 storageClient = new StorageClient1(trackerServer, null);
         NameValuePair[] nvps = null;
         try {
-            nvps = storageClient.get_metadata1(filepath);
+            nvps = storageClient.get_metadata1(fileId);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (MyException e) {
@@ -638,17 +638,17 @@ public class FastDFSClient {
     /**
      * 获取访问服务器的token，拼接到地址后面
      *
-     * @param filepath 文件路径 group1/M00/00/00/wKgzgFnkTPyAIAUGAAEoRmXZPp876.jpeg
+     * @param fileId 文件路径 group1/M00/00/00/wKgzgFnkTPyAIAUGAAEoRmXZPp876.jpeg
      * @param httpSecretKey 秘钥
      * @return 返回token，如： token=078d370098b03e9020b82c829c205e1f&ts=1508141521
      */
-    public static String getToken(String filepath, String httpSecretKey){
+    public static String getToken(String fileId, String httpSecretKey){
         // unix seconds
         int ts = (int) Instant.now().getEpochSecond();
         // token
         String token = "null";
         try {
-            token = ProtoCommon.getToken(getFilename(filepath), ts, httpSecretKey);
+            token = ProtoCommon.getToken(getFilename(fileId), ts, httpSecretKey);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
@@ -679,12 +679,5 @@ public class FastDFSClient {
         this.maxFileSize = maxFileSize;
     }
 
-    /**
-     * 测试
-     */
-    public static void main(String[] args) throws Exception {
-
-
-    }
 
 }

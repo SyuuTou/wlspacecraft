@@ -28,6 +28,7 @@ public class TrackerServerPool {
     /**
      * TrackerServer 配置文件路径
      */
+    //TODO 此处指定配置文件需要改进
     private static final String FASTDFS_CONFIG_PATH = "application-pro.properties";
 
     /**

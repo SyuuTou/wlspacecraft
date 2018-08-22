@@ -174,7 +174,6 @@
     </dependency>
     <!--httpcomponent-end-->
 
-
     <dependency>
       <groupId>redis.clients</groupId>
       <artifactId>jedis</artifactId>

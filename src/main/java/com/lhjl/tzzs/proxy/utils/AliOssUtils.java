@@ -57,5 +57,9 @@ public class AliOssUtils  {
             value = mat.group(0);
             System.out.println(value);
         }
+
+        System.err.println(DateTime.now());
+        System.err.println(DateTime.now().millisOfDay());
+        System.err.println(DateTime.now().millisOfDay().getAsString());
     }
 }

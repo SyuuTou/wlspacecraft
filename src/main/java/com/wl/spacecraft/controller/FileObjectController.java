@@ -1,10 +1,9 @@
 package com.wl.spacecraft.controller;
 
+import com.wl.spacecraft.controller.common.GenericController;
 import com.wl.spacecraft.utils.FileCopyUtil;
 import com.wl.spacecraft.utils.fdfsclient.*;
-import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -15,7 +14,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -32,7 +30,7 @@ import java.util.Map;
 //@Controller
 //@RequestMapping("/fastdfs")
 @RestController
-public class FileObjectController {
+public class FileObjectController extends GenericController {
 
     @Resource
     private FastDFSClient fastDFSClient;
@@ -46,6 +44,10 @@ public class FileObjectController {
      */
     @Value("${file_server_addr}")
     private String fileServerAddr;
+    /**
+     * org.slf4j.Logger
+     */
+//    private static Logger logger = LoggerFactory.getLogger(FileObjectController.class);
 
     /**
      * FastDFS秘钥
@@ -55,11 +57,88 @@ public class FileObjectController {
 
     @RequestMapping("/test")
 //    @ResponseBody
-    public FileResponseData test() {
+    public Object test(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Map<String,Object> map =new HashMap<>();
+
+        String a="qw";
+        String b="as";
+
+        this.LOGGER.debug("There are now {} user accounts: {}", a, b);
+        this.LOGGER.info("There are now {} user accounts: {}", a, b);
+        this.LOGGER.trace("There are now {} user accounts: {}", a, b);
+
         FileResponseData fileResponseData = new FileResponseData(true);
+
+        System.err.println("contextPath: {"+request.getContextPath()+"}");
+        String realPath = request.getServletContext().getRealPath("/upload/img/");
+        System.err.println(realPath);
+
         System.err.println(fileResponseData);
-        return fileResponseData;
+//        response.getOutputStream().print("response");
+        response.getOutputStream().write(1);
+//        response.getWriter().print(1);
+
+        map.put("contextPath",request.getContextPath());
+        map.put("application",realPath);
+        map.put("fileResponseData",fileResponseData);
+
+        return map;
     }
+
+    /**
+     * 设置response响应头实现文件下载
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("file/down/test")
+    public void testFileDownload(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String realPath = request.getSession().getServletContext().getRealPath("/upload/image/");
+        System.err.println(realPath);
+        // 1.获取要下载的文件的绝对路径
+//        String path = request.getServletContext().getRealPath("/download/1.jpg");
+        String path = "/Users/syuutousan/Downloads/icon/aixin.png";
+        // 2.获取要下载的文件名
+        String filename = path.substring(path.lastIndexOf("/") + 1);
+        System.err.println(filename);
+        // 3.设置content-disposition响应头控制浏览器以下载的形式打开文件
+        response.setHeader("content-disposition", "attachment;filename=" + filename);
+
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+            // 4.获取要下载的文件输入流
+            in = new FileInputStream(path);
+            int len = 0;
+            // 5.创建数据缓冲区
+            byte[] buffer = new byte[1024];
+            // 6.通过response对象获取OutputStream流
+            out = response.getOutputStream();
+            // 7.将FileInputStream流写入到buffer缓冲区
+            while ((len = in.read(buffer)) != -1) {
+                // 8.使用OutputStream将缓冲区的数据输出到客户端浏览器
+                out.write(buffer, 0, len);
+            }
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
 
     /**
      * 上传文件通用，只上传文件到服务器，不会保存记录到数据库
@@ -125,13 +204,14 @@ public class FileObjectController {
     /**
      * 以附件形式下载文件
      *
-     * @param filePath 文件地址
+     * @param fileId   文件id
      * @param response
      */
     @RequestMapping("/download/file")
-    public void downloadFile(String filePath, HttpServletResponse response) throws FastDFSException {
+    public void downloadFile(String fileId, HttpServletResponse response) throws FastDFSException {
         try {
-            fastDFSClient.downloadFile(filePath, response);
+
+            fastDFSClient.downloadFile(fileId, response);
         } catch (FastDFSException e) {
             e.printStackTrace();
             throw e;
@@ -141,13 +221,13 @@ public class FileObjectController {
     /**
      * 获取图片 使用输出流输出字节码，可以使用< img>标签显示图片<br>
      *
-     * @param filePath 图片地址
+     * @param fileId 图片地址
      * @param response
      */
     @RequestMapping("/download/image")
-    public void downloadImage(String filePath, HttpServletResponse response) throws FastDFSException {
+    public void downloadImage(String fileId, HttpServletResponse response) throws FastDFSException {
         try {
-            fastDFSClient.downloadFile(filePath, response.getOutputStream());
+            fastDFSClient.downloadFile(fileId, response.getOutputStream());
         } catch (FastDFSException e) {
             e.printStackTrace();
             throw e;
@@ -204,15 +284,15 @@ public class FileObjectController {
         FileResponseData responseData = new FileResponseData();
         try {
             // 上传到服务器
-            String filepath = fastDFSClient.uploadFileWithMultipart(file);
+            String fileId = fastDFSClient.uploadFileWithMultipart(file);
 
             responseData.setFileName(file.getOriginalFilename());
-            responseData.setFilePath(filepath);
+            responseData.setFilePath(fileId);
             responseData.setFileType(FastDFSClient.getFilenameSuffix(file.getOriginalFilename()));
             // 设置访文件的Http地址. 有时效性.
-            String token = FastDFSClient.getToken(filepath, fastDFSHttpSecretKey);
+            String token = FastDFSClient.getToken(fileId, fastDFSHttpSecretKey);
             responseData.setToken(token);
-            responseData.setHttpUrl(fileServerAddr + "/" + filepath + "?" + token);
+            responseData.setHttpUrl(fileServerAddr + "/" + fileId + "?" + token);
         } catch (FastDFSException e) {
             responseData.setSuccess(false);
             responseData.setCode(e.getCode());
@@ -230,9 +310,16 @@ public class FileObjectController {
      * @throws FastDFSException
      */
     @RequestMapping("/img/download")
-    public String download(String fileUrl) throws FastDFSException, IOException {
+    public String download(HttpServletRequest request, String fileUrl) throws FastDFSException, IOException {
+
+
+
         String url = "onlygame.us:8080/group1/M00/00/00/rB9feFt1XnaAaAT_AABWwJMwWIc766.png";
         String fileId = "group1/M00/00/00/rB9feFt1XnaAaAT_AABWwJMwWIc766.png";
+
+        String realPath = request.getSession().getServletContext().getRealPath("/upload/image/");
+        System.err.println("realPath" + realPath);
+
 
         //客户端下载并进行base64编码
         String base64 = FIleOptUtils.downloadToBase64(url);
@@ -244,7 +331,7 @@ public class FileObjectController {
         byte[] download = fastDFSClient.download(fileId);
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(download);
         //拷贝方式1
-        long copyByArray = new FileCopyUtil(byteArrayInputStream, "/usr/local/image/a/a.png").copyByArray();
+        long copyByArray = new FileCopyUtil(byteArrayInputStream, realPath+"a.png").copyByArray();
         System.err.println(copyByArray);
         //拷贝方式2
         long copyOneByOne = new FileCopyUtil(byteArrayInputStream, "/usr/local/image/b/a.png").copyByOne();
@@ -273,13 +360,16 @@ public class FileObjectController {
      * 本地文件上传，根据文件路径
      *
      * @return 成功后返回文件id
-     * @throws FastDFSException
+     * @throws FastDFSException {
+     *                          "fileUrl": "onlygame.us:8080/group1/M00/00/00/rB9feFt654GAHdaLAHOkVrdH6po452.mp3",
+     *                          "fileId": "group1/M00/00/00/rB9feFt654GAHdaLAHOkVrdH6po452.mp3"
+     *                          }
      */
     @RequestMapping("/img/upload")
-    public Object upload() throws FastDFSException {
+    public Object upload(HttpServletRequest request) throws FastDFSException {
         System.err.println(fastDFSClient);
 
-        String filePath = "/Users/syuutousan/Downloads/icon/aixin.png";
+        String filePath = "/Users/syuutousan/Music/网易云音乐/canon.mp3";
         //文件id
         String fileId = fastDFSClient.uploadFileWithFilepath(filePath);
         //文件的可访问url
@@ -293,6 +383,25 @@ public class FileObjectController {
         System.err.println(map);
 
         return map;
+    }
+
+    /**
+     * 获取文件信息
+     *
+     * @return
+     * @throws FastDFSException
+     */
+    @RequestMapping("file/info")
+    public Object fileInfo() throws FastDFSException {
+
+        String fileId = "group1/M00/00/00/rB9feFt1R6uAR17SAABMkKx3uIg125.png";
+        Map<String, Object> fileInfo = fastDFSClient.getFileInfo(fileId);
+        Map<String, Object> fileDescriptions = fastDFSClient.getFileDescriptions(fileId);
+        String originalFilename = fastDFSClient.getOriginalFilename(fileId);
+        String filename = FastDFSClient.getFilename(fileId);
+
+
+        return filename;
     }
 
 }

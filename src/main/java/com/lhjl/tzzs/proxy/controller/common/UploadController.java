@@ -15,11 +15,7 @@ public class UploadController extends GenericController {
 
 
     @RequestMapping(value="/upload", method= RequestMethod.POST)
-    public @ResponseBody
-    String handleFileUpload(
-            @RequestParam("file") MultipartFile file) {
-
-
+    public @ResponseBody String handleFileUpload(@RequestParam("file") MultipartFile file) {
         try {
             return AliOssUtils.upload(file);
         } catch (IOException e) {
